@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quem Somos - ResolveFácil</title>
+    <meta name="description" content="Conheça a história e os valores da ResolveFácil. Nosso compromisso é com a sua satisfação e a descomplicação da sua vida.">
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis CSS */
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --body-bg-quemsomos: #003459;
+            --body-text-quemsomos: #f2f2ed;
+            --whatsapp-button: #25d366;
+            --card-bg: #ffffff;
+        }
+
+        /* Estilos Globais */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: var(--body-bg-quemsomos); color: var(--body-text-quemsomos); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.6; }
+        
+        /* Header e Navegação */
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        nav ul { display: flex; gap: 20px; list-style: none; }
+        nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        nav a:hover { color: var(--highlight); }
+
+        /* Menu Mobile */
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; }
+        
+        main { flex: 1; }
+
+        /* Seções da Página */
+        .hero { text-align: center; padding: 80px 20px; }
+        .hero h1 { font-size: clamp(2.2em, 5vw, 3.5em); margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: clamp(1em, 2.5vw, 1.3em); margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        
+        .content-section { max-width: 960px; margin: 0 auto; padding: 60px 20px 30px; text-align: left; }
+        .content-section h2 { font-size: 2em; margin-bottom: 20px; text-align: center; color: var(--highlight); }
+        .content-section p { font-size: 1.1em; line-height: 1.7; margin-bottom: 20px; }
+        .content-section ul { list-style: disc; margin-left: 20px; margin-bottom: 20px; font-size: 1.1em; line-height: 1.7; }
+        .content-section li { margin-bottom: 10px; }
+        
+        /* Carrossel */
+        .carousel-container { position: relative; max-width: 900px; margin: 40px auto; overflow: hidden; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); background-color: var(--secondary-bg); height: 450px; }
+        .carousel-track { display: flex; transition: transform 0.5s ease-in-out; height: 100%; }
+        .carousel-slide { min-width: 100%; height: 100%; }
+        .carousel-slide img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        .carousel-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 15px 10px; cursor: pointer; font-size: 1.5em; z-index: 10; border-radius: 5px; transition: background-color 0.3s; }
+        .carousel-button:hover { background-color: rgba(0, 0, 0, 0.8); }
+        .carousel-button.prev { left: 10px; }
+        .carousel-button.next { right: 10px; }
+        .carousel-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; }
+        .dot { width: 12px; height: 12px; background-color: rgba(255, 255, 255, 0.5); border-radius: 50%; cursor: pointer; transition: background-color 0.3s, transform 0.3s; }
+        .dot.active { background-color: var(--highlight); transform: scale(1.2); }
+
+        /* Depoimentos */
+        .testimonials-section { padding: 60px 20px; text-align: center; max-width: 1100px; margin: 0 auto; }
+        .testimonials-section h2 { font-size: 2em; margin-bottom: 40px; color: var(--text-color); }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; justify-content: center; }
+        .testimonial-card { 
+            background-color: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border: 2px solid var(--highlight);
+        }
+        .testimonial-card:hover { transform: translateY(-8px); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); }
+        
+        .testimonial-card .quote-icon {
+            font-size: 3em;
+            color: var(--primary-bg);
+            opacity: 0.1;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+
+        .testimonial-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px auto;
+            border: 4px solid transparent;
+            background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(to bottom, black 20%, var(--highlight));
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+        }
+
+        .testimonial-card p.quote { 
+            font-family: 'Merriweather', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            color: var(--primary-bg); 
+            z-index: 2;
+            position: relative;
+        }
+        .star-rating { margin-bottom: 15px; }
+        .star-rating .fas { color: #FFD700; }
+        
+        .testimonial-author-info { margin-top: auto; }
+        .testimonial-author-info .author { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            background-image: linear-gradient(to right, black 10%, var(--highlight) 50%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .testimonial-author-info .service { font-size: 0.9em; color: var(--secondary-bg); margin-top: 5px; opacity: 0.8; }
+
+        /* Linha do Tempo */
+        .timeline-section { padding: 60px 20px; }
+        .timeline-section h2 { font-size: 2em; margin-bottom: 50px; text-align: center; color: var(--highlight); }
+        .timeline-container { max-width: 900px; margin: 0 auto; position: relative; padding: 20px 0; }
+        .timeline-container::after { content: ''; position: absolute; width: 2px; background-color: var(--secondary-bg); top: 0; bottom: 0; left: 50%; margin-left: -1px; }
+        .timeline-item { padding: 15px 40px; position: relative; width: 50%; box-sizing: border-box; margin-bottom: 40px; }
+        .timeline-item::after { content: ''; position: absolute; width: 20px; height: 20px; background-color: var(--highlight); border-radius: 50%; top: 15px; z-index: 1; }
+        .timeline-item.left { left: 0; text-align: right; padding-right: 60px; }
+        .timeline-item.left::after { right: -11px; }
+        .timeline-item.right { left: 50%; text-align: left; padding-left: 60px; }
+        .timeline-item.right::after { left: -9px; }
+        
+        .timeline-content {
+            background-image: linear-gradient(to bottom, var(--primary-bg), black);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.35);
+        }
+
+        .timeline-header { display: flex; align-items: center; margin-bottom: 10px; gap: 15px; }
+        .timeline-item.left .timeline-header { justify-content: flex-end; flex-direction: row-reverse; }
+        .timeline-item.right .timeline-header { justify-content: flex-start; }
+        .timeline-header img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .timeline-header h3 { font-size: 1.2em; color: var(--highlight); margin: 0; }
+        .timeline-content p { font-size: 1em; line-height: 1.6; margin-bottom: 0; text-align: left; }
+        
+        .message-section { padding: 40px 20px; text-align: center; max-width: 960px; margin: 0 auto; }
+        .message-section p { font-size: 1.3em; line-height: 1.8; margin-bottom: 20px; }
+        .message-section strong { color: var(--highlight); }
+
+        .cta-section { padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .cta-section h2 { font-size: 2em; margin-bottom: 15px; }
+        .cta-section p { margin-bottom: 25px; }
+        .cta-button { background-color: var(--whatsapp-button); color: white; padding: 15px 30px; font-size: 1.1em; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.3s; }
+        .cta-button:hover { background-color: #1aae55; }
+        
+        /* --- INÍCIO: ESTILOS DA SEÇÃO DE SELOS --- */
+        .security-seals-section {
+            background-color: var(--primary-bg); /* Fundo azul escuro */
+            padding: 40px 20px 0; /* Espaçamento em cima e nas laterais */
+            text-align: center;
+        }
+        .security-seals-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px; /* Espaçamento entre os selos */
+            flex-wrap: wrap; /* Permite que os selos quebrem a linha em telas pequenas */
+        }
+        .security-seals-container img {
+            height: 50px; /* Altura ideal - você pode ajustar entre 40px e 60px */
+            width: auto; /* Largura automática para manter a proporção */
+            object-fit: contain; /* Garante que a imagem se ajuste bem */
+        }
+        /* --- FIM: ESTILOS DA SEÇÃO DE SELOS --- */
+
+        /* Estilos do rodapé */
+        footer {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            color: var(--highlight);
+        }
+
+        .social-icons { padding: 30px 20px; }
+        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
+        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--text-color); }
+        .social-icons a:hover { transform: scale(1.2); }
+        .social-icons .fab { font-size: 2.5em; }
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in.fade-in-active { opacity: 1; transform: translateY(0); }
+        
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hamburger { display: flex; }
+            .mobile-nav { display: flex; }
+            
+            .carousel-container { height: 250px; margin: 20px auto; }
+            .carousel-slide img { object-fit: contain; background-color: var(--secondary-bg); }
+            
+            .testimonials-grid { grid-template-columns: 1fr; }
+            
+            .timeline-container::after { left: 31px; }
+            .timeline-item { width: 100%; }
+            
+            .timeline-item.left, .timeline-item.right { left: 0; text-align: left; padding-left: 70px; padding-right: 15px; }
+            .timeline-item::after { left: 20px; }
+            .timeline-item.left .timeline-header { justify-content: flex-start; flex-direction: row; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            
+            <div id="menu-container"></div>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <section class="hero fade-in">
+            <h1>Nossa História e Compromisso</h1>
+            <p>A ResolveFácil é um projeto que nasceu de algo simples: a vontade de ajudar. Meu nome é Washington Leal, e por muitos anos atendi pessoas na Lan House e Cyber Café que tinha no bairro, a W2produções, onde imprimíamos currículos, fazíamos pesquisas, resolvíamos questões com documentos, criação de artes gráficas e assistência técnica em informática.</p>
+            <p>Com o tempo, percebi que o que mais impactava os clientes não era o computador nem a internet: era o jeito de tratar, de ouvir, de explicar com paciência. E essa essência ficou comigo. Em 2025, essa filosofia tornou-se a ResolveFácil.</p>
+            <p>Hoje, eu continuo a ser o seu ponto de contato direto. Todo o atendimento começa comigo, garantindo a atenção e o cuidado que deram origem à marca. Em desafios com complexidade jurídica, como determinadas ações de remoção de conteúdo, conto com o apoio de parceiros especialistas, como advogados, investigadores, etc... é neste momento que formamos a equipe ideal para cada caso.</p>
+            <p>Assim, a ResolveFácil une o atendimento personalizado que eu ofereço com a força de uma equipe qualificada quando necessário. Meu compromisso pessoal é garantir que tenha a melhor solução, do início ao fim.</p>
+        </section>
+
+        <div class="carousel-container fade-in">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide"><img src="imagens/01 Aluno na escola.jpg" alt="Aluno estudando"></div>
+                <div class="carousel-slide"><img src="imagens/02 Serviços.jpg" alt="Ícones de serviços digitais"></div>
+                <div class="carousel-slide"><img src="imagens/03 Documentos Online.jpg" alt="Pessoa organizando documentos online"></div>
+                <div class="carousel-slide"><img src="imagens/04 Serviços Variados.jpg" alt="Mosaico de diferentes serviços"></div>
+                <div class="carousel-slide"><img src="imagens/05 Trabalhos Escolares.jpg" alt="Material escolar sobre uma mesa"></div>
+                <div class="carousel-slide"><img src="imagens/06 Google Meu Negócio work.jpg" alt="Perfil de empresa no Google Meu Negócio"></div>
+                <div class="carousel-slide"><img src="imagens/07 Aluno na escola.jpg" alt="Aluno na escola"></div>
+                <div class="carousel-slide"><img src="imagens/08 Aluno na escola.jpg" alt="Outra aluna na escola"></div>
+            </div>
+            <button class="carousel-button prev" aria-label="Slide Anterior">&#10094;</button>
+            <button class="carousel-button next" aria-label="Próximo Slide">&#10095;</button>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+        
+        <section class="content-section fade-in">
+            <h2>Nossa Missão</h2>
+            <p>Descomplicar.<br> Minha missão é tornar mais simples o acesso a documentos, serviços e informações com rapidez, clareza e um atendimento humano, direto e confiável.</p>
+            <h2>Nossa Visão</h2>
+            <p>Ser lembrado como alguém que ajuda de verdade.<br> Um projeto que as pessoas recomendam porque confiam no atendimento e sentem que foram tratadas com respeito.</p>
+            <h2>Nossos Valores</h2>
+            <ul>
+                <li><strong>Comprometimento:</strong> Cada pedido é tratado como único.</li>
+                <li><strong>Transparência:</strong> Você sabe o que está sendo feito, quanto custa e como funciona.</li>
+                <li><strong>Agilidade:</strong> Respostas rápidas, sem rodeios.</li>
+                <li><strong>Humanização:</strong> Atendimento com empatia, sem robôs.</li>
+                <li><strong>Segurança:</strong> Total cuidado com seus dados e privacidade.</li>
+            </ul>
+            <p>Acreditamos que a tecnologia deve servir para facilitar, e é por isso que combinamos ferramentas eficientes com a atenção e o cuidado que merece. Venha descomplicar a sua vida com a ResolveFácil!</p>
+        </section>
+
+        <section class="timeline-section fade-in">
+            <h2>Nossa Trajetória</h2>
+            <div class="timeline-container">
+                <div class="timeline-item left fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <img src="imagens/Lan-01-2008-2012.png" alt="Logo W2produções">
+                            <h3>2008-2012</h3>
+                        </div>
+                        <p>Em <strong>2008</strong>, nossa jornada começou com a <strong>Lan House e Cyber Café W2produções</strong>. Um verdadeiro centro de apoio no bairro, oferecendo desde trabalhos escolares e documentos até fotos 3x4, encadernações e, claro, muitos jogos para a garotada. Foi aqui que a paixão por descomplicar a vida das pessoas nasceu.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <img src="imagens/Lan-02-2013-2016.png" alt="Fachada da W2produções">
+                            <h3>2013-2016</h3>
+                        </div>
+                        <p>Entre <strong>2012 e 2013</strong>, expandimos para um espaço maior, mantendo nossas raízes no bairro. Com formação em informática e design, transformei a <strong>W2produções</strong> numa <strong>gráfica rápida e assistência técnica completa para computadores</strong>. Uma fase de muito aprendizado e ampliação de serviços, que se encerrou no final de <strong>2016</strong>.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <img src="imagens/Lan-03-2017-2024.png" alt="Logo da Team Store Tecnológica">
+                            <h3>2017-2024</h3>
+                        </div>
+                        <p>Em <strong>2017</strong>, iniciei um novo capítulo na <strong>Team Store Tecnológica</strong>, uma <strong>sociedade anônima</strong> focada em inovação. Após anos de dedicação, decidi procurar novos horizontes em <strong>janeiro de 2024</strong>, vendendo minha parte. Esse movimento <strong>me levou</strong> à faculdade de Gestão Pública e, em <strong>dezembro de 2024</strong>, consolidou a ideia da <strong>ResolveFácil</strong>.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right fade-in">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <img src="imagens/Lan-04-2025-2025.png" alt="Logo da ResolveFácil">
+                            <h3>2025</h3>
+                        </div>
+                        <p>A <strong>ResolveFácil</strong> ganhou vida atendendo inicialmente a colegas da faculdade, validando nossa proposta de valor. Com o sucesso e a necessidade latente, decidimos levar essa ideia ao público em geral. Assim, em <strong>2025</strong>, nasce a <strong>ResolveFácil</strong>: a sua solução online para descomplicar a vida com atendimento direto, humano e eficiente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials-section fade-in" id="depoimentos">
+            <h2>O Que Nossos Clientes Dizem</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/fzlyCfN.png" alt="Foto de Ana Paula S." class="testimonial-photo">
+                    <p class="quote">"Serviço rápido e eficiente! Fui muito bem atendido e resolveram o meu problema em tempo recorde."</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Ana Paula S.</p>
+                        <p class="service">Veterinária - MG</p>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/EzRTBIk.png" alt="Foto de Christian Dubuis" class="testimonial-photo">
+                    <p class="quote">"Consegui todos os documentos de que precisava sem sair de casa. Recomendo a ResolveFácil a todos!"</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Christian Dubuis</p>
+                        <p class="service">Empresário - SC</p>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/CavpXq2.png" alt="Foto de Edmilson Negrão" class="testimonial-photo">
+                    <p class="quote">"O atendimento humanizado faz toda a diferença. Senti que realmente se importaram com a minha necessidade."</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Edmilson Negrão</p>
+                        <p class="service">Enfermeiro - AM</p>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/AWl6AyK.png" alt="Foto de Ingrify Cunha" class="testimonial-photo">
+                    <p class="quote">"Recuperei a minha paz. A equipe da ResolveFácil foi incansável para remover o vazamento dos meus documentos na internet. Gratidão eterna!"</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Ingrify Cunha</p>
+                        <p class="service">Empreendedora - AM</p>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/3ZZewVy.png" alt="Foto de Roberwall B. Farias" class="testimonial-photo">
+                    <p class="quote">"Simplesmente incríveis! O suporte foi excelente e o serviço entregue com total profissionalismo."</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Maria B. Estela</p>
+                        <p class="service">Consultora - SP</p>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <img src="https://i.imgur.com/5c3yKlJ.png" alt="Foto de Yoná P. Neves" class="testimonial-photo">
+                    <p class="quote">"A minha melhor experiência com serviços online. Agilidade e segurança que me surpreenderam positivamente."</p>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <div class="testimonial-author-info">
+                        <p class="author">Yoná P. Neves</p>
+                        <p class="service">Estudante - CH</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="cta-section fade-in">
+            <h2>Precisa de ajuda ou tem alguma dúvida?</h2>
+            <p>Pode me ligar agora mesmo pelo WhatsApp. Se preferir conversar por videochamada, é só avisar!</p>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20ResolveF%C3%A1cil." class="cta-button">
+                👉💬 Fale Comigo no WhatsApp
+            </a>
+        </section>
+
+        <section class="security-seals-section">
+            <div class="security-seals-container fade-in">
+                <img src="imagens/01-Selo-geguranca.png" alt="Selo de Segurança 1">
+                <img src="imagens/02-Selo-geguranca.png" alt="Selo de Segurança LGPD">
+                <img src="imagens/03-Selo-geguranca.png" alt="Selo de Segurança 3">
+            </div>
+        </section>
+
+        <section class="social-icons">
+            <div class="social-icons-wrapper fade-in">
+                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+        <a href="politica-de-privacidade.html">Política de Privacidade</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('fade-in-active');
+                    observer.unobserve(entry.target);
+                });
+            }, appearOptions);
+            faders.forEach(fader => appearOnScroll.observe(fader));
+
+            // Script do Carrossel
+            const carouselTrack = document.getElementById('carouselTrack');
+            if (carouselTrack) {
+                const slides = Array.from(carouselTrack.children);
+                const nextButton = document.querySelector('.carousel-button.next');
+                const prevButton = document.querySelector('.carousel-button.prev');
+                const dotsContainer = document.getElementById('carouselDots');
+                let currentSlideIndex = 0;
+                
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = '';
+                    slides.forEach((_, index) => { const dot = document.createElement('span'); dot.classList.add('dot'); if (index === 0) dot.classList.add('active'); dot.addEventListener('click', () => moveToSlide(index)); dotsContainer.appendChild(dot); });
+                }
+                const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
+
+                const moveToSlide = (index) => {
+                    if (index < 0) index = slides.length - 1;
+                    else if (index >= slides.length) index = 0;
+                    const slideWidth = carouselTrack.parentElement.offsetWidth;
+                    carouselTrack.style.transform = `translateX(-${slideWidth * index}px)`;
+                    if(dots.length > 0){
+                        dots.forEach(dot => dot.classList.remove('active'));
+                        dots[index].classList.add('active');
+                    }
+                    currentSlideIndex = index;
+                };
+
+                if(nextButton) nextButton.addEventListener('click', () => moveToSlide(currentSlideIndex + 1));
+                if(prevButton) prevButton.addEventListener('click', () => moveToSlide(currentSlideIndex - 1));
+                window.addEventListener('resize', () => moveToSlide(currentSlideIndex));
+                setInterval(() => moveToSlide(currentSlideIndex + 1), 12000);
+            }
+        });
+    </script>
+    
+    <script src="menu.js"></script>
+    
+    <script src="chatbot.js" defer></script>
+</body>
+</html>

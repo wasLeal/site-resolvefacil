@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Documentos Personalizados – ResolveFácil</title>
+    <meta name="description" content="Modelos de documentos prontos, personalizados ou feitos do zero. Solicite por WhatsApp e receba em minutos!">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis CSS (PADRONIZADAS) */
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --govbr-modal-bg: #FFFFFF;
+            --govbr-modal-text: #3e5a6a;
+            --govbr-modal-border: #003459;
+            --govbr-modal-highlight: #ff6600;
+            --body-bg-servicos: #f2f2ed;
+            --card-text: #333333;
+            --body-text-dark: #3e5a6a;
+            --card-bg: #ffffff; /* Adicionado para o novo estilo */
+        }
+
+        /* Reset e Estilos Globais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--body-bg-servicos);
+            color: var(--card-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header e Navegação (PADRONIZADOS) */
+        header {
+            background-color: var(--secondary-bg);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo-area img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logo-area span {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--highlight);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 25px;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        .mobile-nav {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 60px;
+            right: 0;
+            background: var(--secondary-bg);
+            width: 70%;
+            max-width: 300px;
+            height: 100%;
+            padding: 30px 20px;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .mobile-nav.show {
+            display: flex;
+            transform: translateX(0);
+        }
+
+        .mobile-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 15px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav a:hover {
+            color: var(--highlight);
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* --- SUGESTÃO DE MELHORIA VISUAL --- */
+        /* Container principal com estilo de "card" */
+        .service-page-container {
+            font-family: Arial, sans-serif;
+            background-color: var(--card-bg);
+            color: var(--body-text-dark);
+            padding: 40px;
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .service-page-container h1 {
+            font-size: clamp(24px, 5vw, 36px);
+            margin-bottom: 15px;
+            color: var(--primary-bg);
+        }
+
+        .service-page-container p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: var(--secondary-bg);
+        }
+
+        .service-page-container h2 {
+            font-size: clamp(20px, 4vw, 28px);
+            margin-top: 40px;
+            margin-bottom: 20px; 
+            color: var(--primary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .service-page-container h2 i {
+             color: var(--highlight);
+        }
+
+        .service-button {
+            display: block;
+            width: 90%;
+            max-width: 600px;
+            margin: 12px auto;
+            padding: 15px;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--highlight);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-sizing: border-box;
+            text-decoration: none; /* Adicionado para tags 'a' */
+        }
+
+        .service-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+        /* --- FIM DA SUGESTÃO DE MELHORIA --- */
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: var(--highlight);
+        }
+
+        /* Social Icons */
+        .social-icons {
+            background-color: var(--body-bg-servicos);
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .social-icons-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s;
+            color: var(--body-text-dark);
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .social-icons .fab {
+            font-size: 2.5em;
+        }
+
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+
+        /* Animação Fade-in */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(20px);
+        }
+
+        .fade-in.fade-in-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilos do Modal Genérico */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--govbr-modal-bg);
+            color: var(--govbr-modal-text);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            color: var(--govbr-modal-border);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2.5em;
+            cursor: pointer;
+            color: white;
+            background-color: var(--highlight);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1001;
+            transition: background-color 0.3s;
+        }
+        .modal-close-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        /* INÍCIO DAS ALTERAÇÕES NO CSS DO MODAL */
+        #govbrConsentModal .modal-content { text-align: left; }
+        #govbrConsentModal strong { color: var(--govbr-modal-highlight); }
+        #govbrConsentModal .app-name-highlight {
+            color: var(--primary-bg);
+            font-weight: bold;
+        }
+        #govbrConsentModal ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+        }
+        #govbrConsentModal li { 
+            margin-bottom: 12px;
+            padding-left: 5px; /* Alinhamento ajustado */
+        }
+        #govbrConsentModal .step-details {
+            list-style: '›  ';
+            padding-left: 40px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        #govbrConsentModal .step-details li {
+            padding-left: 0;
+            margin-bottom: 5px;
+        }
+         #govbrConsentModal .step-details a {
+            color: var(--highlight);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        /* FIM DAS ALTERAÇÕES NO CSS DO MODAL */
+        
+        .govbr-modal-checkbox-group {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+        }
+        .govbr-modal-checkbox-group input[type="checkbox"] { transform: scale(1.3); cursor: pointer; }
+        .govbr-modal-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--whatsapp-button);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+        .govbr-modal-button:hover:not(:disabled) { background-color: #1aae55; }
+        .govbr-modal-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        #rgInfoModal .modal-content { text-align: center; }
+        .pac-list {
+            text-align: left;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .pac-list h4 {
+            text-align: center;
+            color: var(--govbr-modal-border);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .pac-list p { margin-bottom: 10px; font-size: 0.95em; }
+        .pac-list strong { color: var(--govbr-modal-border); }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hamburger { display: flex; }
+            .service-page-container { margin-top: 20px; padding: 20px; }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-nav { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            
+            <div id="menu-container"></div>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <div class="service-page-container">
+            <h1>📄 Documentos Personalizados</h1>
+            <p>
+                Modelos prontos, preenchidos ou feitos do zero. Enviamos por WhatsApp em minutos!
+            </p>
+            <div id="all-services-content"></div>
+        </div>
+
+        <div class="social-icons">
+            <div class="social-icons-wrapper fade-in">
+                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+        <a href="politica-de-privacidade.html">Política de Privacidade</a>
+    </footer>
+
+    <div id="govbrConsentModal" class="modal-backdrop">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h3>Serviço que exige acesso ao Gov.br</h3>
+            <p>Para sua segurança e agilidade no atendimento, o acesso será feito remotamente da seguinte forma:</p>
+            
+            <ul>
+                <li>📲 <strong>1. Instale o aplicativo AnyDesk</strong>
+                    <ul class="step-details">
+                        <li><strong>No celular/tablet:</strong> Baixe o "<span class="app-name-highlight">AnyDesk Remote Control</span>" na sua loja de aplicativos (Play Store ou App Store).</li>
+                        <li><strong>No computador:</strong> Baixe o programa no <a href="https://anydesk.com/pt/downloads/windows" target="_blank">site oficial do AnyDesk</a>.</li>
+                    </ul>
+                </li>
+                <li>🔌 <strong>2. Apenas em Celular/Tablet Android: instale o plugin (se solicitado)</strong>
+                    <ul class="step-details">
+                        <li>Em alguns aparelhos Android, o AnyDesk pode pedir um plugin adicional (<span class="app-name-highlight">AnyDesk plugin ad1</span>) para permitir o controle remoto.</li>
+                        <li>Se a solicitação aparecer, basta <strong>confirmar e instalar</strong>. Este passo não é necessário em computadores.</li>
+                    </ul>
+                </li>
+                 <li>✅ <strong>3. Conceda as permissões</strong>
+                    <ul class="step-details">
+                        <li>O aplicativo irá pedir permissões de acesso.</li>
+                        <li><strong>Aceite todas</strong> para que possamos te ajudar corretamente.</li>
+                    </ul>
+                </li>
+                <li>📡 <strong>4. Envie o código de acesso</strong>
+                     <ul class="step-details">
+                        <li>Após a instalação, o AnyDesk mostrará um código numérico chamado “Seu endereço”.</li>
+                        <li><strong>Compartilhe esse número</strong> conosco e <strong>aguarde</strong> nosso pedido de conexão.</li>
+                    </ul>
+                </li>
+                <li>👀 <strong>5. Acompanhe tudo em tempo real</strong>
+                    <ul class="step-details">
+                        <li>Você verá em sua tela tudo o que está sendo feito.</li>
+                        <li>No momento do login, você mesmo <strong>digitará sua senha</strong> do Gov.br.</li>
+                        <li>Nós <strong>não veremos nem armazenaremos</strong> sua senha.</li>
+                        <li>Caso prefira, você pode <strong>alterar sua senha</strong> do Gov.br após o atendimento.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p style="text-align: center; margin-top: 20px;">🛡️ <strong>Segurança garantida</strong><br>
+            Esse processo garante total transparência, privacidade e segurança dos seus dados. Você estará no controle durante todo o atendimento.</p>
+
+            <div class="govbr-modal-checkbox-group">
+                <input type="checkbox" id="govbrConsentCheckbox">
+                <label for="govbrConsentCheckbox">Li e concordo com os termos acima.</label>
+            </div>
+            <button id="govbrContinueBtn" class="govbr-modal-button" disabled>Continuar para WhatsApp</button>
+        </div>
+    </div>
+
+    <div id="rgInfoModal" class="modal-backdrop">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h3>Agendamento de RG</h3>
+            <p>No momento, não há vagas disponíveis para agendamento online. Veja abaixo os locais e telefones de contato para mais informações.</p>
+            <div class="pac-list">
+                <h4>Lista de endereços e telefones dos PAC's em Manaus:</h4>
+                <p><strong>PAC SHOPPING LESTE</strong><br>
+                Endereço: Av. Autaz Mirim, 288, Tancredo Neves<br>
+                Telefone: (92) 99401-1875</p>
+                <p><strong>PAC ALVORADA</strong><br>
+                Endereço: Av. Des. João Machado, 4922, Alvorada<br>
+                Telefone: (92) 98454-8411</p>
+                <p><strong>PAC COMPENSA</strong><br>
+                Endereço: Av. Brasil, 1325, Compensa<br>
+                Telefone: (92) 98453-9089</p>
+                <p><strong>PAC SHOPPING VIA NORTE</strong><br>
+                Endereço: Av. Arquiteto José Henrique Bento Rodrigues, 3760, Monte das Oliveiras<br>
+                Telefone: (92) 98466-7400</p>
+                <p><strong>PAC SÃO JOSÉ</strong><br>
+                Endereço: Av. Cosme Ferreira, 4605, São José Operário<br>
+                Telefone: (92) 98422-7986</p>
+                <p><strong>PAC STUDIO 5</strong><br>
+                Endereço: Av. Rodrigo Otávio, 355, Distrito Industrial I<br>
+                Telefone: (92) 98405-0380</p>
+                <p><strong>PAC MUNICIPAL T4 - SHOPPING PHELIPPE DAOU</strong><br>
+                Endereço: Av. Camapuã, 2939 - Cidade de Deus</p>
+                <p><strong>PAC PARQUE DEZ MALL</strong><br>
+                Endereço: Av. Tancredo Neves, 688-716, Parque Dez de Novembro<br>
+                Telefone: (92) 98400-7792</p>
+                <p><strong>PAC MUNICIPAL GALERIA ESPÍRITO SANTO</strong><br>
+                Endereço: Rua 24 de Maio, 119 - Centro</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Definição dos Serviços COM ÍCONES ---
+            const services = {
+                "Solicitações e Agendamentos": {
+                    icon: "fas fa-calendar-check",
+                    items: [
+                        { name: "Agendamento de RG", modalId: 'rgInfoModal' },
+                        { name: "Agendamento para passaporte" },
+                        { name: "Solicitação de CNH Definitiva ou 2ª Via", requiresGovBr: true },
+                        { name: "Solicitação de Seguro-Desemprego", requiresGovBr: true },
+                        { name: "Consulta e Regularização do PIS/PASEP", requiresGovBr: true }
+                    ]
+                },
+                "Acompanhamento e Atualizações": {
+                    icon: "fas fa-file-lines",
+                    items: [
+                        { name: "Atualização de Dados no Cadastro Único (Bolsa Família)", requiresGovBr: true },
+                        { name: "Inscrição ou Renovação no ENEM", requiresGovBr: true },
+                        { name: "Inscrição ou Renovação no SISU", requiresGovBr: true },
+                        { name: "Atualização de Endereço em Bancos ou Serviços de Energia/Água" },
+                        { name: "Acompanhamento de Processos Judiciais Públicos" },
+                        { name: "Consulta de Benefícios no INSS", requiresGovBr: true },
+                        { name: "Comprovante de Inscrição CPF" },
+                        { name: "1º Via Inscrição do CPF" },
+                        { name: "2º Via do CPF", requiresGovBr: true },
+                        { name: "Situação do CPF na Receita Federal (Suspenso ou Bloqueado)" }
+                    ]
+                },
+                "Certidões e Documentos Diversos": {
+                    icon: "fas fa-stamp",
+                    items: [
+                        { name: "Contrato de Compra e Venda" },
+                        { name: "Contrato de Aluguel" },
+                        { name: "Certidão Negativa (Justiça Estadual)" },
+                        { name: "Certidão Negativa (Justiça Federal)" },
+                        { name: "Certidão Negativa (Policia Federal)" },
+                        { name: "Certidão Negativa (Militar STM)" },
+                        { name: "Certidões de Tributos Federais (Receita Federal)" },
+                        { name: "2ª Via de Certidão de Casamento, Nascimento ou Óbito", linkUrl: "certidoes.html" },
+                        { name: "Certidão de Quitação Eleitoral" },
+                        { name: "Certidão de Crime Eleitoral" },
+                        { name: "Currículo" }
+                    ]
+                },
+                "Planejamento e Gestão Pessoal": {
+                    icon: "fas fa-clipboard-list",
+                    items: [
+                        { name: "Cronogramas e Agendas Personalizadas" },
+                        { name: "Plano de Estudos ou Treinamento" },
+                        { name: "Cartas de Motivação para Bolsas de Estudo" },
+                        { name: "Declarações Personalizadas em Geral" },
+                        { name: "Planilhas de Orçamento Familiar ou Empresarial" }
+                    ]
+                },
+                "Serviços Relacionados a Pequenos Negócios": {
+                    icon: "fas fa-briefcase",
+                    items: [
+                        { name: "Formalização de MEI (Microempreendedor Individual)", requiresGovBr: true },
+                        { name: "Declaração Anual do MEI" },
+                        { name: "Emissão “DAS” PGMEI" },
+                        { name: "Declaração do Imposto de Renda - IRPF" },
+                        { name: "Planejamento Básico de Vendas ou Marketing" },
+                        { name: "Elaboração de Propostas para Licitações Simples" }
+                    ]
+                },
+                "Consultas e Registros": {
+                    icon: "fas fa-magnifying-glass",
+                    items: [
+                        { name: "Consulta de Pontuação de CNH", requiresGovBr: true },
+                        { name: "Solicitação de Antecedentes Criminais" },
+                        { name: "Consulta de Débitos em Veículos (IPVA, Multas)", requiresGovBr: true },
+                        { name: "Orientação para Cadastro em Serviços Públicos Digitais" },
+                        { name: "Pedidos de Cancelamento de Assinaturas ou Contratos" }
+                    ]
+                },
+                "Materiais Educativos e Acadêmicos": {
+                    icon: "fas fa-graduation-cap",
+                    items: [
+                        { name: "Redação de Resenhas e Trabalhos Acadêmicos Simples" },
+                        { name: "Formatação de Documentos Acadêmicos (ABNT ou outros padrões)" },
+                        { name: "Pesquisas Básicas em Documentos Públicos" },
+                        { name: "Correção e Revisão de Textos" }
+                    ]
+                }
+            };
+
+            // --- Geração Dinâmica dos Botões de Serviço ---
+            const allServicesContent = document.getElementById('all-services-content');
+            if (allServicesContent) {
+                for (const categoryTitle in services) {
+                    const category = services[categoryTitle];
+                    
+                    const h2 = document.createElement('h2');
+                    h2.className = 'fade-in';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = category.icon;
+                    
+                    const textNode = document.createTextNode(" " + categoryTitle);
+                    
+                    h2.appendChild(icon);
+                    h2.appendChild(textNode);
+                    
+                    allServicesContent.appendChild(h2);
+
+                    category.items.forEach(service => {
+                        let btn;
+                        if (service.linkUrl) {
+                            btn = document.createElement("a");
+                            btn.href = service.linkUrl;
+                        } else {
+                            btn = document.createElement("button");
+                            btn.addEventListener('click', () => handleServiceClick(service));
+                        }
+                        btn.className = "service-button fade-in";
+                        btn.innerText = service.name;
+                        allServicesContent.appendChild(btn);
+                    });
+                }
+            }
+
+            // --- Lógica dos Modais ---
+            const govbrConsentModal = document.getElementById('govbrConsentModal');
+            const govbrConsentCheckbox = document.getElementById('govbrConsentCheckbox');
+            const govbrContinueBtn = document.getElementById('govbrContinueBtn');
+            let currentServiceForGovBr = '';
+
+            function handleServiceClick(service) {
+                if (service.modalId) {
+                    const customModal = document.getElementById(service.modalId);
+                    if (customModal) {
+                        customModal.style.display = 'flex';
+                    }
+                } else if (service.requiresGovBr) {
+                    currentServiceForGovBr = service.name;
+                    if (govbrConsentModal) {
+                        govbrConsentCheckbox.checked = false;
+                        govbrContinueBtn.disabled = true;
+                        govbrConsentModal.style.display = 'flex';
+                    }
+                } else {
+                    const url = `https://wa.me/5592996029888?text=${encodeURIComponent(`Gostaria de solicitar o serviço: ${service.name}`)}`;
+                    window.location.href = url;
+                }
+            }
+
+            if (govbrConsentModal) {
+                govbrConsentCheckbox.addEventListener('change', () => {
+                    govbrContinueBtn.disabled = !govbrConsentCheckbox.checked;
+                });
+
+                govbrContinueBtn.addEventListener('click', () => {
+                    if (govbrConsentCheckbox.checked) {
+                        govbrConsentModal.style.display = 'none';
+                        const url = `https://wa.me/5592996029888?text=${encodeURIComponent(`Olá! Li e concordo com os termos de acesso ao Gov.br. Gostaria de solicitar o serviço: ${currentServiceForGovBr}`)}`;
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            document.querySelectorAll('.modal-backdrop').forEach(modal => {
+                const closeBtn = modal.querySelector('.modal-close-btn');
+                
+                if(closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                }
+
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+
+            // --- Animação Fade-in ---
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-active');
+                        appearOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+    </script>
+    
+    <script src="menu.js"></script>
+
+    <script src="chatbot.js" defer></script>
+
+</body>
+</html>

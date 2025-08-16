@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartão de Visita Digital Interativo - ResolveFácil</title>
+    <meta name="description" content="Crie um cartão de visita digital interativo e moderno. Um mini-site com todos os seus links importantes para compartilhar facilmente.">
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-light: #f2f2ed;
+            --body-text-dark: #3e5a6a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: var(--body-text-dark); background-color: var(--body-bg-light); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        
+        /* --- INÍCIO DA CORREÇÃO DE ESTILO DO MENU --- */
+        nav ul { display: flex; gap: 20px; list-style: none; }
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: var(--highlight);
+        }
+        /* --- FIM DA CORREÇÃO DE ESTILO DO MENU --- */
+
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
+        .mobile-nav a:hover { color: var(--highlight); }
+        main { flex: 1; }
+        .service-detail-hero { background-color: var(--primary-bg); color: var(--text-color); padding: 60px 20px; text-align: center; }
+        .service-detail-hero h1 { font-size: clamp(2.5em, 6vw, 3.5em); margin-bottom: 20px; color: var(--highlight); }
+        .service-detail-hero p { font-size: clamp(1.1em, 2.5vw, 1.3em); max-width: 800px; margin: auto; }
+        .page-section { max-width: 1000px; margin: 0 auto; padding: 60px 20px; }
+        .page-section h2 { text-align: center; font-size: clamp(2em, 5vw, 2.8em); margin-bottom: 40px; color: var(--secondary-bg); }
+        .page-section .subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: var(--secondary-bg);
+            margin-top: -20px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .page-section .subtitle i {
+            color: var(--highlight);
+            font-size: 1.2em;
+        }
+        .highlight-section { background-color: var(--primary-bg); color: var(--text-color); padding: 60px 20px; }
+        .highlight-section-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+        .highlight-section h2 { color: var(--highlight); }
+        .highlight-section p { font-size: 1.1em; margin-bottom: 20px; line-height: 1.7; }
+        .highlight-section ul { text-align: left; display: inline-block; list-style: none; padding: 0; margin-bottom: 20px; }
+        .highlight-section li { font-size: 1.1em; margin-bottom: 15px; padding-left: 30px; position: relative; }
+        .highlight-section li::before { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; color: var(--highlight); position: absolute; left: 0; top: 4px; }
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .portfolio-item { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+        .portfolio-item:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .portfolio-item img { width: 100%; height: auto; display: block; }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            align-items: stretch;
+        }
+        .plan-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid transparent; 
+            transition: transform 0.3s, box-shadow 0.3s, border-top-color 0.3s;
+        }
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-top-color: var(--highlight);
+        }
+        .plan-card i {
+            font-size: 3em;
+            color: var(--primary-bg);
+            margin-bottom: 20px;
+        }
+        .plan-card h3 {
+            font-size: 1.8em;
+            color: var(--secondary-bg);
+            margin-bottom: 10px;
+        }
+        .plan-card .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--highlight);
+            margin-bottom: 20px;
+        }
+        .plan-card .description {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 25px;
+        }
+        .plan-card ul {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        .plan-card li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .plan-card li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: var(--whatsapp-button);
+            position: absolute;
+            left: 0;
+            top: 4px;
+        }
+        .plan-card .plan-button {
+            display: inline-block;
+            background-color: var(--primary-bg);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: auto;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .plan-card .plan-button:hover {
+            background-color: var(--highlight);
+        }
+
+        .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; text-align: center; align-items: stretch; }
+        .step { background-color: var(--secondary-bg); color: var(--text-color); padding: 25px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .step:hover { transform: translateY(-8px); }
+        .step i { font-size: 2.5em; color: var(--highlight); margin-bottom: 20px; }
+        .step h3 { font-size: 1.3em; margin-bottom: 15px; color: var(--text-color); }
+        .step p { color: var(--text-color); font-size: 0.95em; }
+        .cta-section { text-align: center; background-color: var(--secondary-bg); color: var(--text-color); padding: 60px 20px; }
+        .cta-section p { font-size: 1.2em; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .cta-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background-color: var(--whatsapp-button); color: white; padding: 18px 35px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.2em; transition: background-color 0.3s, transform 0.3s; }
+        .cta-button:hover { background-color: #1ebd59; transform: translateY(-3px); }
+        footer {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: var(--highlight);
+        }
+        .social-icons { background-color: var(--body-bg-light); text-align: center; padding: 40px 20px; }
+        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
+        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--body-text-dark); }
+        .social-icons a:hover { transform: scale(1.2); }
+        .social-icons .fab { font-size: 2.5em; }
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+        .fade-in { opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease-out; transform: translateY(20px); }
+        .fade-in.fade-in-active { opacity: 1; transform: translateY(0); }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--body-bg-light);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            color: var(--body-text-dark);
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .plan-modal .modal-content {
+            max-width: 500px;
+            text-align: left;
+        }
+        .plan-modal .modal-content * {
+            color: var(--body-text-dark) !important;
+        }
+        .plan-modal h3 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: var(--secondary-bg) !important;
+        }
+        .plan-modal h4 {
+            font-size: 1.2em;
+            color: var(--secondary-bg) !important;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--highlight);
+            padding-bottom: 5px;
+        }
+        .plan-modal ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .plan-modal li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .plan-modal li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: var(--primary-bg) !important;
+            position: absolute;
+            left: 0;
+            top: 4px;
+        }
+        .plan-modal .cta-button {
+            width: 100%;
+            margin-top: 30px;
+            color: white !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; } 
+            .hamburger { display: flex; } 
+            .mobile-nav { display: flex; transform: translateX(100%);}
+            .nav-container, .page-section, .service-detail-hero, .cta-section, .social-icons, .highlight-section { padding-left: 15px; padding-right: 15px; }
+        }
+        @media (min-width: 769px) {
+            nav ul { display: flex; }
+            .hamburger { display: none; }
+            .mobile-nav { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            
+            <div id="menu-container"></div>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <section class="service-detail-hero">
+            <h1 class="fade-in">Cartão de Visita Digital e Interativo</h1>
+            <p class="fade-in">A evolução do cartão de visitas. Um mini-site elegante, com os seus links mais importantes, que o seu cliente pode guardar e compartilhar com um clique.</p>
+        </section>
+        <section class="highlight-section">
+            <div class="highlight-section-inner fade-in">
+                <h2>Conecte-se aos Seus Clientes de Forma Inteligente</h2>
+                <p>O cartão de visita de papel é esquecido na carteira. O cartão digital interativo transforma o primeiro contato numa ação imediata, seja uma conversa no WhatsApp, uma visita ao seu Instagram ou a rota para o seu endereço.</p>
+                <ul>
+                    <li><strong>Tudo num só lugar:</strong> Os seus links de WhatsApp, redes sociais, site e localização a um toque de distância.</li>
+                    <li><strong>Econômico e Sustentável:</strong> Crie uma vez e compartilhe infinitamente, sem custos de impressão.</li>
+                    <li><strong>Imagem Profissional:</strong> Mostre que o seu negócio é moderno, tecnológico e pronto para o futuro.</li>
+                </ul>
+            </div>
+        </section>
+        <section class="page-section">
+            <h2 class="fade-in">Exemplos de Cartões Interativos</h2>
+            <p class="subtitle fade-in">
+                Clique nos cartões e conheça as suas funcionalidades <i class="fas fa-hand-pointer"></i>
+            </p>
+            <div class="portfolio-grid">
+                
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-burgao-lanches.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-cartao-hamburgao.png" alt="Cartão Digital Interativo do BURGÃO LANCHES">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-maxtattoo.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-max-tattoo.png" alt="Cartão Digital Interativo do Studio MAX Tattoo">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-cafeteria-prisma.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-cafeteria-prisma.png" alt="Cartão Digital Interativo da Cafeteria Prisma">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-cantinho-do-sabor.png" alt="Cartão Digital Interativo do restaurante Cantinho do Sabor">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-pessoal.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-cartao-pessoal.png" alt="Cartão de Visita Digital de Washington Leal">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-lavajato.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-lavajato-manaus.png" alt="Cartão Digital para Lava Jato Manaus">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-maria-estela.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="https://i.imgur.com/BKMaeUV.png" alt="Cartão Digital Interativo de Maria Estela - Consultora">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-roupas-online.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-cartao-roupas-online.png" alt="Cartão Digital Interativo da Loja de Roupas Online Elane Leal">
+                </a>
+                <a href="https://resolvefacil-cartoes.netlify.app/cartao-interativo-mestre-de-obras.html" target="_blank" class="portfolio-item fade-in">
+                    <img src="imagens/print-mestre-de-obras.png" alt="Cartão Digital Interativo do Mestre de Obras">
+                </a>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="fade-in">Nossos Planos</h2>
+            <div class="plans-grid">
+                <div class="plan-card fade-in">
+                    <i class="fas fa-user"></i>
+                    <h3>Cartão Essencial</h3>
+                    <p class="price">A partir de R$ 150</p>
+                    <p class="description">Para profissionais liberais e autônomos que buscam uma presença digital rápida e profissional.</p>
+                    <ul>
+                        <li>Design baseado em modelo</li>
+                        <li>Até 5 botões de ação</li>
+                        <li>Foto de perfil e contatos</li>
+                        <li>QR Code para compartilhamento</li>
+                        <li>Hospedagem inclusa</li>
+                    </ul>
+                    <button class="plan-button" data-plan="essencial">Ver Detalhes</button>
+                </div>
+
+                <div class="plan-card fade-in">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Cartão Profissional</h3>
+                    <p class="price">A partir de R$ 300</p>
+                    <p class="description">Para empresas e lojas que precisam de um mini-site para apresentar produtos e serviços.</p>
+                    <ul>
+                        <li><strong>Tudo do plano Essencial, mais:</strong></li>
+                        <li>Design 100% personalizado</li>
+                        <li>Seções interativas (galerias, etc.)</li>
+                        <li>Galeria de fotos (até 10 produtos)</li>
+                        <li>Horário de funcionamento dinâmico</li>
+                        <li>Ícone para salvar como "app"</li>
+                    </ul>
+                    <button class="plan-button" data-plan="profissional">Ver Detalhes</button>
+                </div>
+
+                <div class="plan-card fade-in">
+                    <i class="fas fa-gem"></i>
+                    <h3>Cartão Premium</h3>
+                    <p class="price">A partir de R$ 600</p>
+                    <p class="description">Para negócios que buscam uma presença digital completa e exclusiva.</p>
+                    <ul>
+                        <li><strong>Tudo do plano Profissional, mais:</strong></li>
+                        <li>Domínio próprio (www.suamarca.com.br)</li>
+                        <li>Integrações avançadas (agendamentos)</li>
+                        <li>Sistema de e-commerce simplificado</li>
+                        <li>Suporte prioritário</li>
+                    </ul>
+                    <button class="plan-button" data-plan="premium">Ver Detalhes</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="fade-in">Nosso Processo</h2>
+            <div class="process-steps">
+                <div class="step fade-in">
+                    <i class="fas fa-comments"></i>
+                    <h3>1. Briefing e Conteúdo</h3>
+                    <p>Envie-nos o seu logotipo, links e informações que o cartão deve ter. Definimos o design e o objetivo de cada botão.</p>
+                </div>
+                <div class="step fade-in">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h3>2. Orçamento e Aprovação</h3>
+                    <p>Com base no seu pedido, apresentamos um orçamento transparente. O trabalho criativo se inicia após a sua aprovação e o sinal de 50%.</p>
+                </div>
+                <div class="step fade-in">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>3. Criação e Testes</h3>
+                    <p>Desenvolvemos o seu cartão interativo e enviamos um link para testar todas as funcionalidades no seu próprio celular.</p>
+                </div>
+                <div class="step fade-in">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>4. Entrega e Publicação</h3>
+                    <p>Após a sua aprovação final e o pagamento restante, publicamos o seu cartão online e entregamos a você o link oficial para compartilhar.</p>
+                </div>
+            </div>
+        </section>
+        <section class="cta-section fade-in">
+            <h2>Pronto para ter um cartão que realmente funciona?</h2>
+            <p>Vamos criar juntos uma ferramenta de marketing poderosa para o seu negócio.</p>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20para%20Cart%C3%A3o%20de%20Visita%20Digital." class="cta-button">
+                <i class="fab fa-whatsapp"></i> Solicitar Orçamento
+            </a>
+        </section>
+    </main>
+    
+   <div class="social-icons">
+    <div class="social-icons-wrapper fade-in">
+        <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+</div>
+
+    <div id="essencialModal" class="modal plan-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Plano Essencial</h3>
+            <h4>O que está incluso?</h4>
+            <ul>
+                <li>Design profissional baseado em um de nossos modelos <strong>modernos e eficazes</strong>.</li>
+                <li>Até 5 botões de ação (Ex: WhatsApp, Instagram, Localização, Ligar, E-mail).</li>
+                <li>Sua foto de perfil ou logotipo e informações de contato.</li>
+                <li>QR Code exclusivo para compartilhamento rápido em materiais impressos.</li>
+                <li>Hospedagem e link personalizado (ex: resolvefacil.online/seunome).</li>
+            </ul>
+            <h4>O que você precisa me enviar?</h4>
+            <ul>
+                <li>Sua foto de perfil ou logotipo em alta qualidade.</li>
+                <li>Seu nome, cargo e uma breve descrição.</li>
+                <li>A lista de até 5 links que você deseja nos botões.</li>
+            </ul>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20quero%20contratar%20o%20Plano%20de%20Cart%C3%A3o%20Essencial." class="cta-button"><i class="fab fa-whatsapp"></i> Quero o Plano Essencial</a>
+        </div>
+    </div>
+
+    <div id="profissionalModal" class="modal plan-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Plano Profissional</h3>
+            <h4>O que está incluso?</h4>
+            <ul>
+                <li><strong>Tudo do plano Essencial, mais:</strong></li>
+                <li>Design 100% exclusivo e personalizado para refletir a identidade da sua marca.</li>
+                <li>Seções interativas para apresentar seus serviços, <strong>como galerias de fotos, listas de preços, cardápios e mais.</strong></li>
+                <li>Galeria de fotos para até 10 produtos ou projetos do seu portfólio.</li>
+                <li>Horário de funcionamento que se atualiza automaticamente.</li>
+                <li><strong>Ícone personalizado para que seu cartão seja salvo como um "aplicativo" na tela do celular do seu cliente.</strong></li>
+            </ul>
+            <h4>O que você precisa me enviar?</h4>
+            <ul>
+                <li>Todo o material do Plano Essencial.</li>
+                <li>Manual da sua marca (cores, fontes) ou referências de design que você gosta.</li>
+                <li>Textos e imagens para as seções interativas e galeria de fotos.</li>
+            </ul>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20quero%20contratar%20o%20Plano%20de%20Cart%C3%A3o%20Profissional." class="cta-button"><i class="fab fa-whatsapp"></i> Quero o Plano Profissional</a>
+        </div>
+    </div>
+
+    <div id="premiumModal" class="modal plan-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Cartão Premium</h3>
+            <h4>O que está incluso?</h4>
+            <ul>
+                <li><strong>Tudo do plano Profissional, mais:</strong></li>
+                <li>Registro e configuração de um domínio próprio (www.suamarca.com.br).</li>
+                <li>Integrações avançadas, como formulários de contato ou sistemas de agendamento.</li>
+                <li>Sistema de e-commerce simplificado com links de pagamento.</li>
+                <li>Suporte prioritário</li>
+            </ul>
+            <h4>Como começar?</h4>
+            <ul>
+                <li>Para começarmos, pense nas funcionalidades que seu negócio precisa. <strong>Por exemplo: um sistema de agendamento online? Um formulário de orçamento? Integração com pagamentos?</strong> Vamos analisar suas ideias e construir a solução perfeita.</li>
+            </ul>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Cart%C3%A3o%20Premium." class="cta-button"><i class="fab fa-whatsapp"></i> Solicitar Consultoria Premium</a>
+        </div>
+    </div>
+    
+    <footer>
+        © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+        <a href="politica-de-privacidade.html">Política de Privacidade</a>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('fade-in-active');
+                    appearOnScroll.unobserve(entry.target);
+                });
+            }, appearOptions);
+            faders.forEach(fader => appearOnScroll.observe(fader));
+
+            // Lógica para os Modais de Planos
+            const planButtons = document.querySelectorAll('.plan-button');
+            planButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const plan = button.dataset.plan;
+                    const modal = document.getElementById(plan + 'Modal');
+                    if(modal) {
+                        modal.style.display = 'flex';
+                    }
+                });
+            });
+
+            const closeButtons = document.querySelectorAll('.plan-modal .close-button');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.closest('.modal').style.display = 'none';
+                });
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target.classList.contains('plan-modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    
+    <script src="menu.js"></script>
+
+    <script src="chatbot.js" defer></script>
+
+</body>
+</html>

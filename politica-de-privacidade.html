@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade - ResolveFácil</title>
+    <meta name="description" content="Saiba como a ResolveFácil coleta, usa e protege seus dados pessoais. Sua privacidade é nossa prioridade.">
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+    <style>
+        /* Variáveis CSS */
+        :root {
+            --primary-bg: #003459; /* Azul escuro */
+            --secondary-bg: #3e5a6a; /* Azul médio */
+            --text-color: #f2f2ed; /* Branco-off */
+            --highlight: #ff6600; /* Laranja */
+            --button-hover: #ff4400; /* Laranja mais escuro */
+            --whatsapp-button: #25d366; /* Verde WhatsApp */
+            --card-bg: #3e5a6a; /* Azul médio para cards */
+            --card-text: #f2f2ed; /* Branco-off para texto em cards */
+            --body-bg-servicos: #f2f2ed; /* Fundo claro para páginas de serviço */
+            --body-text-servicos: #3e5a6a; /* Texto para fundo claro */
+        }
+
+        /* Estilos Globais */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: var(--text-color); background-color: var(--primary-bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Header e Navegação */
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        nav ul { display: flex; gap: 20px; list-style: none; }
+        nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        nav a:hover { color: var(--highlight); }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; }
+
+        main { flex: 1; }
+
+        /* Estilo do Hero da Página */
+        .page-hero {
+            background-color: var(--primary-bg);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .page-hero h1 {
+            font-size: clamp(2.5em, 6vw, 3.5em);
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+        .page-hero p {
+            font-size: clamp(1.1em, 2.5vw, 1.3em);
+            max-width: 700px;
+            margin: auto;
+            color: rgba(242, 242, 237, 0.9);
+        }
+
+        /* Seção de Conteúdo da Privacidade */
+        .privacy-content-section {
+            background-color: var(--body-bg-servicos);
+            color: var(--body-text-servicos);
+            padding: 60px 20px;
+        }
+        .privacy-container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .privacy-topic {
+            margin-bottom: 40px;
+        }
+        .privacy-topic h2 {
+            font-size: 1.8em;
+            color: var(--primary-bg);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .privacy-topic h2 i {
+            color: var(--highlight);
+            font-size: 1.2em;
+        }
+        .privacy-topic p, .privacy-topic ul {
+            font-size: 1em;
+            line-height: 1.7;
+            padding-left: 45px; /* Alinha o texto com o título */
+        }
+        .privacy-topic ul {
+            list-style: disc;
+            margin-left: 20px;
+        }
+
+        /* Seção de CTA */
+        .cta-section {
+            background-color: var(--primary-bg);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .cta-section h2 {
+            font-size: clamp(2em, 5vw, 2.8em);
+            color: var(--highlight);
+            margin-bottom: 20px;
+        }
+        .cta-section p {
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            font-size: 1.1em;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--whatsapp-button);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #1ebd59;
+            transform: translateY(-2px);
+        }
+
+        /* Ícones Sociais */
+        .social-icons { background-color: var(--primary-bg); text-align: center; padding: 0 20px 40px 20px; }
+        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
+        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--text-color); }
+        .social-icons a:hover { transform: scale(1.2); }
+        .social-icons .fab { font-size: 2.5em; }
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+
+        /* Rodapé */
+        footer {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover { color: var(--highlight); }
+
+        /* Animação Fade-in */
+        .fade-in { opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease-out; transform: translateY(20px); }
+        .fade-in.fade-in-active { opacity: 1; transform: translateY(0); }
+        .fade-in-text { opacity: 0; transform: translateY(20px); transition: opacity 1s ease-out, transform 1s ease-out; }
+        .fade-in-text.show { opacity: 1; transform: translateY(0); }
+        
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hamburger { display: flex; }
+            .mobile-nav { display: flex; }
+            .page-hero, .privacy-content-section, .cta-section { padding: 40px 15px; }
+            .privacy-topic p, .privacy-topic ul { padding-left: 0; }
+        }
+         @media (min-width: 769px) {
+            nav ul { display: flex; }
+            .hamburger { display: none; }
+            .mobile-nav { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="favicon.png" alt="Logo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            
+            <div id="menu-container"></div>
+
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <h1 class="fade-in-text">Política de Privacidade</h1>
+            <p class="fade-in-text">Sua confiança e a segurança dos seus dados são nossa prioridade. Veja como cuidamos das suas informações.</p>
+        </section>
+
+        <section class="privacy-content-section">
+            <div class="privacy-container">
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-database"></i>1. Coleta de Informações Pessoais</h2>
+                    <p>Coletamos dados pessoais fornecidos diretamente por você nas seguintes situações:</p>
+                    <ul>
+                        <li>Ao entrar em contato conosco por WhatsApp, telefone, e-mail ou outros canais de atendimento;</li>
+                        <li>Ao solicitar um orçamento, contratar serviços ou preencher formulários em nosso site.</li>
+                    </ul>
+                    <p>As informações podem incluir: nome, e-mail, telefone, CPF/CNPJ, placa de veículo e outros dados essenciais para a execução do serviço solicitado.</p>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-cogs"></i>2. Uso das Informações</h2>
+                    <p>As informações coletadas são utilizadas com as seguintes finalidades:</p>
+                    <ul>
+                        <li>Processar e executar os serviços contratados;</li>
+                        <li>Manter a comunicação com o cliente sobre o andamento dos serviços;</li>
+                        <li>Oferecer suporte e atendimento personalizado;</li>
+                        <li>Cumprir obrigações legais, regulatórias e contratuais.</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-share-alt"></i>3. Compartilhamento de Dados</h2>
+                    <p>A ResolveFácil não compartilha, vende ou aluga seus dados pessoais. O compartilhamento poderá ocorrer somente nas seguintes situações:</p>
+                    <ul>
+                        <li>Quando necessário para a execução do serviço (ex: junto a órgãos públicos);</li>
+                        <li>Com o seu consentimento expresso ou por obrigação legal.</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-user-shield"></i>4. Segurança das Informações</h2>
+                    <p>Adotamos medidas técnicas e organizacionais adequadas para garantir a segurança dos seus dados, protegendo-os contra acesso não autorizado, uso indevido, perda ou alteração.</p>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-gavel"></i>5. Seus Direitos (LGPD)</h2>
+                    <p>Nos termos da Lei Geral de Proteção de Dados (LGPD), você tem o direito de confirmar, acessar, corrigir ou solicitar a eliminação de seus dados. Para exercer seus direitos, entre em contato conosco.</p>
+                </div>
+
+                 <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-cookie-bite"></i>6. Cookies</h2>
+                    <p>Nosso site pode utilizar cookies para aprimorar sua experiência de navegação. Você pode desativá-los nas configurações do seu navegador, ciente de que isso pode impactar algumas funcionalidades.</p>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-sync-alt"></i>7. Atualizações da Política de Privacidade</h2>
+                    <p>Esta Política de Privacidade pode ser atualizada a qualquer momento para refletir mudanças legislativas ou em nossas práticas. A versão vigente será sempre publicada nesta página.</p>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <h2><i class="fas fa-comments"></i>8. Fale Conosco</h2>
+                    <p>Em caso de dúvidas relacionadas aos seus dados pessoais, entre em contato conosco por meio dos canais informados em nosso site ou diretamente pelo WhatsApp.</p>
+                </div>
+
+                <div class="privacy-topic fade-in">
+                    <p style="text-align: center; margin-top: 30px; font-style: italic;">Última atualização: 17 de julho de 2025</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2 class="fade-in">Ainda com Dúvidas?</h2>
+            <p class="fade-in">Estamos à disposição para esclarecer qualquer ponto. Seu conforto e segurança são essenciais para nós. Entre em contato diretamente pelo WhatsApp.</p>
+            <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20a%20Pol%C3%ADtica%20de%20Privacidade." class="cta-button">
+                <i class="fab fa-whatsapp"></i> Fale Conosco
+            </a>
+        </section>
+
+        <section class="social-icons">
+            <div class="social-icons-wrapper fade-in">
+                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>
+            © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animação de Fade-in
+            const heroTexts = document.querySelectorAll('.fade-in-text');
+            let delay = 300;
+            heroTexts.forEach((text, index) => {
+                setTimeout(() => {
+                    text.classList.add('show');
+                }, delay + (index * 200));
+            });
+
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('fade-in-active');
+                    observer.unobserve(entry.target);
+                });
+            }, appearOptions);
+            faders.forEach(fader => appearOnScroll.observe(fader));
+        });
+    </script>
+
+    <script src="menu.js"></script>
+    
+    <script src="chatbot.js" defer></script>
+
+</body>
+</html>

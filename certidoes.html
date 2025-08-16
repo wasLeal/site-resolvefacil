@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessoria para 2ª Via de Certidões - ResolveFácil</title>
+    <meta name="description" content="Sua assessoria completa para emitir 2ª via de certidões. Nós cuidamos de toda a burocracia para que você não precise se preocupar.">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis CSS */
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-servicos: #f2f2ed;
+            --body-text-servicos: #3e5a6a;
+            --card-bg: #ffffff;
+            --card-text: #333333;
+            --border-color: #e2e8f0;
+            --success-color: #28a745;
+            --disabled-color: #ccc;
+        }
+
+        /* Reset e Estilos Globais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--body-text-servicos);
+            background-color: var(--body-bg-servicos);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header e Navegação */
+        header {
+            background-color: var(--secondary-bg);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo-area img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logo-area span {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        
+        /* CÓDIGO DO MENU CORRIGIDO E ADICIONADO ABAIXO */
+        nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--highlight);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 25px;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        .mobile-nav {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 60px; /* Altura do header */
+            right: 0;
+            background: var(--secondary-bg);
+            width: 70%;
+            max-width: 300px;
+            height: 100%;
+            padding: 30px 20px;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .mobile-nav.show {
+            display: flex;
+            transform: translateX(0);
+        }
+
+        .mobile-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 15px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+
+        .mobile-nav a:hover {
+            color: var(--highlight);
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Seção Hero/Introdução */
+        .hero-section {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.5em, 6vw, 3.5em);
+            margin-bottom: 20px;
+            color: var(--highlight);
+            line-height: 1.2;
+        }
+
+        .hero-section p {
+            font-size: clamp(1.1em, 2.5vw, 1.5em);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .content-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2em, 5vw, 2.5em);
+            color: var(--primary-bg);
+            margin-bottom: 40px;
+        }
+
+        /* Vantagens Section */
+        #vantagens { background-color: #e9ecef; }
+        .vantagens-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .vantagem-card { background-color: var(--card-bg); padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; }
+        .vantagem-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .vantagem-card i { font-size: 2.5em; color: var(--highlight); margin-bottom: 20px; background-color: #fff0e6; width: 70px; height: 70px; line-height: 70px; border-radius: 50%; }
+        .vantagem-card h3 { font-size: 1.3em; margin-bottom: 15px; color: var(--primary-bg); }
+        .vantagem-card p { font-size: 0.95em; }
+
+        /* Acordeões (Como Funciona, Termos) */
+        .info-container { max-width: 800px; margin: 0 auto; }
+        details { background: #fff; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden; }
+        summary { font-weight: bold; font-size: 1.2em; background-color: var(--primary-bg); color: white; cursor: pointer; padding: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        summary i { transition: transform 0.3s; color: white; }
+        details[open] summary i { transform: rotate(180deg); }
+        .info-content { padding: 0 1.2rem 1.2rem 1.2rem; }
+        .info-content h4 { color: var(--secondary-bg); margin-top: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .info-content ul { list-style: none; padding-left: 0; margin-top: 1rem; }
+        .info-content li { padding: 0.5rem 0; }
+        .info-content li i.fa-check { color: var(--success-color); margin-right: 10px; }
+        .info-content p { margin-top: 1rem; }
+        .info-content .download-links { display: flex; gap: 20px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .info-content .download-links a { color: var(--highlight); font-weight: bold; text-decoration: none; }
+        .info-content .download-links a:hover { text-decoration: underline; }
+
+        /* Serviços Section */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card { background-color: var(--card-bg); padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); color: var(--card-text); display: flex; flex-direction: column; }
+        .card i.service-icon { font-size: 3em; color: var(--highlight); margin-bottom: 20px; }
+        .card h3 { font-size: 1.5em; margin-bottom: 15px; color: var(--primary-bg); }
+        .card p { font-size: 0.95em; flex-grow: 1; margin-bottom: 20px; }
+        .card-actions { border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 20px; }
+        .card .modal-button { display: inline-block; background-color: var(--highlight); color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background-color 0.3s, transform 0.2s; border: none; cursor: pointer; font-size: 1em; width: 100%; margin-bottom: 20px; }
+        .card .modal-button:hover { background-color: var(--button-hover); }
+        .card .terms-group { margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .card .terms-group label { font-size: 0.9em; cursor: pointer; }
+        .card .terms-group input { transform: scale(1.2); cursor: pointer; }
+        .card .action-buttons a { display: block; text-decoration: none; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; margin-bottom: 10px; transition: background-color 0.3s, opacity 0.3s; }
+        .card .payment-link-btn { background-color: var(--primary-bg); }
+        .card .whatsapp-button { background-color: var(--whatsapp-button); }
+        .card .action-buttons a.disabled { background-color: var(--disabled-color); cursor: not-allowed; pointer-events: none; opacity: 0.7; }
+        
+        .section-disclaimer {
+            max-width: 800px;
+            margin: 40px auto 0 auto;
+            text-align: center;
+            font-size: 0.9em;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        /* Botão Voltar */
+        .back-button-section { text-align: center; padding: 40px 20px; }
+        .back-button { background-color: var(--secondary-bg); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s; }
+        .back-button:hover { background-color: var(--primary-bg); }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        footer a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            color: var(--highlight);
+        }
+
+        /* Efeitos Fade-in */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.fade-in-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Estilos do Modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.6); 
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+            animation: slideIn 0.4s;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-bg);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-content li {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--highlight);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Animações do Modal */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) { 
+            nav { display: none; }
+            .hamburger { display: flex; }
+            .mobile-nav { display: flex; }
+            summary { font-size: 1em; padding: 1rem; }
+            .section-title { font-size: 1.8em; }
+            .modal-content {
+                width: 95%;
+                margin: 25% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="https://www.resolvefacil.online/documentos" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            
+            <div id="menu-container"></div>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1 class="fade-in">2ª Via de Certidões, sem Complicação.</h1>
+            <p class="fade-in">Sua assessoria completa para emitir documentos. Nós cuidamos de toda a burocracia para que você não precise se preocupar.</p>
+        </section>
+
+        <section id="vantagens" class="content-section">
+            <h2 class="section-title fade-in">Por que escolher nossa Assessoria?</h2>
+            <div class="vantagens-grid">
+                <div class="vantagem-card fade-in">
+                    <i class="fas fa-clock"></i>
+                    <h3>Economia de Tempo e Burocracia</h3>
+                    <p>O processo em portais oficiais pode ser confuso e demorado. Nós fazemos o trabalho pesado por você, lidando com toda a burocracia.</p>
+                </div>
+                <div class="vantagem-card fade-in">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Zero Risco de Erros</h3>
+                    <p>Um dado preenchido errado pode causar o indeferimento do seu pedido. Na ResolveFácil nós conferimos tudo para garantir a máxima precisão.</p>
+                </div>
+                <div class="vantagem-card fade-in">
+                    <i class="fas fa-headset"></i>
+                    <h3>Acompanhamento e Suporte Humanizado</h3>
+                    <p>Fale diretamente conosco, não com robôs. Monitoramos seu pedido do início ao fim, mantendo você sempre informado em cada etapa.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="informacoes-importantes" class="content-section" style="background-color: #fff;">
+            <h2 class="section-title fade-in">Tudo o que você precisa saber</h2>
+            <div class="info-container fade-in">
+                <details>
+                    <summary>Como Funciona Nossa Assessoria Remota <i class="fas fa-chevron-down"></i></summary>
+                    <div class="info-content">
+                        <p>Para garantir sua total segurança e privacidade, nosso serviço é realizado com seu acompanhamento em tempo real. Você estará no controle do início ao fim. Veja como funciona:</p>
+                        <ul>
+                            <li><i class="fas fa-check"></i><strong>Passo 1: Agendamento e Preparação</strong><br>Após a contratação, agendaremos um horário. Você precisará ter o aplicativo <strong>AnyDesk</strong> instalado para criarmos uma conexão segura.</li>
+                            <li style="list-style: none; padding-left: 25px;">
+                                <div class="download-links">
+                                    <a href="https://anydesk.com/pt/downloads/windows" target="_blank"><i class="fab fa-windows"></i> Baixar para Computador</a>
+                                    <a href="https://play.google.com/store/apps/details?id=com.anydesk.anydeskandroid" target="_blank"><i class="fab fa-android"></i> Baixar para Android</a>
+                                    <a href="https://apps.apple.com/us/app/anydesk-remote-desktop/id1176415852" target="_blank"><i class="fab fa-apple"></i> Baixar para iPhone/iPad</a>
+                                </div>
+                            </li>
+                            <li><i class="fas fa-check"></i><strong>Passo 2: Instale o Plugin (se solicitado)</strong><br>Em alguns aparelhos Android, o AnyDesk pode pedir um plugin adicional para permitir o controle remoto. Se a solicitação aparecer, basta confirmar e instalar.</li>
+                            <li><i class="fas fa-check"></i><strong>Passo 3: Conexão Segura</strong><br>No horário agendado, você nos fornecerá seu código AnyDesk para iniciarmos a conexão, que você deverá aceitar em sua tela.</li>
+                            <li><i class="fas fa-check"></i><strong>Passo 4: Acesso ao Portal Oficial</strong><br>Com a tela compartilhada, <strong>você mesmo</strong> irá acessar o portal oficial e digitará seus dados de login e senha. <strong>Nós nunca teremos acesso à sua senha.</strong></li>
+                            <li><i class="fas fa-check"></i><strong>Passo 5: Assessoria em Tempo Real</strong><br>Nós estaremos compartilhando a tela com você em tempo real e executaremos todos os procedimentos necessários passo a passo, sempre conferindo todos os dados para evitar erros e garantir que a solicitação seja feita corretamente. Tudo com sua anuência e concordância.</li>
+                            <li><i class="fas fa-check"></i><strong>Passo 6: Pagamento das Taxas</strong><br>Ao final, você mesmo realizará o pagamento das taxas oficiais (emolumentos) diretamente no portal, com seu próprio meio de pagamento.</li>
+                            <li><i class="fas fa-check"></i><strong>Passo 7: Encerramento</strong><br>Ao final do processo, a conexão é encerrada por você. Este método funciona perfeitamente em computadores, tablets e celulares, garantindo sua segurança em qualquer dispositivo.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details>
+                    <summary>Nossos Termos de Assessoria <i class="fas fa-chevron-down"></i></summary>
+                    <div class="info-content">
+                        <h4>1. Natureza do Serviço e Valor</h4>
+                        <p>A ResolveFácil presta um serviço de assessoria, consultoria e despacho documental. O valor de <strong>R$ 50,00</strong> refere-se exclusivamente aos nossos honorários por este serviço, que inclui: conferência de dados, orientação, acompanhamento do pedido e suporte. Nós não vendemos certidões.</p>
+                        <h4>2. Legalidade e Conformidade</h4>
+                        <p>Atuamos como despachantes, solicitando documentos para terceiros, atividade permitida pelo portal oficial do Registro Civil. Não possuímos vínculo comercial com o portal registrocivil.org.br e não revendemos seus serviços. Nosso trabalho é prestar a assistência para que você utilize o portal oficial corretamente.</p>
+                        <h4>3. Custos e Pagamento</h4>
+                        <p>O valor de R$ 50,00 é pago antecipadamente à ResolveFácil e cobre apenas nossos honorários. As taxas oficiais do cartório (emolumentos) e eventuais custos de envio (Correios) são de responsabilidade do cliente e serão pagos por você diretamente na plataforma oficial, com nosso auxílio durante o processo.</p>
+                        <h4>4. Responsabilidade do Cliente</h4>
+                        <p>O cliente é o único responsável pela veracidade e exatidão dos dados fornecidos (nomes, datas, livro, folha, termo, etc.). Informações incorretas podem resultar na não localização do registro ou na recusa do pedido pelo cartório. Nestes casos, os honorários de nossa assessoria não são reembolsáveis, uma vez que o serviço de conferência e acompanhamento foi prestado.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section id="servicos" class="content-section">
+            <h2 class="section-title fade-in">Contrate a Assessoria para a Certidão Desejada</h2>
+            <div class="cards">
+                <div class="card fade-in" data-service="nascimento">
+                    <i class="fas fa-baby service-icon"></i>
+                    <h3>Certidão de Nascimento</h3>
+                    <p>Assessoria completa para a segunda via da sua certidão de nascimento. Cuidamos de tudo para você.</p>
+                    <div class="card-actions">
+                        <button class="modal-button" data-modal-target="#modal-nascimento">Ver Documentos Necessários</button>
+                        <div class="terms-group">
+                            <input type="checkbox" class="terms-checkbox" id="terms-nascimento">
+                            <label for="terms-nascimento">Li e concordo com os termos da assessoria.</label>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="https://pag.ae/7_WXPhAB3" target="_blank" class="payment-link-btn disabled"><i class="fas fa-credit-card"></i> Pagar R$ 50,00</a>
+                            <a href="#" target="_blank" class="whatsapp-button disabled"><i class="fab fa-whatsapp"></i> Enviar Comprovante</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card fade-in" data-service="casamento">
+                    <i class="fas fa-ring service-icon"></i>
+                    <h3>Certidão de Casamento</h3>
+                    <p>Suporte para obter a segunda via da sua certidão de casamento, com agilidade e todos os dados corretos.</p>
+                     <div class="card-actions">
+                        <button class="modal-button" data-modal-target="#modal-casamento">Ver Documentos Necessários</button>
+                        <div class="terms-group">
+                            <input type="checkbox" class="terms-checkbox" id="terms-casamento">
+                            <label for="terms-casamento">Li e concordo com os termos da assessoria.</label>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="https://pag.ae/7_WXPhAB3" target="_blank" class="payment-link-btn disabled"><i class="fas fa-credit-card"></i> Pagar R$ 50,00</a>
+                            <a href="#" target="_blank" class="whatsapp-button disabled"><i class="fab fa-whatsapp"></i> Enviar Comprovante</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card fade-in" data-service="obito">
+                    <i class="fas fa-cross service-icon"></i>
+                    <h3>Certidão de Óbito</h3>
+                    <p>Obtenha a segunda via de uma certidão de óbito com nosso suporte para agilizar o processo e evitar erros.</p>
+                     <div class="card-actions">
+                        <button class="modal-button" data-modal-target="#modal-obito">Ver Documentos Necessários</button>
+                        <div class="terms-group">
+                            <input type="checkbox" class="terms-checkbox" id="terms-obito">
+                            <label for="terms-obito">Li e concordo com os termos da assessoria.</label>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="https://pag.ae/7_WXPhAB3" target="_blank" class="payment-link-btn disabled"><i class="fas fa-credit-card"></i> Pagar R$ 50,00</a>
+                            <a href="#" target="_blank" class="whatsapp-button disabled"><i class="fab fa-whatsapp"></i> Enviar Comprovante</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-disclaimer fade-in">
+                <p><strong>Atenção:</strong> Este valor refere-se apenas aos nossos honorários da assessoria. As taxas oficiais do cartório/portal (emolumentos) e custos de envio (Correios) serão pagos por você diretamente durante o processo de solicitação, com nosso total acompanhamento.</p>
+            </div>
+
+             <div class="back-button-section fade-in">
+                 <a href="https://www.resolvefacil.online/documentos" class="back-button">Voltar para Documentos</a>
+            </div>
+        </section>
+    </main>
+    
+    <div id="modal-nascimento" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Dados para Certidão de Nascimento</h3>
+            <ul>
+                <li>Nome Completo</li>
+                <li>Data de Nascimento</li>
+                <li>Filiação 1 (Ex: Nome da Mãe)</li>
+                <li>Filiação 2 (Opcional)</li>
+                <li>Estado e Cidade do Cartório</li>
+                <li>Livro, Folha e Termo</li>
+                <li>CPF (Opcional)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-casamento" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Dados para Certidão de Casamento</h3>
+            <ul>
+                <li>Nome do primeiro cônjuge</li>
+                <li>Nome do segundo cônjuge</li>
+                <li>Data do Casamento</li>
+                <li>Estado e Cidade do Cartório</li>
+                <li>Livro, Folha e Termo</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-obito" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Dados para Certidão de Óbito</h3>
+            <ul>
+                <li>Nome do falecido</li>
+                <li>Data do óbito</li>
+                <li>Filiação 1 (Ex: Nome da Mãe)</li>
+                <li>Filiação 2 (Opcional)</li>
+                <li>Estado e Cidade do Cartório</li>
+                <li>Livro, Folha e Termo</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+        <a href="politica-de-privacidade.html">Política de Privacidade</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Lógica para Fade-in ao rolar a página ---
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('fade-in-active');
+                        appearOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+
+            // --- Lógica para os Modais de Documentos ---
+            const modalButtons = document.querySelectorAll('[data-modal-target]');
+            const modals = document.querySelectorAll('.modal');
+
+            modalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modal = document.querySelector(button.dataset.modalTarget);
+                    if (modal) {
+                        modal.style.display = 'block';
+                    }
+                });
+            });
+
+            modals.forEach(modal => {
+                const closeButton = modal.querySelector('.close-button');
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+                }
+                window.addEventListener('click', (event) => {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+
+            // --- Lógica de Contratação nos Cards ---
+            const serviceCards = document.querySelectorAll('.card[data-service]');
+
+            const serviceData = {
+                nascimento: {
+                    title: "Certidão de Nascimento",
+                    docs: [
+                        "Nome Completo",
+                        "Data de Nascimento",
+                        "Filiação 1 (Ex: Nome da Mãe)",
+                        "Filiação 2 (Opcional)",
+                        "Estado e Cidade do Cartório",
+                        "Livro, Folha e Termo",
+                        "CPF (Opcional)"
+                    ]
+                },
+                casamento: {
+                    title: "Certidão de Casamento",
+                    docs: [
+                        "Nome do primeiro cônjuge",
+                        "Nome do segundo cônjuge",
+                        "Data do Casamento",
+                        "Estado e Cidade do Cartório",
+                        "Livro, Folha e Termo"
+                    ]
+                },
+                obito: {
+                    title: "Certidão de Óbito",
+                    docs: [
+                        "Nome do falecido",
+                        "Data do óbito",
+                        "Filiação 1 (Ex: Nome da Mãe)",
+                        "Filiação 2 (Opcional)",
+                        "Estado e Cidade do Cartório",
+                        "Livro, Folha e Termo"
+                    ]
+                }
+            };
+
+            serviceCards.forEach(card => {
+                const checkbox = card.querySelector('.terms-checkbox');
+                const paymentButton = card.querySelector('.payment-link-btn');
+                const whatsappButton = card.querySelector('.whatsapp-button');
+                const serviceType = card.dataset.service;
+
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        // Habilitar botões
+                        paymentButton.classList.remove('disabled');
+                        whatsappButton.classList.remove('disabled');
+
+                        // Gerar mensagem do WhatsApp
+                        const data = serviceData[serviceType];
+                        const docList = data.docs.map(doc => `- ${doc}`).join('\n');
+                        
+                        let message = `Olá! Gostaria de contratar a assessoria para *${data.title}*.\n\n`;
+                        message += `*Dados necessários:*\n${docList}\n\n`;
+                        message += `*Declaro que li e concordo com os termos da assessoria.*\n\n`;
+                        message += `Já realizei o pagamento de R$ 50,00 e gostaria de enviar o comprovante para agendar meu atendimento.`;
+
+                        const whatsappUrl = `https://wa.me/5592996029888?text=${encodeURIComponent(message)}`;
+                        whatsappButton.href = whatsappUrl;
+
+                    } else {
+                        // Desabilitar botões
+                        paymentButton.classList.add('disabled');
+                        whatsappButton.classList.add('disabled');
+                        whatsappButton.href = "#";
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <script src="menu.js"></script>
+
+    <script src="chatbot.js" defer></script>
+
+</body>
+</html>
