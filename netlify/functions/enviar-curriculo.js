@@ -2,11 +2,7 @@
 
 // Função para adicionar o contato à lista da Brevo
 async function addContactToList(apiKey, email, name) {
-  // ===================================================================
-  // IMPORTANTE: Coloque aqui o ID da sua lista de contatos da Brevo.
-  // Você encontra esse número no painel da Brevo, na seção Contatos > Listas.
-  const LIST_ID = 2; [cite_start]// <--- TROQUE ESTE NÚMERO PELO ID DA SUA LISTA [cite: 1]
-  // ===================================================================
+  const LIST_ID = 2; 
 
   const url = 'https://api.brevo.com/v3/contacts';
   const options = {
@@ -19,17 +15,15 @@ async function addContactToList(apiKey, email, name) {
     body: JSON.stringify({
       email: email,
       attributes: {
-        'NOME': name // Na Brevo, você pode criar um atributo de contato chamado "NOME"
-      },
-      [cite_start]listIds: [LIST_ID] // Adiciona o contato à lista especificada [cite: 1]
+        'NOME': name
+      }, // <--- VÍRGULA CORRIGIDA AQUI
+      listIds: [LIST_ID]
     })
   };
 
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      // Se o contato já existir, a API retorna um erro, o que é normal.
-      // Não vamos tratar como um erro fatal.
       const errorData = await response.json();
       console.warn('Aviso ao adicionar contato (pode já existir):', errorData.message);
     } else {
@@ -51,18 +45,12 @@ exports.handler = async function(event) {
     const { userEmail, userName, resumeHtml } = JSON.parse(event.body);
     const apiKey = process.env.BREVO_API_KEY;
 
-    // TAREFA 1: Adicionar o contato à lista de marketing
-    // Isso acontece em paralelo, não esperamos a conclusão para enviar o e-mail.
     addContactToList(apiKey, userEmail, userName);
 
-    // TAREFA 2: Enviar o e-mail transacional com o currículo
     const emailBody = {
       sender: {
         name: 'ResolveFácil',
-        // ===================================================================
-        // ALTERAÇÃO FEITA AQUI: Usando o e-mail do Gmail que já está verificado na Brevo
         email: 'resolvefacil70@gmail.com' 
-        // ===================================================================
       },
       to: [{ email: userEmail, name: userName }],
       subject: `Seu currículo profissional está pronto, ${userName}!`,
