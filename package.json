@@ -1,0 +1,10 @@
+{
+  "name": "funcao-gerador-pdf",
+  "version": "1.0.0",
+  "description": "Função para gerar PDF e enviar por e-mail",
+  "main": "enviar-curriculo.js",
+  "dependencies": {
+    "@sparticuz/chromium": "^111.0.0",
+    "puppeteer-core": "^19.7.2"
+  }
+}
