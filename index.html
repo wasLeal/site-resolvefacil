@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
     
     <style>
-        /* === ESTILOS CSS (sem alterações) === */
+        /* ESTILOS CSS (sem alterações) */
         :root {
             --primary-bg: #003459;
             --secondary-bg: #3e5a6a;
@@ -432,23 +432,58 @@
                 previewArea.appendChild(currentElementForPdf);
                 previewModal.style.display = 'flex';
             }
+            
+            // ===================================================================
+            // ALTERAÇÃO FEITA AQUI: Função modificada para incluir estilos no envio
+            // ===================================================================
             async function sendResumeByEmail() {
                 if (!currentElementForPdf) {
                     alert("Nenhuma pré-visualização disponível para enviar.");
                     return;
                 }
+
                 const userEmail = document.getElementById('modal-email-input').value || document.getElementById('email').value;
                 const userName = document.getElementById('name').value || "Candidato(a)";
+
                 if (!userEmail) {
                     alert("Por favor, informe um e-mail válido.");
                     return;
                 }
-                const resumeHtml = currentElementForPdf.outerHTML;
+                
+                // Passo 1: Captura todas as regras de estilo da página
+                const allStyles = Array.from(document.styleSheets)
+                    .map(sheet => {
+                        try {
+                            return Array.from(sheet.cssRules).map(rule => rule.cssText).join('');
+                        } catch (e) {
+                            return ''; // Ignora folhas de estilo externas que não podemos ler
+                        }
+                    }).join('');
+
+                // Passo 2: Pega o HTML do currículo
+                const resumeDivHtml = currentElementForPdf.outerHTML;
+
+                // Passo 3: Junta os estilos e o HTML em um documento completo para o e-mail
+                const resumeHtml = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <style>
+                    ${allStyles}
+                </style>
+                </head>
+                <body>
+                    ${resumeDivHtml}
+                </body>
+                </html>
+                `;
+
                 const previewConfirmBtn = document.getElementById('preview-confirm-btn');
                 previewConfirmBtn.disabled = true;
                 previewConfirmBtn.innerText = 'Enviando...';
                 generateBtn.disabled = true;
                 generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
                 try {
                     const response = await fetch('/.netlify/functions/enviar-curriculo', {
                         method: 'POST',
@@ -459,12 +494,15 @@
                             resumeHtml: resumeHtml
                         })
                     });
+
                     if (!response.ok) {
                         const errorResult = await response.json();
                         throw new Error(errorResult.message || 'Falha na comunicação com o servidor.');
                     }
+
                     alert('Sucesso! Seu currículo foi enviado para o seu e-mail.');
                     window.location.reload();
+
                 } catch (error) {
                     console.error("Erro ao enviar e-mail:", error);
                     alert("Ocorreu um erro ao enviar seu currículo. Por favor, tente novamente. Detalhes: " + error.message);
@@ -475,6 +513,7 @@
                     generateBtn.innerHTML = '<i class="fas fa-eye"></i> Pré-visualizar e Enviar por E-mail';
                 }
             }
+            
             previewConfirmBtn.addEventListener('click', sendResumeByEmail);
             function populateTemplate(container, data) {
                 if (selectedModel === 'simple') {
