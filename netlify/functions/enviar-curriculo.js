@@ -1,27 +1,26 @@
 // Arquivo: netlify/functions/enviar-curriculo.js
 
-// Importa as ferramentas necessárias para gerar o PDF
-const chromium = require('@sparticuz/chromium');
+// Importa as novas ferramentas, mais compatíveis
+const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
 
 // Função para gerar o PDF a partir do HTML
 async function generatePdf(htmlContent) {
   let browser = null;
   try {
-    // Inicia o "navegador invisível"
+    // Inicia o "navegador invisível" usando a nova biblioteca
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
+      executablePath: await chromium.executablePath,
       headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
     
-    // Define o conteúdo da página como o HTML do currículo
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
     
-    // Gera o PDF em memória
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
@@ -50,16 +49,9 @@ exports.handler = async function(event) {
     const { userEmail, userName, resumeHtml } = JSON.parse(event.body);
     const apiKey = process.env.BREVO_API_KEY;
 
-    // ===================================================================
-    // ETAPA 1: GERAR O PDF NO SERVIDOR
-    // ===================================================================
     const pdfBuffer = await generatePdf(resumeHtml);
-    // Converte o PDF para Base64, que é o formato para anexos de e-mail
     const pdfBase64 = pdfBuffer.toString('base64');
 
-    // ===================================================================
-    // ETAPA 2: ENVIAR O E-MAIL COM O PDF ANEXADO
-    // ===================================================================
     const emailBody = {
       sender: {
         name: 'ResolveFácil',
@@ -67,9 +59,7 @@ exports.handler = async function(event) {
       },
       to: [{ email: userEmail, name: userName }],
       subject: `Seu currículo profissional está pronto, ${userName}!`,
-      // O corpo do e-mail agora é uma mensagem simples
       htmlContent: `<html><body><p>Olá, ${userName}!</p><p>Seu currículo foi gerado com sucesso e está em anexo neste e-mail.</p><p>Agradecemos por usar nossos serviços!</p><p>Atenciosamente,<br>Equipe ResolveFácil</p></body></html>`,
-      // O PDF é adicionado aqui como um anexo
       attachment: [
         {
           name: 'curriculo.pdf',
