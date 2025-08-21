@@ -1,41 +1,46 @@
 // Arquivo: netlify/functions/enviar-curriculo.js
 
-// Função para adicionar o contato à lista da Brevo
-async function addContactToList(apiKey, email, name) {
-  const LIST_ID = 2; 
+// Importa as ferramentas necessárias para gerar o PDF
+const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core');
 
-  const url = 'https://api.brevo.com/v3/contacts';
-  const options = {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'api-key': apiKey,
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      attributes: {
-        'NOME': name
-      }, // <--- VÍRGULA CORRIGIDA AQUI
-      listIds: [LIST_ID]
-    })
-  };
-
+// Função para gerar o PDF a partir do HTML
+async function generatePdf(htmlContent) {
+  let browser = null;
   try {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.warn('Aviso ao adicionar contato (pode já existir):', errorData.message);
-    } else {
-      console.log('Contato adicionado/atualizado com sucesso na Brevo.');
-    }
+    // Inicia o "navegador invisível"
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+
+    const page = await browser.newPage();
+    
+    // Define o conteúdo da página como o HTML do currículo
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    
+    // Gera o PDF em memória
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '15mm', right: '15mm', bottom: '15mm', left: '15mm' }
+    });
+
+    return pdfBuffer;
+
   } catch (error) {
-    console.error('Erro ao tentar adicionar contato na Brevo:', error);
+    console.error("Erro ao gerar o PDF:", error);
+    throw error;
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
   }
 }
 
-
-// Função principal que envia o e-mail e gerencia o processo
+// Função principal que gerencia o processo
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -45,8 +50,16 @@ exports.handler = async function(event) {
     const { userEmail, userName, resumeHtml } = JSON.parse(event.body);
     const apiKey = process.env.BREVO_API_KEY;
 
-    addContactToList(apiKey, userEmail, userName);
+    // ===================================================================
+    // ETAPA 1: GERAR O PDF NO SERVIDOR
+    // ===================================================================
+    const pdfBuffer = await generatePdf(resumeHtml);
+    // Converte o PDF para Base64, que é o formato para anexos de e-mail
+    const pdfBase64 = pdfBuffer.toString('base64');
 
+    // ===================================================================
+    // ETAPA 2: ENVIAR O E-MAIL COM O PDF ANEXADO
+    // ===================================================================
     const emailBody = {
       sender: {
         name: 'ResolveFácil',
@@ -54,7 +67,15 @@ exports.handler = async function(event) {
       },
       to: [{ email: userEmail, name: userName }],
       subject: `Seu currículo profissional está pronto, ${userName}!`,
-      htmlContent: resumeHtml
+      // O corpo do e-mail agora é uma mensagem simples
+      htmlContent: `<html><body><p>Olá, ${userName}!</p><p>Seu currículo foi gerado com sucesso e está em anexo neste e-mail.</p><p>Agradecemos por usar nossos serviços!</p><p>Atenciosamente,<br>Equipe ResolveFácil</p></body></html>`,
+      // O PDF é adicionado aqui como um anexo
+      attachment: [
+        {
+          name: 'curriculo.pdf',
+          content: pdfBase64
+        }
+      ]
     };
 
     const emailResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -75,14 +96,14 @@ exports.handler = async function(event) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "E-mail enviado com sucesso!" })
+      body: JSON.stringify({ message: "E-mail com PDF anexado enviado com sucesso!" })
     };
 
   } catch (error) {
     console.error('Erro na função:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Ocorreu um erro no servidor.' })
+      body: JSON.stringify({ message: 'Ocorreu um erro no servidor ao gerar o PDF.' })
     };
   }
 };
