@@ -225,48 +225,48 @@
                     page: "width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);"
                 };
 
-                const resumeBodyHtml = \`
-                    <div style="\${styles.page}">
-                        <div style="\${styles.header}">
-                            <div style="\${styles.name}">\${data.name}</div>
-                            <div style="\${styles.contactInfo}">\${data.phone} | \${data.email}\${data.address ? ' | ' + data.address : ''}</div>
+                const resumeBodyHtml = `
+                    <div style="${styles.page}">
+                        <div style="${styles.header}">
+                            <div style="${styles.name}">${data.name}</div>
+                            <div style="${styles.contactInfo}">${data.phone} | ${data.email}${data.address ? ' | ' + data.address : ''}</div>
                         </div>
                         <div>
-                            <div style="\${styles.sectionTitle}">Resumo Profissional</div>
-                            <div style="\${styles.content}">\${data.summary.replace(/\n/g, '<br>')}</div>
+                            <div style="${styles.sectionTitle}">Resumo Profissional</div>
+                            <div style="${styles.content}">${data.summary.replace(/\n/g, '<br>')}</div>
                         </div>
                         <div>
-                            <div style="\${styles.sectionTitle}">Experiência Profissional</div>
-                            \${data.experiences.map(exp => \`
-                                <div style="\${styles.item}">
-                                    <div style="\${styles.jobTitle}">\${exp.jobTitle}</div>
-                                    <div style="\${styles.jobDetails}">\${exp.company} | \${exp.period}</div>
-                                    <div style="\${styles.jobDescription}">\${exp.description}</div>
+                            <div style="${styles.sectionTitle}">Experiência Profissional</div>
+                            ${data.experiences.map(exp => `
+                                <div style="${styles.item}">
+                                    <div style="${styles.jobTitle}">${exp.jobTitle}</div>
+                                    <div style="${styles.jobDetails}">${exp.company} | ${exp.period}</div>
+                                    <div style="${styles.jobDescription}">${exp.description}</div>
                                 </div>
-                            \`).join('')}
+                            `).join('')}
                         </div>
                         <div>
-                            <div style="\${styles.sectionTitle}">Formação Acadêmica</div>
-                            \${data.educations.map(edu => \`
-                                <div style="\${styles.item}">
-                                    <div style="\${styles.jobTitle}">\${edu.course}</div>
-                                    <div style="\${styles.jobDetails}">\${edu.institution} | \${edu.period}</div>
+                            <div style="${styles.sectionTitle}">Formação Acadêmica</div>
+                            ${data.educations.map(edu => `
+                                <div style="${styles.item}">
+                                    <div style="${styles.jobTitle}">${edu.course}</div>
+                                    <div style="${styles.jobDetails}">${edu.institution} | ${edu.period}</div>
                                 </div>
-                            \`).join('')}
+                            `).join('')}
                         </div>
                         <div>
-                            <div style="\${styles.sectionTitle}">Habilidades</div>
-                            <div style="\${styles.skillsList}">\${data.skills.join(' • ')}</div>
+                            <div style="${styles.sectionTitle}">Habilidades</div>
+                            <div style="${styles.skillsList}">${data.skills.join(' • ')}</div>
                         </div>
                     </div>
-                \`;
+                `;
 
-                return \`
+                return `
                     <!DOCTYPE html>
                     <html lang="pt-BR">
                     <head>
                         <meta charset="UTF-8">
-                        <title>Currículo de \${data.name}</title>
+                        <title>Currículo de ${data.name}</title>
                         <link rel="stylesheet" href="fontawesome/css/all.min.css">
                         <style>
                             body { margin: 0; background-color: #f0f0f0; }
@@ -304,15 +304,15 @@
                             }
                         </style>
                     </head>
-                    <body style="\${styles.body}">
+                    <body style="${styles.body}">
                         <div class="print-controls">
                             <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
                             <p class="print-hint">Dica: Se a cor de fundo não aparecer no PDF, clique em "Mais definições" e ative a opção "Gráficos de segundo plano".</p>
                         </div>
-                        \${resumeBodyHtml}
+                        ${resumeBodyHtml}
                     </body>
                     </html>
-                \`;
+                `;
             }
 
             function collectFormData() {
@@ -357,7 +357,7 @@
                     listContainer.appendChild(newItem);
                 });
             }
-            const experienceTemplate = () => \`
+            const experienceTemplate = () => `
                 <button type="button" class="remove-item-btn">×</button>
                 <div class="form-grid">
                     <div class="form-group"><label>Cargo</label><input type="text" class="exp-job-title"></div>
@@ -365,15 +365,15 @@
                     <div class="form-group"><label>Período (Ex: Jan 2020 - Dez 2022)</label><input type="text" class="exp-period"></div>
                 </div>
                 <div class="form-group" style="margin-top: 15px;"><label>Descrição das atividades</label><textarea class="exp-description"></textarea></div>
-            \`;
-            const educationTemplate = () => \`
+            `;
+            const educationTemplate = () => `
                 <button type="button" class="remove-item-btn">×</button>
                 <div class="form-grid">
                     <div class="form-group"><label>Curso/Formação</label><input type="text" class="edu-course"></div>
                     <div class="form-group"><label>Instituição</label><input type="text" class="edu-institution"></div>
                     <div class="form-group"><label>Período</label><input type="text" class="edu-period"></div>
                 </div>
-            \`;
+            `;
             setupDynamicSection('add-experience-btn', 'experience-list', experienceTemplate);
             setupDynamicSection('add-education-btn', 'education-list', educationTemplate);
 
