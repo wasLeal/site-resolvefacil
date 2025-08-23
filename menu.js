@@ -8,7 +8,7 @@ const navLinks = [
     { href: 'https://www.resolvefacil.online/quemsomos.html', text: 'Quem Somos' },
     { href: 'https://www.resolvefacil.online/servicos.html', text: 'Serviços' },
     { href: 'https://www.resolvefacil.online/design-servicos.html', text: 'Design' },
-    { href: 'https://www.resolvefacil.online/produtos-digitais.html', text: 'Loja' },
+    { href: 'https://www.resolvefacil.online/loja.html', text: 'Loja' },
     { href: 'https://www.resolvefacil.online/faq.html', text: 'FAQ' },
     { href: 'https://www.resolvefacil.online/blog.html', text: 'Blog' }
 ];
