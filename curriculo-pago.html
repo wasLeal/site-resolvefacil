@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículo Profissional - ResolveFácil</title>
+    <meta name="description" content="Crie seu currículo profissional com foto, links e um design moderno.">
+    <link rel="icon" href="favicon.png" type="image/png">
+    
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-servicos: #f2f2ed;
+            --body-text-servicos: #3e5a6a;
+            --card-bg: #ffffff;
+            --input-border: #cccccc;
+            --input-focus-border: #003459;
+            --danger-color: #d9534f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg-servicos); color: var(--body-text-servicos); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
+        #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        #menu-container nav a:hover { color: var(--highlight); }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
+        .mobile-nav a:hover { color: var(--highlight); }
+        main { flex: 1; padding: 20px; }
+        .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+        .generator-header { text-align: center; margin-bottom: 30px; }
+        .generator-header h1 { font-size: clamp(1.8em, 5vw, 2.5em); color: var(--primary-bg); margin-bottom: 10px; }
+        .generator-header p { font-size: 1.1em; color: var(--secondary-bg); }
+        .form-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .form-section:last-of-type { border-bottom: none; }
+        .form-section h2 { font-size: 1.5em; color: var(--primary-bg); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-section h2 i { color: var(--highlight); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="tel"], .form-group input[type="url"], .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 1em; transition: border-color 0.3s; }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--input-focus-border); }
+        #photo-upload-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 190px; text-align: center; border: 2px dashed var(--input-border); border-radius: 8px; padding: 20px; cursor: pointer; transition: border-color 0.3s, background-color 0.3s; }
+        #photo-upload-wrapper:hover { border-color: var(--highlight); background-color: #fefafa; }
+        #photo-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--body-text-servicos); }
+        #photo-upload-placeholder i { font-size: 2.5em; color: var(--secondary-bg); }
+        #photo-preview { max-width: 150px; max-height: 150px; border-radius: 50%; display: none; object-fit: cover; }
+        #photo { display: none; }
+        .dynamic-item { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 15px; position: relative; }
+        .remove-item-btn { position: absolute; top: 10px; right: 10px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .add-item-btn { background-color: var(--secondary-bg); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; }
+        .add-item-btn:hover { background-color: var(--primary-bg); }
+        .generator-footer { text-align: center; margin-top: 30px; }
+        .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .generate-btn:hover { background-color: var(--button-hover); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .security-seals-section { background-color: var(--body-bg-servicos); padding: 40px 20px 0; text-align: center; }
+        .security-seals-container { display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap; }
+        .security-seals-container img { height: 50px; width: auto; object-fit: contain; }
+        .social-icons { background-color: var(--body-bg-servicos); text-align: center; padding: 30px 20px; }
+        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
+        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--body-text-servicos); }
+        .social-icons a:hover { transform: scale(1.2); }
+        .social-icons .fab { font-size: 2.5em; }
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+        footer { background-color: var(--secondary-bg); color: var(--text-color); text-align: center; padding: 20px; font-size: 0.9em; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        footer a { color: var(--text-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
+        footer a:hover { color: var(--highlight); }
+        @media (max-width: 768px) { .generator-container { padding: 20px; } #menu-container nav ul { display: none; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
+        @media (min-width: 769px) { #menu-container nav ul { display: flex; } .hamburger { display: none; } .mobile-nav { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="https://www.resolvefacil.online" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            <div id="menu-container"></div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <div class="generator-container">
+            <div class="generator-header">
+                <h1>Gerador de Currículo Profissional</h1>
+                <p>Obrigado por sua compra! Preencha os campos abaixo para criar seu currículo com foto e design moderno.</p>
+            </div>
+            
+            <form id="cv-form">
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i>Dados Pessoais</h2>
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="photo">Foto Profissional</label>
+                        <label for="photo" id="photo-upload-wrapper">
+                            <div id="photo-upload-placeholder">
+                                <i class="fas fa-camera"></i>
+                                <span>Clique para selecionar uma foto</span>
+                            </div>
+                            <img id="photo-preview" alt="Pré-visualização da foto">
+                        </label>
+                        <input type="file" id="photo" accept="image/*">
+                    </div>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-phone"></i>Contato</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefone</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Endereço (Ex: Cidade, Estado)</label>
+                            <input type="text" id="address">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedin">Perfil LinkedIn</label>
+                            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+                        </div>
+                    </div>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-bullseye"></i>Resumo Profissional</h2>
+                    <div class="form-group">
+                        <label for="summary">Fale um pouco sobre sua carreira e objetivos.</label>
+                        <textarea id="summary"></textarea>
+                    </div>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-briefcase"></i>Experiência Profissional</h2>
+                    <div id="experience-list"></div>
+                    <button type="button" class="add-item-btn" id="add-experience-btn"><i class="fas fa-plus"></i> Adicionar Experiência</button>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-graduation-cap"></i>Formação Acadêmica</h2>
+                    <div id="education-list"></div>
+                    <button type="button" class="add-item-btn" id="add-education-btn"><i class="fas fa-plus"></i> Adicionar Formação</button>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-cogs"></i>Habilidades e Competências</h2>
+                     <div class="form-group">
+                        <label for="skills">Liste suas principais habilidades (separadas por vírgula).</label>
+                        <input type="text" id="skills" placeholder="Ex: Comunicação, Pacote Office, Proatividade">
+                    </div>
+                </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-language"></i>Idiomas</h2>
+                    <div id="language-list"></div>
+                    <button type="button" class="add-item-btn" id="add-language-btn"><i class="fas fa-plus"></i> Adicionar Idioma</button>
+                </section>
+            </form>
+            <div class="generator-footer">
+                <button class="generate-btn" id="generate-btn" type="button">
+                    <i class="fas fa-eye"></i> Visualizar Currículo
+                </button>
+            </div>
+        </div>
+        <section class="security-seals-section">
+            <div class="security-seals-container">
+                <img src="imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
+                <img src="imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
+                <img src="imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
+            </div>
+        </section>
+        <div class="social-icons">
+            <div class="social-icons-wrapper">
+                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer-container">
+        </footer>
+
+    <script src="menu.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectedModel = 'professional'; // Modelo profissional é o único e padrão
+            let photoDataUrl = null;
+
+            const form = document.getElementById('cv-form');
+            const generateBtn = document.getElementById('generate-btn');
+            
+            const photoInput = document.getElementById('photo');
+            const photoPreview = document.getElementById('photo-preview');
+            const photoPlaceholder = document.getElementById('photo-upload-placeholder');
+            
+            function showResumeInNewTab() {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const data = collectFormData();
+                
+                const newWindow = window.open();
+                if(!newWindow) {
+                    alert('Seu navegador bloqueou a abertura de uma nova aba. Por favor, permita pop-ups para este site.');
+                    return;
+                }
+                
+                const fullHtml = generateResumeHtml(data);
+                newWindow.document.write(fullHtml);
+                newWindow.document.close();
+            }
+
+            generateBtn.addEventListener('click', showResumeInNewTab);
+
+            function generateResumeHtml(data) {
+                const styles = {
+                    name: 'font-size: 28pt; font-weight: bold; color: #333; margin-bottom: 2mm;',
+                    contactInfo: 'font-size: 10pt; color: #555;',
+                    header: 'text-align: center; margin-bottom: 10mm;',
+                    sectionTitle: 'font-size: 14pt; font-weight: bold; color: #003459; border-bottom: 2px solid #003459; padding-bottom: 1mm; margin-top: 8mm; margin-bottom: 4mm;',
+                    content: 'font-size: 11pt; line-height: 1.5;',
+                    item: 'margin-bottom: 6mm;',
+                    jobTitle: 'font-size: 12pt; font-weight: bold;',
+                    jobDetails: 'font-size: 10pt; color: #666; margin-bottom: 2mm;',
+                    jobDescription: 'font-size: 11pt;',
+                    skillsList: 'font-size: 11pt; line-height: 1.5;',
+                    body: "font-family: 'Helvetica', Arial, sans-serif; color: #333; background: white;",
+                    page: "width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);",
+                    professionalPage: "width: 210mm; min-height: 297mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex;",
+                    sidebar: "width: 70mm; background-color: #003459; color: white; padding: 15mm;",
+                    mainContent: "width: 140mm; padding: 15mm; background: white;",
+                    profilePhoto: "width: 40mm; height: 40mm; border-radius: 50%; object-fit: cover; margin: 0 auto 8mm; display: block; border: 3px solid white;",
+                    sidebarSectionTitle: "font-size: 13pt; font-weight: bold; color: #ff6600; margin-top: 8mm; margin-bottom: 4mm; border-bottom: 1px solid #ff6600; padding-bottom: 2mm;",
+                    contactItem: "display: flex; align-items: center; gap: 3mm; margin-bottom: 3mm; font-size: 9pt;",
+                    contactItemLink: "color: white; text-decoration: none; word-break: break-all;",
+                    contactItemIcon: "width: 4mm; text-align: center;",
+                    skillItem: "font-size: 10pt; margin-bottom: 2mm;",
+                    mainContentName: "font-size: 28pt; font-weight: bold; color: #003459; margin-bottom: 2mm;"
+                };
+
+                const mapsLink = \`https://www.google.com/maps/search/?api=1&query=$\${encodeURIComponent(data.address)}\`;
+                const resumeBodyHtml = \`
+                    <div style="\${styles.professionalPage}">
+                        <div style="\${styles.sidebar}">
+                            \${data.photo ? \`<img src="\${data.photo}" style="\${styles.profilePhoto}" alt="Foto de perfil">\` : ''}
+                            <div>
+                                <div style="\${styles.sidebarSectionTitle}">Contato</div>
+                                <div style="\${styles.contactItem}"><i class="fas fa-phone" style="\${styles.contactItemIcon}"></i> <a href="tel:\${data.phone}" style="\${styles.contactItemLink}">\${data.phone}</a></div>
+                                <div style="\${styles.contactItem}"><i class="fas fa-envelope" style="\${styles.contactItemIcon}"></i> <a href="mailto:\${data.email}" style="\${styles.contactItemLink}">\${data.email}</a></div>
+                                \${data.address ? \`<div style="\${styles.contactItem}"><i class="fas fa-map-marker-alt" style="\${styles.contactItemIcon}"></i> <a href="\${mapsLink}" target="_blank" style="\${styles.contactItemLink}">\${data.address}</a></div>\` : ''}
+                                \${data.linkedin ? \`<div style="\${styles.contactItem}"><i class="fab fa-linkedin" style="\${styles.contactItemIcon}"></i> <a href="\${data.linkedin}" target="_blank" style="\${styles.contactItemLink}">LinkedIn</a></div>\` : ''}
+                            </div>
+                            <div>
+                                <div style="\${styles.sidebarSectionTitle}">Habilidades</div>
+                                \${data.skills.map(skill => \`<div style="\${styles.skillItem}">\${skill}</div>\`).join('')}
+                            </div>
+                            \${data.languages.length > 0 ? \`
+                            <div>
+                                <div style="\${styles.sidebarSectionTitle}">Idiomas</div>
+                                \${data.languages.map(lang => \`<div><strong>\${lang.name}:</strong> \${lang.level}</div>\`).join('')}
+                            </div>\` : ''}
+                        </div>
+                        <div style="\${styles.mainContent}">
+                            <div style="\${styles.mainContentName}">\${data.name}</div>
+                            <div>
+                                <div style="\${styles.sectionTitle}">Resumo Profissional</div>
+                                <div style="\${styles.jobDescription}">\${data.summary.replace(/\n/g, '<br>')}</div>
+                            </div>
+                            <div>
+                                <div style="\${styles.sectionTitle}">Experiência Profissional</div>
+                                \${data.experiences.map(exp => \`
+                                    <div style="\${styles.item}">
+                                        <div style="\${styles.jobTitle}">\${exp.jobTitle}</div>
+                                        <div style="\${styles.jobDetails}">\${exp.company} | \${exp.period}</div>
+                                        <div style="\${styles.jobDescription}">\${exp.description}</div>
+                                    </div>
+                                \`).join('')}
+                            </div>
+                            <div>
+                                <div style="\${styles.sectionTitle}">Formação Acadêmica</div>
+                                \${data.educations.map(edu => \`
+                                    <div style="\${styles.item}">
+                                        <div style="\${styles.jobTitle}">\${edu.course}</div>
+                                        <div style="\${styles.jobDetails}">\${edu.institution} | \${edu.period}</div>
+                                    </div>
+                                \`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                \`;
+
+                return \`
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Currículo de \${data.name}</title>
+                        <link rel="stylesheet" href="fontawesome/css/all.min.css">
+                        <style>
+                            body { margin: 0; background-color: #f0f0f0; }
+                            @media print {
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                                body { background-color: white; }
+                                .page-container { box-shadow: none !important; margin: 0; }
+                                .print-controls { display: none !important; }
+                            }
+                            .print-controls {
+                                position: fixed;
+                                top: 20px;
+                                right: 20px;
+                                z-index: 100;
+                                text-align: right;
+                            }
+                            .print-btn {
+                                padding: 10px 20px;
+                                background-color: #003459;
+                                color: white;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-weight: bold;
+                            }
+                            .print-hint {
+                                font-size: 12px;
+                                color: #555;
+                                margin-top: 8px;
+                                max-width: 220px;
+                                background-color: rgba(255, 255, 255, 0.8);
+                                padding: 5px;
+                                border-radius: 3px;
+                            }
+                        </style>
+                    </head>
+                    <body style="\${styles.body}">
+                        <div class="print-controls">
+                            <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
+                            <p class="print-hint">Dica: Se a cor de fundo não aparecer no PDF, clique em "Mais definições" e ative a opção "Gráficos de segundo plano".</p>
+                        </div>
+                        \${resumeBodyHtml}
+                    </body>
+                    </html>
+                \`;
+            }
+
+            function collectFormData() {
+                const data = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    linkedin: document.getElementById('linkedin').value,
+                    summary: document.getElementById('summary').value,
+                    photo: photoDataUrl,
+                    skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+                    experiences: [],
+                    educations: [],
+                    languages: []
+                };
+                document.querySelectorAll('#experience-list .dynamic-item').forEach(item => {
+                    data.experiences.push({
+                        jobTitle: item.querySelector('.exp-job-title').value,
+                        company: item.querySelector('.exp-company').value,
+                        period: item.querySelector('.exp-period').value,
+                        description: item.querySelector('.exp-description').value.replace(/\n/g, '<br>')
+                    });
+                });
+                document.querySelectorAll('#education-list .dynamic-item').forEach(item => {
+                    data.educations.push({
+                        course: item.querySelector('.edu-course').value,
+                        institution: item.querySelector('.edu-institution').value,
+                        period: item.querySelector('.edu-period').value
+                    });
+                });
+                document.querySelectorAll('#language-list .dynamic-item').forEach(item => {
+                    data.languages.push({
+                        name: item.querySelector('.lang-name').value,
+                        level: item.querySelector('.lang-level').value
+                    });
+                });
+                return data;
+            }
+
+            photoInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        photoDataUrl = e.target.result;
+                        photoPreview.src = photoDataUrl;
+                        photoPreview.style.display = 'block';
+                        photoPlaceholder.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            function setupDynamicSection(addBtnId, listId, templateFunction) {
+                const addBtn = document.getElementById(addBtnId);
+                const listContainer = document.getElementById(listId);
+                addBtn.addEventListener('click', () => {
+                    const newItem = document.createElement('div');
+                    newItem.classList.add('dynamic-item');
+                    newItem.innerHTML = templateFunction();
+                    newItem.querySelector('.remove-item-btn').addEventListener('click', () => {
+                        newItem.remove();
+                    });
+                    listContainer.appendChild(newItem);
+                });
+            }
+            const experienceTemplate = () => \`
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Cargo</label><input type="text" class="exp-job-title"></div>
+                    <div class="form-group"><label>Empresa</label><input type="text" class="exp-company"></div>
+                    <div class="form-group"><label>Período (Ex: Jan 2020 - Dez 2022)</label><input type="text" class="exp-period"></div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;"><label>Descrição das atividades</label><textarea class="exp-description"></textarea></div>
+            \`;
+            const educationTemplate = () => \`
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Curso/Formação</label><input type="text" class="edu-course"></div>
+                    <div class="form-group"><label>Instituição</label><input type="text" class="edu-institution"></div>
+                    <div class="form-group"><label>Período</label><input type="text" class="edu-period"></div>
+                </div>
+            \`;
+            const languageTemplate = () => \`
+                 <button type="button" class="remove-item-btn">×</button>
+                 <div class="form-grid">
+                    <div class="form-group"><label>Idioma</label><input type="text" class="lang-name" placeholder="Ex: Inglês"></div>
+                    <div class="form-group"><label>Nível</label><input type="text" class="lang-level" placeholder="Ex: Avançado"></div>
+                </div>
+            \`;
+            setupDynamicSection('add-experience-btn', 'experience-list', experienceTemplate);
+            setupDynamicSection('add-education-btn', 'education-list', educationTemplate);
+            setupDynamicSection('add-language-btn', 'language-list', languageTemplate);
+
+            document.getElementById('add-experience-btn').click();
+            document.getElementById('add-education-btn').click();
+        });
+    </script>
+</body>
+</html>
