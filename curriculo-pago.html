@@ -162,6 +162,11 @@
                     <button type="button" class="add-item-btn" id="add-experience-btn"><i class="fas fa-plus"></i> Adicionar Experiência</button>
                 </section>
                 <section class="form-section">
+                    <h2><i class="fas fa-hands-helping"></i> Experiência Social / Voluntária (Opcional)</h2>
+                    <div id="volunteer-list"></div>
+                    <button type="button" class="add-item-btn" id="add-volunteer-btn"><i class="fas fa-plus"></i> Adicionar Experiência Social</button>
+                </section>
+                <section class="form-section">
                     <h2><i class="fas fa-graduation-cap"></i>Formação Acadêmica</h2>
                     <div id="education-list"></div>
                     <button type="button" class="add-item-btn" id="add-education-btn"><i class="fas fa-plus"></i> Adicionar Formação</button>
@@ -170,7 +175,7 @@
                     <h2><i class="fas fa-cogs"></i>Habilidades e Competências</h2>
                      <div class="form-group">
                         <label for="skills">Liste suas principais habilidades (separadas por vírgula).</label>
-                        <input type="text" id="skills" placeholder="Ex: Comunicação, Pacote Office, Proatividade" autocomplete="off">
+                        <input type="text" id="skills" placeholder="Ex: Excel, PowerPoint, Word, Informática Básica..." autocomplete="off">
                     </div>
                 </section>
                 <section class="form-section">
@@ -214,7 +219,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const selectedModel = 'professional'; // Modelo profissional é o único e padrão
+            const selectedModel = 'professional';
             let photoDataUrl = null;
 
             const form = document.getElementById('cv-form');
@@ -229,15 +234,12 @@
                     form.reportValidity();
                     return;
                 }
-
                 const data = collectFormData();
-                
                 const newWindow = window.open();
                 if(!newWindow) {
                     alert('Seu navegador bloqueou a abertura de uma nova aba. Por favor, permita pop-ups para este site.');
                     return;
                 }
-                
                 const fullHtml = generateResumeHtml(data);
                 newWindow.document.write(fullHtml);
                 newWindow.document.close();
@@ -271,7 +273,7 @@
                     mainContentName: "font-size: 28pt; font-weight: bold; color: #003459; margin-bottom: 2mm;"
                 };
 
-                const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.address)}`;
+                const mapsLink = `https://www.google.com/maps?q=${encodeURIComponent(data.address)}`;
                 const resumeBodyHtml = `
                     <div style="${styles.professionalPage}">
                         <div style="${styles.sidebar}">
@@ -309,6 +311,16 @@
                                     </div>
                                 `).join('')}
                             </div>
+                            ${data.volunteer_experiences.length > 0 ? `
+                            <div>
+                                <div style="${styles.sectionTitle}">Experiência Social / Voluntária</div>
+                                ${data.volunteer_experiences.map(vol => `
+                                    <div style="${styles.item}">
+                                        <div style="${styles.jobTitle}">${vol.role}</div>
+                                        <div style="${styles.jobDetails}">${vol.institution} | ${vol.period}</div>
+                                    </div>
+                                `).join('')}
+                            </div>` : ''}
                             <div>
                                 <div style="${styles.sectionTitle}">Formação Acadêmica</div>
                                 ${data.educations.map(edu => `
@@ -317,6 +329,9 @@
                                         <div style="${styles.jobDetails}">${edu.institution} | ${edu.period}</div>
                                     </div>
                                 `).join('')}
+                            </div>
+                            <div style="margin-top: 15mm; text-align: center; font-size: 11pt;">
+                                <p>Comprometido(a) com a excelência e o desenvolvimento contínuo, coloco-me à disposição para colaborar com os objetivos desta organização.</p>
                             </div>
                         </div>
                     </div>
@@ -388,7 +403,8 @@
                     skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
                     experiences: [],
                     educations: [],
-                    languages: []
+                    languages: [],
+                    volunteer_experiences: []
                 };
                 document.querySelectorAll('#experience-list .dynamic-item').forEach(item => {
                     data.experiences.push({
@@ -409,6 +425,13 @@
                     data.languages.push({
                         name: item.querySelector('.lang-name').value,
                         level: item.querySelector('.lang-level').value
+                    });
+                });
+                document.querySelectorAll('#volunteer-list .dynamic-item').forEach(item => {
+                    data.volunteer_experiences.push({
+                        role: item.querySelector('.vol-role').value,
+                        institution: item.querySelector('.vol-institution').value,
+                        period: item.querySelector('.vol-period').value
                     });
                 });
                 return data;
@@ -465,9 +488,18 @@
                     <div class="form-group"><label>Nível</label><input type="text" class="lang-level" placeholder="Ex: Avançado"></div>
                 </div>
             `;
+            const volunteerTemplate = () => `
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Função/Cargo</label><input type="text" class="vol-role"></div>
+                    <div class="form-group"><label>Instituição/Organização</label><input type="text" class="vol-institution"></div>
+                    <div class="form-group"><label>Período</label><input type="text" class="vol-period"></div>
+                </div>
+            `;
             setupDynamicSection('add-experience-btn', 'experience-list', experienceTemplate);
             setupDynamicSection('add-education-btn', 'education-list', educationTemplate);
             setupDynamicSection('add-language-btn', 'language-list', languageTemplate);
+            setupDynamicSection('add-volunteer-btn', 'volunteer-list', volunteerTemplate);
 
             document.getElementById('add-experience-btn').click();
             document.getElementById('add-education-btn').click();
