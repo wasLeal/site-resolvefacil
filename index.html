@@ -152,6 +152,13 @@
                         <input type="text" id="skills" placeholder="Ex: Comunicação, Pacote Office, Proatividade" autocomplete="off">
                     </div>
                 </section>
+                <section class="form-section">
+                    <h2><i class="fas fa-calendar-alt"></i> Local e Data</h2>
+                    <div class="form-group">
+                        <label for="location-date">Digite o local e a data da emissão do currículo</label>
+                        <input type="text" id="location-date" placeholder="Ex: Manaus, 23 de agosto de 2025">
+                    </div>
+                </section>
             </form>
             <div class="generator-footer">
                 <button class="generate-btn" id="generate-btn" type="button">
@@ -222,7 +229,10 @@
                     jobDescription: 'font-size: 11pt;',
                     skillsList: 'font-size: 11pt; line-height: 1.5;',
                     body: "font-family: 'Helvetica', Arial, sans-serif; color: #333; background: white;",
-                    page: "width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);"
+                    page: "width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);",
+                    closingContainer: 'margin-top: 20mm; font-size: 11pt;',
+                    closingText: 'text-align: center; margin-bottom: 15mm;',
+                    dateText: 'text-align: center;'
                 };
 
                 const resumeBodyHtml = `
@@ -257,6 +267,11 @@
                         <div>
                             <div style="${styles.sectionTitle}">Habilidades</div>
                             <div style="${styles.skillsList}">${data.skills.join(' • ')}</div>
+                        </div>
+
+                        <div style="${styles.closingContainer}">
+                            <p style="${styles.closingText}">Agradeço a oportunidade e coloco-me à disposição para uma entrevista.</p>
+                            ${data.locationDate ? `<p style="${styles.dateText}">${data.locationDate}</p>` : ''}
                         </div>
                     </div>
                 `;
@@ -323,6 +338,7 @@
                     address: document.getElementById('address').value,
                     summary: document.getElementById('summary').value,
                     skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+                    locationDate: document.getElementById('location-date').value,
                     experiences: [],
                     educations: []
                 };
