@@ -13,14 +13,8 @@ const navLinks = [
     { href: 'https://www.resolvefacil.online/blog.html', text: 'Blog' }
 ];
 
-// 2. CONTEÚDO DO RODAPÉ
-const footerContent = `
-    © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
-    <a href="https://www.resolvefacil.online/politica-de-privacidade.html">Política de Privacidade</a>
-`;
-
 // ==================================================================
-// O CÓDIGO ABAIXO USA AS LISTAS ACIMA PARA CONSTRUIR TUDO
+// O CÓDIGO ABAIXO USA A LISTA ACIMA PARA CONSTRUIR OS MENUS
 // Não precisa mais mexer aqui.
 // ==================================================================
 
@@ -30,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuContainer) {
         let desktopNavHTML = '<nav><ul>';
         navLinks.forEach(link => {
-            desktopNavHTML += \`<li><a href="\${link.href}">\${link.text}</a></li>\`;
+            desktopNavHTML += `<li><a href="${link.href}">${link.text}</a></li>`;
         });
         desktopNavHTML += '</ul></nav>';
         menuContainer.innerHTML = desktopNavHTML;
@@ -39,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Constrói o Menu Mobile ---
     const mobileNavContainer = document.getElementById('mobile-nav');
     if (mobileNavContainer) {
+        // Limpa o conteúdo existente para evitar duplicatas
         mobileNavContainer.innerHTML = '';
         navLinks.forEach(link => {
             const mobileLink = document.createElement('a');
@@ -57,9 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Constrói o Rodapé ---
+    // --- ADIÇÃO: Constrói o Rodapé ---
     const footerContainer = document.getElementById('footer-container');
     if (footerContainer) {
-        footerContainer.innerHTML = footerContent;
+        footerContainer.innerHTML = `
+            © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
+            <a href="https://www.resolvefacil.online/politica-de-privacidade.html">Política de Privacidade</a>
+        `;
     }
 });
