@@ -42,26 +42,43 @@ exports.handler = async function(event) {
         console.log('Assinatura do Webhook verificada com sucesso!');
 
         if (body.type && body.type.includes('merchant_order')) {
-            // --- ESTA É A LINHA CORRIGIDA ---
-            // Pegamos o ID do nível principal do corpo (body.id), e não de dentro do "data"
             const orderId = body.id;
-            
             console.log(`Processando Pedido Comercial ID: ${orderId}`);
 
-            const mpResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
+            const mpOrderResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
             });
 
-            if (!mpResponse.ok) throw new Error(`Falha ao buscar pedido no MP: ${mpResponse.statusText}`);
+            if (!mpOrderResponse.ok) throw new Error(`Falha ao buscar pedido no MP: ${mpOrderResponse.statusText}`);
             
-            const order = await mpResponse.json();
+            const order = await mpOrderResponse.json();
             console.log('Detalhes do pedido recebidos. Status:', order.order_status);
             
             if (order.status === 'closed' && order.order_status === 'paid') {
-                console.log('Pedido PAGO. Preparando para enviar e-mail de entrega.');
+                console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.');
+
+                // --- ESTA É A PARTE NOVA E CORRIGIDA ---
+                // O e-mail não vem no "Pedido", mas sim no "Pagamento". Vamos buscá-lo.
+                const paymentId = order.payments[0]?.id; // Pega o ID do primeiro pagamento associado à ordem
+                if (!paymentId) {
+                    throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
+                }
                 
-                const customerEmail = order.payer.email;
-                const customerName = order.payer.nickname || 'Cliente';
+                const mpPaymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+                    headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
+                });
+
+                if (!mpPaymentResponse.ok) throw new Error(`Falha ao buscar detalhes do pagamento no MP: ${mpPaymentResponse.statusText}`);
+
+                const paymentDetails = await mpPaymentResponse.json();
+                const customerEmail = paymentDetails.payer.email;
+                const customerName = paymentDetails.payer.first_name || 'Cliente';
+                
+                if (!customerEmail) {
+                    throw new Error(`E-mail do cliente não encontrado para o pagamento ${paymentId}`);
+                }
+                // --- FIM DA PARTE NOVA ---
+                
                 const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
                 const emailSubject = "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil";
                 const senderEmail = "resolvefacil70@gmail.com";
