@@ -4,27 +4,18 @@ const crypto = require('crypto');
 
 // A função principal que a Netlify irá executar quando for chamada
 exports.handler = async function(event) {
-    console.log('--- INICIANDO EXECUÇÃO DA FUNÇÃO ---');
-
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
     try {
-        console.log('Verificando variáveis de ambiente...');
-        if (!process.env.BREVO_API_KEY || !process.env.MERCADO_PAGO_ACCESS_TOKEN || !process.env.MERCADO_PAGO_WEBHOOK_SECRET) {
-            console.error('ERRO FATAL: Uma ou mais variáveis de ambiente estão faltando.');
-            return { statusCode: 500, body: 'Missing environment variables.' };
-        }
-        console.log('Variáveis de ambiente OK. Verificando assinatura do Webhook...');
-        
         const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
         const signatureHeader = event.headers['x-signature'];
         const requestId = event.headers['x-request-id'];
 
-        if (!signatureHeader) {
-            console.warn('Cabeçalho x-signature está faltando.');
-            return { statusCode: 401, body: 'Signature missing.' };
+        if (!process.env.BREVO_API_KEY || !process.env.MERCADO_PAGO_ACCESS_TOKEN || !secret || !signatureHeader) {
+            console.error('Configuração faltando: Chaves de API ou cabeçalho de assinatura ausentes.');
+            return { statusCode: 500, body: 'Configuration error.' };
         }
 
         const signatureParts = signatureHeader.split(',');
@@ -40,13 +31,12 @@ exports.handler = async function(event) {
         const receivedHash = hashPart.split('=')[1];
         const body = JSON.parse(event.body);
         
-        console.log('Corpo da notificação recebida:', JSON.stringify(body, null, 2));
-
         const template = `id:${body.id};request-id:${requestId};ts:${ts};`;
-        const hmac = crypto.createHmac('sha265', secret).update(template).digest('hex');
+        // --- ESTA É A LINHA CORRIGIDA ---
+        const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
         
         if (hmac !== receivedHash) {
-            console.warn('Assinatura inválida. A requisição pode ser uma fraude. Rejeitando.');
+            console.warn('Assinatura inválida. Rejeitando.');
             return { statusCode: 401, body: 'Invalid signature.' };
         }
         
@@ -116,11 +106,10 @@ exports.handler = async function(event) {
             }
         }
 
-        console.log('--- EXECUÇÃO DA FUNÇÃO CONCLUÍDA COM SUCESSO ---');
         return { statusCode: 200, body: 'Webhook processed.' };
 
     } catch (error) {
-        console.error('--- ERRO INESPERADO NA EXECUÇÃO DA FUNÇÃO ---:', error);
+        console.error('ERRO INESPERADO NA EXECUÇÃO DA FUNÇÃO:', error);
         return { statusCode: 500, body: 'Internal Server Error.' };
     }
 };
