@@ -43,7 +43,7 @@ exports.handler = async function(event) {
         console.log('Corpo da notificação recebida:', JSON.stringify(body, null, 2));
 
         const template = `id:${body.id};request-id:${requestId};ts:${ts};`;
-        const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
+        const hmac = crypto.createHmac('sha265', secret).update(template).digest('hex');
         
         if (hmac !== receivedHash) {
             console.warn('Assinatura inválida. A requisição pode ser uma fraude. Rejeitando.');
@@ -52,8 +52,6 @@ exports.handler = async function(event) {
         
         console.log('Assinatura do Webhook verificada com sucesso!');
 
-        // --- CORREÇÃO APLICADA AQUI ---
-        // Agora verificamos se o tipo INCLUI 'merchant_order', o que cobre ambos os casos.
         if (body.type && body.type.includes('merchant_order')) {
             const orderId = body.data.id;
             console.log(`Processando Pedido Comercial ID: ${orderId}`);
@@ -84,6 +82,11 @@ exports.handler = async function(event) {
                         <p>Seu pagamento foi confirmado com sucesso e seu acesso ao <strong>Gerador de Currículo Profissional</strong> já está liberado.</p>
                         <p style="text-align: center; margin: 25px 0;">
                             <a href="${linkDoProduto}" style="background-color: #003459; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">ACESSAR MEU PRODUTO</a>
+                        </p>
+                        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 15px;">
+                            Se o botão acima não funcionar, copie e cole este endereço no seu navegador:
+                            <br>
+                            <a href="${linkDoProduto}" style="color: #003459; word-break: break-all;">${linkDoProduto}</a>
                         </p>
                         <p>Qualquer dúvida, basta responder a este e-mail.</p>
                         <p>Atenciosamente,<br>Equipe ResolveFácil</p>
