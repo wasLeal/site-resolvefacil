@@ -32,7 +32,6 @@ exports.handler = async function(event) {
         const body = JSON.parse(event.body);
         
         const template = `id:${body.id};request-id:${requestId};ts:${ts};`;
-        // --- ESTA É A LINHA CORRIGIDA ---
         const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
         
         if (hmac !== receivedHash) {
@@ -43,7 +42,10 @@ exports.handler = async function(event) {
         console.log('Assinatura do Webhook verificada com sucesso!');
 
         if (body.type && body.type.includes('merchant_order')) {
-            const orderId = body.data.id;
+            // --- ESTA É A LINHA CORRIGIDA ---
+            // Pegamos o ID do nível principal do corpo (body.id), e não de dentro do "data"
+            const orderId = body.id;
+            
             console.log(`Processando Pedido Comercial ID: ${orderId}`);
 
             const mpResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
