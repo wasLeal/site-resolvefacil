@@ -18,7 +18,6 @@ exports.handler = async function(event) {
         }
         console.log('Variáveis de ambiente OK. Verificando assinatura do Webhook...');
         
-        // --- VERIFICAÇÃO DE ASSINATURA CORRIGIDA ---
         const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
         const signatureHeader = event.headers['x-signature'];
         const requestId = event.headers['x-request-id'];
@@ -28,7 +27,6 @@ exports.handler = async function(event) {
             return { statusCode: 401, body: 'Signature missing.' };
         }
 
-        // CORREÇÃO: Extrai o timestamp (ts) e o hash (v1) do cabeçalho
         const signatureParts = signatureHeader.split(',');
         const tsPart = signatureParts.find(part => part.trim().startsWith('ts='));
         const hashPart = signatureParts.find(part => part.trim().startsWith('v1='));
@@ -54,8 +52,9 @@ exports.handler = async function(event) {
         
         console.log('Assinatura do Webhook verificada com sucesso!');
 
-        // --- PROCESSAMENTO DA NOTIFICAÇÃO (sem alterações) ---
-        if (body.type === 'merchant_order') {
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Agora verificamos se o tipo INCLUI 'merchant_order', o que cobre ambos os casos.
+        if (body.type && body.type.includes('merchant_order')) {
             const orderId = body.data.id;
             console.log(`Processando Pedido Comercial ID: ${orderId}`);
 
@@ -69,7 +68,7 @@ exports.handler = async function(event) {
             console.log('Detalhes do pedido recebidos. Status:', order.order_status);
             
             if (order.status === 'closed' && order.order_status === 'paid') {
-                console.log('Pedido PAGO. Preparando para enviar e-mail.');
+                console.log('Pedido PAGO. Preparando para enviar e-mail de entrega.');
                 
                 const customerEmail = order.payer.email;
                 const customerName = order.payer.nickname || 'Cliente';
