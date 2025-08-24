@@ -2,7 +2,6 @@
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 
-// A função principal que a Netlify irá executar quando for chamada
 exports.handler = async function(event) {
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
@@ -23,7 +22,6 @@ exports.handler = async function(event) {
         const hashPart = signatureParts.find(part => part.trim().startsWith('v1='));
 
         if (!tsPart || !hashPart) {
-            console.warn('Formato da assinatura inválido.');
             return { statusCode: 401, body: 'Invalid signature format.' };
         }
         
@@ -57,12 +55,8 @@ exports.handler = async function(event) {
             if (order.status === 'closed' && order.order_status === 'paid') {
                 console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.');
 
-                // --- ESTA É A PARTE NOVA E CORRIGIDA ---
-                // O e-mail não vem no "Pedido", mas sim no "Pagamento". Vamos buscá-lo.
-                const paymentId = order.payments[0]?.id; // Pega o ID do primeiro pagamento associado à ordem
-                if (!paymentId) {
-                    throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
-                }
+                const paymentId = order.payments[0]?.id;
+                if (!paymentId) throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
                 
                 const mpPaymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
                     headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
@@ -72,60 +66,23 @@ exports.handler = async function(event) {
 
                 const paymentDetails = await mpPaymentResponse.json();
                 const customerEmail = paymentDetails.payer.email;
-                const customerName = paymentDetails.payer.first_name || 'Cliente';
                 
-                if (!customerEmail) {
-                    throw new Error(`E-mail do cliente não encontrado para o pagamento ${paymentId}`);
-                }
-                // --- FIM DA PARTE NOVA ---
+                // --- A "CÂMERA ESCONDIDA" ESTÁ AQUI ---
+                console.log('--------------------------------------------------');
+                console.log('--- DADO CRÍTICO PARA ANÁLISE ---');
+                console.log('O e-mail exato recebido do Mercado Pago foi:', customerEmail);
+                console.log('--- FIM DO DADO CRÍTICO ---');
+                console.log('--------------------------------------------------');
                 
-                const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
-                const emailSubject = "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil";
-                const senderEmail = "resolvefacil70@gmail.com";
-                const senderName = "ResolveFácil";
+                // O código de envio de e-mail foi intencionalmente desativado para este teste.
+                console.log('Teste de diagnóstico concluído. O envio real do e-mail foi pulado.');
 
-                const emailHtmlContent = `
-                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #003459;">Olá, ${customerName}!</h2>
-                        <p>Muito obrigado por sua compra na ResolveFácil!</p>
-                        <p>Seu pagamento foi confirmado com sucesso e seu acesso ao <strong>Gerador de Currículo Profissional</strong> já está liberado.</p>
-                        <p style="text-align: center; margin: 25px 0;">
-                            <a href="${linkDoProduto}" style="background-color: #003459; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">ACESSAR MEU PRODUTO</a>
-                        </p>
-                        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 15px;">
-                            Se o botão acima não funcionar, copie e cole este endereço no seu navegador:
-                            <br>
-                            <a href="${linkDoProduto}" style="color: #003459; word-break: break-all;">${linkDoProduto}</a>
-                        </p>
-                        <p>Qualquer dúvida, basta responder a este e-mail.</p>
-                        <p>Atenciosamente,<br>Equipe ResolveFácil</p>
-                    </div>`;
-
-                console.log(`Enviando e-mail para: ${customerEmail}`);
-                
-                const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
-                    method: 'POST',
-                    headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sender: { name: senderName, email: senderEmail },
-                        to: [{ email: customerEmail, name: customerName }],
-                        subject: emailSubject,
-                        htmlContent: emailHtmlContent
-                    })
-                });
-
-                if (!brevoResponse.ok) {
-                    const errorBody = await brevoResponse.text();
-                    console.error(`Falha ao enviar e-mail pela Brevo: ${brevoResponse.statusText}`, errorBody);
-                    throw new Error('Falha ao enviar e-mail via Brevo.');
-                }
-                console.log(`E-mail de entrega enviado com sucesso para ${customerEmail}.`);
             } else {
                 console.log(`Pedido ${orderId} ainda não foi pago (status: ${order.order_status}). Nenhuma ação necessária.`);
             }
         }
 
-        return { statusCode: 200, body: 'Webhook processed.' };
+        return { statusCode: 200, body: 'Webhook diagnostic processed.' };
 
     } catch (error) {
         console.error('ERRO INESPERADO NA EXECUÇÃO DA FUNÇÃO:', error);
