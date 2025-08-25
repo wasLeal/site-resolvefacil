@@ -6,12 +6,12 @@ exports.handler = async function(event) {
     console.log("Guardião iniciado. Verificando pagamentos pendentes...");
 
     try {
-        // --- 1. Define o Período de Busca ---
-        // Pega a hora atual e a hora 12 minutos atrás. Usamos 12 minutos como margem de segurança para uma janela de 10 minutos.
+        // --- 1. Define o Período de Busca (CORRIGIDO) ---
+        // Pega a hora atual e a hora 7 minutos atrás.
+        // Usamos 7 minutos como margem de segurança para uma janela de 5 minutos.
         const now = new Date();
-        const past = new Date(now.getTime() - 12 * 60 * 1000); // 12 minutos atrás
+        const past = new Date(now.getTime() - 7 * 60 * 1000); // 7 minutos atrás
 
-        // Formata as datas para o padrão que a API do Mercado Pago aceita (ISO 8601)
         const dateEnd = now.toISOString();
         const dateBegin = past.toISOString();
 
@@ -44,10 +44,8 @@ exports.handler = async function(event) {
             const customerName = payment.payer.first_name || 'Cliente';
             const paymentId = payment.id;
             
-            // --- VERIFICAÇÃO SIMPLES - ESTE PASSO PODE SER MELHORADO NO FUTURO ---
-            // Por enquanto, vamos assumir que se o Guardião encontrou, o webhook provavelmente falhou.
-            // Em uma versão futura, poderíamos verificar um banco de dados ou os logs da Brevo para evitar duplicados.
-            // Por agora, o foco é GARANTIR A ENTREGA.
+            // Em uma versão futura, poderíamos adicionar uma verificação aqui para evitar 100% dos duplicados.
+            // Por agora, o foco principal é garantir a entrega. A janela de busca mais curta já reduz muito o risco.
             
             console.log(`Processando entrega para o pagamento ${paymentId} - Cliente: ${customerEmail}`);
 
@@ -83,7 +81,6 @@ exports.handler = async function(event) {
             if (!brevoResponse.ok) {
                 const errorBody = await brevoResponse.text();
                 console.error(`Guardião falhou ao enviar e-mail para ${customerEmail} (Pagamento ID: ${paymentId}):`, errorBody);
-                // Continua para o próximo pagamento mesmo que um falhe
             } else {
                 console.log(`Guardião enviou e-mail de entrega com sucesso para ${customerEmail} (Pagamento ID: ${paymentId}).`);
             }
