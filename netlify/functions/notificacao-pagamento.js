@@ -54,16 +54,27 @@ exports.handler = async function(event) {
             console.log('Detalhes do pedido recebidos. Status:', order.order_status);
             
             if (order.status === 'closed' && order.order_status === 'paid') {
-                console.log('Pedido PAGO. Buscando e-mail do cliente.');
+                console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.');
 
-                // --- ESTA É A CORREÇÃO FINAL E SIMPLIFICADA ---
-                // Pegamos o e-mail diretamente dos dados do "Pedido", que é mais confiável.
-                const customerEmail = order.payer.email;
-                const customerName = order.payer.nickname || 'Cliente';
+                const paymentId = order.payments[0]?.id;
+                if (!paymentId) throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
                 
-                if (!customerEmail) {
-                    throw new Error(`E-mail do cliente não encontrado nos dados do Pedido ${orderId}`);
-                }
+                // FAZENDO A SEGUNDA CHAMADA, QUE É O MÉTODO CORRETO
+                const mpPaymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+                    headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
+                });
+
+                if (!mpPaymentResponse.ok) throw new Error(`Falha ao buscar detalhes do pagamento no MP: ${mpPaymentResponse.statusText}`);
+
+                const paymentDetails = await mpPaymentResponse.json();
+                const rawEmail = paymentDetails.payer.email;
+                const customerName = paymentDetails.payer.first_name || 'Cliente';
+                
+                if (!rawEmail) throw new Error(`E-mail do cliente não encontrado nos dados do Pagamento ${paymentId}`);
+
+                // Aplicando o filtro de segurança para limpar o e-mail
+                const emailMatch = rawEmail.match(/<(.+)>/);
+                const customerEmail = emailMatch ? emailMatch[1] : rawEmail;
                 
                 const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
                 const emailSubject = "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil";
@@ -87,7 +98,7 @@ exports.handler = async function(event) {
                         <p>Atenciosamente,<br>Equipe ResolveFácil</p>
                     </div>`;
 
-                console.log(`Enviando e-mail para: ${customerEmail}`);
+                console.log(`Enviando e-mail para o endereço filtrado: ${customerEmail}`);
                 
                 const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
