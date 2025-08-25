@@ -2,6 +2,7 @@
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 
+// A função principal que a Netlify irá executar quando for chamada
 exports.handler = async function(event) {
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
@@ -53,7 +54,7 @@ exports.handler = async function(event) {
             console.log('Detalhes do pedido recebidos. Status:', order.order_status);
             
             if (order.status === 'closed' && order.order_status === 'paid') {
-                console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail do cliente.');
+                console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.');
 
                 const paymentId = order.payments[0]?.id;
                 if (!paymentId) throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
@@ -65,52 +66,64 @@ exports.handler = async function(event) {
                 if (!mpPaymentResponse.ok) throw new Error(`Falha ao buscar detalhes do pagamento no MP: ${mpPaymentResponse.statusText}`);
 
                 const paymentDetails = await mpPaymentResponse.json();
-                const rawEmailFromPayer = paymentDetails.payer.email;
+                const rawEmail = paymentDetails.payer.email;
+                const customerName = paymentDetails.payer.first_name || 'Cliente';
                 
-                if (!rawEmailFromPayer) throw new Error(`E-mail do cliente não encontrado para o pagamento ${paymentId}`);
+                if (!rawEmail) throw new Error(`E-mail do cliente não encontrado para o pagamento ${paymentId}`);
 
-                // --- LÓGICA DO TESTE DE RELATÓRIO ---
-                // Em vez de enviar para o cliente, enviamos um relatório para você.
-                const seuEmail = "resolvefacil70@gmail.com";
-                const relatorioSubject = "Relatório de Webhook - Pagamento Recebido";
-                const relatorioHtmlContent = `
-                    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-                        <h2>Relatório de Teste de Webhook - ResolveFácil</h2>
-                        <p>Olá, Washington!</p>
-                        <p>Uma notificação de pagamento para o pedido <strong>${orderId}</strong> foi recebida e processada com sucesso.</p>
-                        <p>O objetivo deste teste era capturar o e-mail exato que o Mercado Pago nos forneceu para o comprador.</p>
-                        <hr>
-                        <p><strong>E-mail do comprador (exatamente como foi recebido):</strong></p>
-                        <pre style="background-color:#f4f4f4; padding: 10px; border-radius: 4px; font-family: monospace;">${rawEmailFromPayer}</pre>
-                        <hr>
-                        <p>Com esta informação, poderemos fazer o ajuste final no código de produção.</p>
-                    </div>
-                `;
+                // --- O FILTRO DE E-MAIL EM AÇÃO ---
+                // Extrai apenas o e-mail puro, ignorando qualquer texto extra.
+                const emailMatch = rawEmail.match(/<(.+)>/);
+                const customerEmail = emailMatch ? emailMatch[1] : rawEmail;
+                
+                const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
+                const emailSubject = "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil";
+                const senderEmail = "resolvefacil70@gmail.com";
+                const senderName = "ResolveFácil";
 
-                console.log(`Enviando e-mail de relatório para: ${seuEmail}`);
+                const emailHtmlContent = `
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                        <h2 style="color: #003459;">Olá, ${customerName}!</h2>
+                        <p>Muito obrigado por sua compra na ResolveFácil!</p>
+                        <p>Seu pagamento foi confirmado com sucesso e seu acesso ao <strong>Gerador de Currículo Profissional</strong> já está liberado.</p>
+                        <p style="text-align: center; margin: 25px 0;">
+                            <a href="${linkDoProduto}" style="background-color: #003459; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">ACESSAR MEU PRODUTO</a>
+                        </p>
+                        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 15px;">
+                            Se o botão acima não funcionar, copie e cole este endereço no seu navegador:
+                            <br>
+                            <a href="${linkDoProduto}" style="color: #003459; word-break: break-all;">${linkDoProduto}</a>
+                        </p>
+                        <p>Qualquer dúvida, basta responder a este e-mail.</p>
+                        <p>Atenciosamente,<br>Equipe ResolveFácil</p>
+                    </div>`;
+
+                console.log(`Enviando e-mail para o endereço filtrado: ${customerEmail}`);
                 
                 const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sender: { name: "Sistema ResolveFácil", email: "resolvefacil70@gmail.com" },
-                        to: [{ email: seuEmail, name: "Washington Leal" }],
-                        subject: relatorioSubject,
-                        htmlContent: relatorioHtmlContent
+                        sender: { name: senderName, email: senderEmail },
+                        to: [{ email: customerEmail, name: customerName }],
+                        subject: emailSubject,
+                        htmlContent: emailHtmlContent
                     })
                 });
 
                 if (!brevoResponse.ok) {
                     const errorBody = await brevoResponse.text();
-                    console.error(`Falha ao enviar e-mail de RELATÓRIO pela Brevo: ${brevoResponse.statusText}`, errorBody);
-                    throw new Error('Falha ao enviar e-mail de RELATÓRIO via Brevo.');
+                    console.error(`Falha ao enviar e-mail pela Brevo: ${brevoResponse.statusText}`, errorBody);
+                    throw new Error('Falha ao enviar e-mail via Brevo.');
                 }
-                console.log(`E-mail de RELATÓRIO enviado com sucesso para ${seuEmail}.`);
+                console.log(`E-mail de entrega enviado com sucesso para ${customerEmail}.`);
             } else {
                 console.log(`Pedido ${orderId} ainda não foi pago (status: ${order.order_status}). Nenhuma ação necessária.`);
             }
         }
+
         return { statusCode: 200, body: 'Webhook processed.' };
+
     } catch (error) {
         console.error('ERRO INESPERADO NA EXECUÇÃO DA FUNÇÃO:', error);
         return { statusCode: 500, body: 'Internal Server Error.' };
