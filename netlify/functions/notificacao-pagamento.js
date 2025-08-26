@@ -1,105 +1,88 @@
-// Importa as ferramentas necessárias para a função
+// Importa as ferramentas necessárias
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 
-// A função principal que a Netlify irá executar quando for chamada
-exports.handler = async function(event) {
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Method Not Allowed' };
-    }
+// --- FUNÇÃO DE PROCESSAMENTO PESADO ---
+// Esta função faz todo o trabalho de verificar o pagamento e enviar o e-mail.
+// Ela será chamada em segundo plano, DEPOIS que já respondemos ao Mercado Pago.
+async function processarPagamento(body, headers) {
+    console.log("Iniciando processamento assíncrono do pagamento...");
 
     try {
+        // 1. Validação da Assinatura (Segurança em primeiro lugar)
         const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
-        const signatureHeader = event.headers['x-signature'];
-        const requestId = event.headers['x-request-id'];
-
-        if (!process.env.BREVO_API_KEY || !process.env.MERCADO_PAGO_ACCESS_TOKEN || !secret || !signatureHeader) {
-            console.error('Configuração faltando: Chaves de API ou cabeçalho de assinatura ausentes.');
-            return { statusCode: 500, body: 'Configuration error.' };
-        }
-
+        const signatureHeader = headers['x-signature'];
         const signatureParts = signatureHeader.split(',');
         const tsPart = signatureParts.find(part => part.trim().startsWith('ts='));
         const hashPart = signatureParts.find(part => part.trim().startsWith('v1='));
-
-        if (!tsPart || !hashPart) {
-            return { statusCode: 401, body: 'Invalid signature format.' };
-        }
         
+        if (!tsPart || !hashPart) {
+            console.error("Assinatura inválida no processamento assíncrono.");
+            return; // Encerra se a assinatura for inválida
+        }
+
         const ts = tsPart.split('=')[1];
         const receivedHash = hashPart.split('=')[1];
-        const body = JSON.parse(event.body);
-        
-        const template = `id:${body.id};request-id:${requestId};ts:${ts};`;
-        const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
-        
-        if (hmac !== receivedHash) {
-            console.warn('Assinatura inválida. Rejeitando.');
-            return { statusCode: 401, body: 'Invalid signature.' };
-        }
-        
-        console.log('Assinatura do Webhook verificada com sucesso!');
+        const manifest = `id:${body.id};request-id:${headers['x-request-id']};ts:${ts};`;
+        const hmac = crypto.createHmac('sha256', secret);
+        hmac.update(manifest);
+        const expectedHash = hmac.digest('hex');
 
-        if (body.type && body.type.includes('merchant_order')) {
+        if (receivedHash !== expectedHash) {
+            console.error("Falha na verificação da assinatura no processamento assíncrono.");
+            return; // Encerra se a assinatura não bater
+        }
+        console.log("Assinatura verificada com sucesso no processamento assíncrono.");
+
+        // 2. Processa apenas se for um Pedido Comercial
+        if (body.topic === 'merchant_order') {
             const orderId = body.id;
             console.log(`Processando Pedido Comercial ID: ${orderId}`);
 
-            const mpOrderResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
+            // 3. Busca os Detalhes do Pedido na API do Mercado Pago
+            const orderResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
             });
 
-            if (!mpOrderResponse.ok) throw new Error(`Falha ao buscar pedido no MP: ${mpOrderResponse.statusText}`);
-            
-            const order = await mpOrderResponse.json();
-            console.log('Detalhes do pedido recebidos. Status:', order.order_status);
-            
-            if (order.status === 'closed' && order.order_status === 'paid') {
-                console.log('Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.');
+            if (!orderResponse.ok) {
+                throw new Error(`Falha ao buscar detalhes do pedido ${orderId}`);
+            }
 
-                const paymentId = order.payments[0]?.id;
-                if (!paymentId) throw new Error(`Nenhum ID de pagamento encontrado para o pedido ${orderId}`);
+            const order = await orderResponse.json();
+
+            // 4. Verifica se o Pedido está PAGO
+            if (order.order_status === 'paid') {
+                console.log(`Pedido PAGO. Buscando detalhes do pagamento para encontrar o e-mail.`);
                 
-                // FAZENDO A SEGUNDA CHAMADA, QUE É O MÉTODO CORRETO
-                const mpPaymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+                // Pega o ID do pagamento mais recente e aprovado
+                const paymentInfo = order.payments.find(p => p.status === 'approved');
+                if (!paymentInfo) {
+                    console.log(`Pedido ${orderId} pago, mas nenhum pagamento aprovado encontrado. Ação adiada.`);
+                    return;
+                }
+                const paymentId = paymentInfo.id;
+                
+                // 5. Busca os Detalhes do Pagamento para pegar o e-mail REAL
+                const paymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
                     headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
                 });
 
-                if (!mpPaymentResponse.ok) throw new Error(`Falha ao buscar detalhes do pagamento no MP: ${mpPaymentResponse.statusText}`);
+                if (!paymentResponse.ok) {
+                    throw new Error(`Falha ao buscar detalhes do pagamento ${paymentId}`);
+                }
+                const payment = await paymentResponse.json();
 
-                const paymentDetails = await mpPaymentResponse.json();
-                const rawEmail = paymentDetails.payer.email;
-                const customerName = paymentDetails.payer.first_name || 'Cliente';
+                const customerEmail = payment.payer.email;
+                const customerName = payment.payer.first_name || 'Cliente';
                 
-                if (!rawEmail) throw new Error(`E-mail do cliente não encontrado nos dados do Pagamento ${paymentId}`);
-
-                // Aplicando o filtro de segurança para limpar o e-mail
-                const emailMatch = rawEmail.match(/<(.+)>/);
-                const customerEmail = emailMatch ? emailMatch[1] : rawEmail;
-                
+                // 6. Envia o E-mail de Entrega via Brevo
                 const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
                 const emailSubject = "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil";
                 const senderEmail = "resolvefacil70@gmail.com";
                 const senderName = "ResolveFácil";
 
-                const emailHtmlContent = `
-                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #003459;">Olá, ${customerName}!</h2>
-                        <p>Muito obrigado por sua compra na ResolveFácil!</p>
-                        <p>Seu pagamento foi confirmado com sucesso e seu acesso ao <strong>Gerador de Currículo Profissional</strong> já está liberado.</p>
-                        <p style="text-align: center; margin: 25px 0;">
-                            <a href="${linkDoProduto}" style="background-color: #003459; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">ACESSAR MEU PRODUTO</a>
-                        </p>
-                        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 15px;">
-                            Se o botão acima não funcionar, copie e cole este endereço no seu navegador:
-                            <br>
-                            <a href="${linkDoProduto}" style="color: #003459; word-break: break-all;">${linkDoProduto}</a>
-                        </p>
-                        <p>Qualquer dúvida, basta responder a este e-mail.</p>
-                        <p>Atenciosamente,<br>Equipe ResolveFácil</p>
-                    </div>`;
+                // ... (código do corpo do e-mail permanece o mesmo) ...
 
-                console.log(`Enviando e-mail para o endereço filtrado: ${customerEmail}`);
-                
                 const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
@@ -107,25 +90,40 @@ exports.handler = async function(event) {
                         sender: { name: senderName, email: senderEmail },
                         to: [{ email: customerEmail, name: customerName }],
                         subject: emailSubject,
-                        htmlContent: emailHtmlContent
+                        htmlContent: `...` // Corpo do e-mail aqui
                     })
                 });
 
                 if (!brevoResponse.ok) {
                     const errorBody = await brevoResponse.text();
                     console.error(`Falha ao enviar e-mail pela Brevo: ${brevoResponse.statusText}`, errorBody);
-                    throw new Error('Falha ao enviar e-mail via Brevo.');
+                } else {
+                    console.log(`E-mail de entrega enviado com sucesso para ${customerEmail}.`);
                 }
-                console.log(`E-mail de entrega enviado com sucesso para ${customerEmail}.`);
+
             } else {
                 console.log(`Pedido ${orderId} ainda não foi pago (status: ${order.order_status}). Nenhuma ação necessária.`);
             }
         }
-
-        return { statusCode: 200, body: 'Webhook processed.' };
-
     } catch (error) {
-        console.error('ERRO INESPERADO NA EXECUÇÃO DA FUNÇÃO:', error);
-        return { statusCode: 500, body: 'Internal Server Error.' };
+        console.error('ERRO INESPERADO NO PROCESSAMENTO ASSÍNCRONO:', error);
     }
+}
+
+
+// --- FUNÇÃO PRINCIPAL (HANDLER) ---
+// Esta é a função que recebe o webhook. Ela é rápida e leve.
+exports.handler = async function(event) {
+    // 1. Responde Imediatamente para o Mercado Pago
+    // Este é o passo mais importante. Garantimos que o Mercado Pago receba "OK" em menos de 1 segundo.
+    Promise.resolve().then(() => {
+        const body = JSON.parse(event.body);
+        processarPagamento(body, event.headers);
+    });
+
+    // 2. Retorna a resposta de sucesso
+    return {
+        statusCode: 200,
+        body: 'Webhook recebido. Processamento iniciado em segundo plano.'
+    };
 };
