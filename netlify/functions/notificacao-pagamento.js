@@ -1,81 +1,73 @@
-// Arquivo: /netlify/functions/notificacao-pagamento.js (VERSÃO DE DIAGNÓSTICO)
 const fetch = require('node-fetch');
 
-async function processarDiagnostico(event) {
-    console.log("--- INÍCIO DA EXECUÇÃO DA FUNÇÃO DE DIAGNÓSTICO ---");
+async function processarPagamento(event) {
+    console.log("--- INICIANDO PROCESSAMENTO DE NOTIFICAÇÃO ---");
     
     try {
         const body = JSON.parse(event.body);
-        console.log("1. CORPO DO WEBHOOK RECEBIDO:", JSON.stringify(body, null, 2));
 
-        const tipoEvento = body.type;
-        console.log("2. TIPO DE EVENTO IDENTIFICADO:", tipoEvento);
+        if (body.type === 'payment') {
+            const paymentId = body.data.id;
+            console.log(`Evento 'payment' recebido. Verificando status do Pagamento ID: ${paymentId}`);
 
-        let paymentId = null;
-
-        if (tipoEvento === 'payment') {
-            paymentId = body.data.id;
-            console.log("3. Evento 'payment' detectado. ID do Pagamento extraído diretamente:", paymentId);
-        } else if (tipoEvento === 'merchant_order') {
-            const orderId = body.data.id;
-            console.log("3. Evento 'merchant_order' detectado. ID do Pedido:", orderId);
-            console.log("4. Buscando detalhes do Pedido no Mercado Pago...");
-
-            const orderResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${orderId}`, {
-                headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
-            });
-            const order = await orderResponse.json();
-            console.log("5. Resposta do Pedido recebida:", JSON.stringify(order, null, 2));
-
-            if (order.payments && order.payments.length > 0) {
-                const paymentInfo = order.payments.find(p => p.status === 'approved');
-                if (paymentInfo) {
-                    paymentId = paymentInfo.id;
-                    console.log("6. ID do Pagamento encontrado dentro do Pedido:", paymentId);
-                } else {
-                    console.log("6. Pedido encontrado, mas nenhum pagamento APROVADO associado.");
-                }
-            } else {
-                console.log("6. Pedido encontrado, mas sem array de pagamentos.");
-            }
-        }
-
-        if (paymentId) {
-            console.log("7. Buscando detalhes completos do Pagamento ID:", paymentId);
             const paymentResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
                 headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
             });
-            const payment = await paymentResponse.json();
-            console.log("8. Resposta do Pagamento recebida:", JSON.stringify(payment, null, 2));
 
-            const status = payment.status;
-            const customerEmail = payment.payer ? payment.payer.email : "N/A";
+            if (!paymentResponse.ok) {
+                const errorText = await paymentResponse.text();
+                console.error("Erro ao buscar detalhes do pagamento:", errorText);
+                throw new Error(`Falha ao buscar detalhes do pagamento ${paymentId}`);
+            }
             
-            console.log("--- RESULTADOS FINAIS DO DIAGNÓSTICO ---");
-            console.log("Status do Pagamento:", status);
-            console.log("E-mail do Comprador Encontrado:", customerEmail);
-            console.log("------------------------------------------");
+            const payment = await paymentResponse.json();
+            console.log(`Status atual do pagamento: ${payment.status}`);
 
-            if (status === 'approved' && customerEmail !== "N/A") {
-                console.log("DIAGNÓSTICO: Sucesso! O e-mail foi encontrado e o pagamento está aprovado. O envio real pela Brevo está desativado nesta versão.");
+            // A LÓGICA VENCEDORA: SÓ AGE SE O PAGAMENTO ESTIVER APROVADO
+            if (payment.status === 'approved') {
+                const customerEmail = payment.payer.email;
+                console.log(`PAGAMENTO APROVADO! E-mail do cliente: ${customerEmail}`);
+
+                if (!customerEmail) {
+                    throw new Error(`Pagamento ${paymentId} aprovado, mas sem e-mail do comprador.`);
+                }
+                
+                console.log("Enviando e-mail de entrega pela Brevo...");
+                const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+                    method: 'POST',
+                    headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sender: { name: "ResolveFácil", email: "resolvefacil70@gmail.com" },
+                        to: [{ email: customerEmail }],
+                        subject: "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil",
+                        htmlContent: `<p>Olá! Seu pagamento foi aprovado com sucesso.</p><p>Clique no link abaixo para acessar seu Gerador de Currículo Profissional:</p><p><a href="https://resolvefacil-curriculos.netlify.app/curriculo-pago.html">Acessar Produto</a></p><p>Obrigado pela sua compra!</p>`
+                    })
+                });
+
+                if (!brevoResponse.ok) {
+                    const errorBody = await brevoResponse.text();
+                    console.error(`Falha ao enviar e-mail pela Brevo: ${brevoResponse.status}`, errorBody);
+                    throw new Error('Falha no envio do e-mail via Brevo.');
+                }
+                
+                console.log(`--- SUCESSO! E-mail de entrega enviado para ${customerEmail}. ---`);
             } else {
-                console.log("DIAGNÓSTICO: Falha! Não foi possível obter todos os dados necessários.");
+                console.log(`Pagamento ainda não foi aprovado. Nenhuma ação necessária por enquanto.`);
             }
         } else {
-            console.log("7. Nenhum ID de pagamento processável foi encontrado. Fim do diagnóstico para este evento.");
+            console.log(`Webhook de tipo '${body.type}' ignorado.`);
         }
-
     } catch (error) {
-        console.error('ERRO CRÍTICO DURANTE O DIAGNÓSTICO:', error);
+        console.error('ERRO CRÍTICO NO PROCESSAMENTO:', error);
     } finally {
-        console.log("--- FIM DA EXECUÇÃO DA FUNÇÃO DE DIAGNÓSTICO ---");
+        console.log("--- FIM DO PROCESSAMENTO ---");
     }
 }
 
 exports.handler = async function(event) {
-    processarDiagnostico(event);
+    processarPagamento(event);
     return {
         statusCode: 200,
-        body: 'Webhook de diagnóstico recebido.'
+        body: 'Webhook recebido.'
     };
 };
