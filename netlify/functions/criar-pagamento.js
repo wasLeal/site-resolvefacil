@@ -1,7 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js
-// Local: Projeto "resolvefacil-curriculos"
-
-const fetch = require('node-fetch');
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão para Teste com R$ 1,00)
 
 // Domínio da sua loja. ESSENCIAL para a segurança.
 const allowedOrigin = 'https://www.resolvefacil.online';
@@ -14,8 +11,7 @@ exports.handler = async function(event) {
         'Access-Control-Allow-Methods': 'POST, OPTIONS'
     };
 
-    // O navegador envia uma requisição "OPTIONS" antes do POST para verificar a permissão.
-    // Temos que responder a ela com sucesso.
+    // Responde à requisição de verificação do navegador
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 204,
@@ -39,7 +35,7 @@ exports.handler = async function(event) {
                 title: 'Gerador de Currículo Profissional',
                 quantity: 1,
                 currency_id: 'BRL',
-                unit_price: 1.00 // ATUALIZE O PREÇO SE NECESSÁRIO
+                unit_price: 1.00 // <-- VALOR AJUSTADO PARA O TESTE
             }],
             payer: {
                 email: email
