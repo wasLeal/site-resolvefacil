@@ -1,43 +1,49 @@
-const fetch = require('node-fetch');
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO DEFINITIVA)
 
 exports.handler = async function(event, context) {
-    console.log("--- GUARDIÃO INICIADO --- Buscando pagamentos aprovados recentes...");
+    console.log("--- GUARDIÃO INICIADO (Versão Corrigida) ---");
 
     try {
-        // Busca pagamentos criados nos últimos 10 minutos
+        // Busca pagamentos APROVADOS criados nos últimos 15 minutos para garantir que pegamos tudo.
         const date = new Date();
-        date.setMinutes(date.getMinutes() - 10);
+        date.setMinutes(date.getMinutes() - 15);
         const searchDate = date.toISOString();
 
-        const searchResponse = await fetch(`https://api.mercadopago.com/v1/payments/search?sort=date_created&criteria=desc&begin_date=${searchDate}`, {
+        const searchResponse = await fetch(`https://api.mercadopago.com/v1/payments/search?sort=date_created&criteria=desc&status=approved&begin_date=${searchDate}`, {
             headers: { 'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` }
         });
 
         if (!searchResponse.ok) {
+            console.error("Erro ao buscar pagamentos no MP:", await searchResponse.text());
             throw new Error("Falha ao buscar pagamentos no Mercado Pago.");
         }
 
         const searchResult = await searchResponse.json();
-        const pagamentos = searchResult.results || [];
-
-        console.log(`Encontrados ${pagamentos.length} pagamentos recentes.`);
-
-        // Filtra apenas os pagamentos aprovados
-        const pagamentosAprovados = pagamentos.filter(p => p.status === 'approved');
+        const pagamentosAprovados = searchResult.results || [];
 
         if (pagamentosAprovados.length === 0) {
             console.log("Nenhum pagamento novo aprovado encontrado. Encerrando.");
             return { statusCode: 200, body: "Nenhum pagamento novo." };
         }
 
+        console.log(`Encontrados ${pagamentosAprovados.length} pagamentos aprovados para processar.`);
+
+        // --- ATENÇÃO: Lógica para evitar reenvio de e-mails ---
+        // Em um sistema real, aqui entraria um banco de dados para verificar se o e-mail já foi enviado.
+        // Por enquanto, o Guardião reenviará os e-mails de todos os pagamentos aprovados nos últimos 15 minutos.
+
         for (const pagamento of pagamentosAprovados) {
             const paymentId = pagamento.id;
             const customerEmail = pagamento.payer.email;
             
-            console.log(`Processando pagamento APROVADO ID: ${paymentId} para o e-mail: ${customerEmail}`);
+            if (!customerEmail) {
+                console.warn(`Pagamento ${paymentId} aprovado, mas sem e-mail do cliente. Pulando.`);
+                continue;
+            }
+
+            console.log(`Processando ID: ${paymentId} para o e-mail: ${customerEmail}`);
             
-            // Lógica de envio para Brevo (exatamente a mesma que já funciona)
-            await fetch('https://api.brevo.com/v3/smtp/email', {
+            const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
                 headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -48,13 +54,19 @@ exports.handler = async function(event, context) {
                 })
             });
 
-            console.log(`E-mail de entrega enviado para ${customerEmail}.`);
+            // A VERIFICAÇÃO QUE AGORA ESTÁ CORRETA
+            if (!brevoResponse.ok) {
+                const errorBody = await brevoResponse.text();
+                console.error(`A Brevo REJEITOU o envio para ${customerEmail}. Status: ${brevoResponse.status}`, errorBody);
+            } else {
+                console.log(`--- SUCESSO! E-mail de entrega para ${customerEmail} enviado pela Brevo. ---`);
+            }
         }
 
-        return { statusCode: 200, body: "Processamento do Guardião concluído." };
+        return { statusCode: 200, body: "Processamento do Guardião concluído. Verifique os logs para detalhes." };
 
     } catch (error) {
         console.error("ERRO CRÍTICO NO GUARDIÃO:", error);
-        return { statusCode: 500, body: "Erro no Guardião." };
+        return { statusCode: 500, body: "Erro no Guardião. Verifique os logs." };
     }
 };
