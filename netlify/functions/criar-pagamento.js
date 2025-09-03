@@ -1,23 +1,16 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão para Teste com R$ 1,00)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final de Teste com R$ 1,00)
 
-// Domínio da sua loja. ESSENCIAL para a segurança.
 const allowedOrigin = 'https://www.resolvefacil.online';
 
 exports.handler = async function(event) {
-    // Headers de permissão (CORS) para permitir a comunicação entre os sites
     const headers = {
         'Access-Control-Allow-Origin': allowedOrigin,
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS'
     };
 
-    // Responde à requisição de verificação do navegador
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 204,
-            headers,
-            body: ''
-        };
+        return { statusCode: 204, headers, body: '' };
     }
 
     if (event.httpMethod !== 'POST') {
@@ -35,10 +28,21 @@ exports.handler = async function(event) {
                 title: 'Gerador de Currículo Profissional',
                 quantity: 1,
                 currency_id: 'BRL',
-                unit_price: 1.00 // <-- VALOR AJUSTADO PARA O TESTE
+                // ======================================================
+                // PREÇO AJUSTADO PARA O TESTE FINAL
+                // ======================================================
+                unit_price: 1.00 
             }],
             payer: {
                 email: email
+            },
+            metadata: {
+                customer_email: email 
+            },
+            additional_info: {
+                payer: {
+                    email: email 
+                }
             },
             back_urls: {
                 success: 'https://resolvefacil-curriculos.netlify.app/curriculo-pago.html',

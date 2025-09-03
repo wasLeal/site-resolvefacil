@@ -1,10 +1,10 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO DEFINITIVA)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO DEFINITIVA CORRIGIDA)
 
 exports.handler = async function(event, context) {
-    console.log("--- GUARDIÃO INICIADO (Versão Corrigida) ---");
+    console.log("--- GUARDIÃO INICIADO (Versão Final) ---");
 
     try {
-        // Busca pagamentos APROVADOS criados nos últimos 15 minutos para garantir que pegamos tudo.
+        // Busca pagamentos APROVADOS criados nos últimos 15 minutos.
         const date = new Date();
         date.setMinutes(date.getMinutes() - 15);
         const searchDate = date.toISOString();
@@ -27,10 +27,9 @@ exports.handler = async function(event, context) {
         }
 
         console.log(`Encontrados ${pagamentosAprovados.length} pagamentos aprovados para processar.`);
-
-        // --- ATENÇÃO: Lógica para evitar reenvio de e-mails ---
-        // Em um sistema real, aqui entraria um banco de dados para verificar se o e-mail já foi enviado.
-        // Por enquanto, o Guardião reenviará os e-mails de todos os pagamentos aprovados nos últimos 15 minutos.
+        
+        // ATENÇÃO: Esta versão ainda pode reenviar e-mails para pagamentos já processados.
+        // A solução ideal no futuro é usar uma planilha para marcar os IDs já enviados.
 
         for (const pagamento of pagamentosAprovados) {
             const paymentId = pagamento.id;
@@ -54,7 +53,6 @@ exports.handler = async function(event, context) {
                 })
             });
 
-            // A VERIFICAÇÃO QUE AGORA ESTÁ CORRETA
             if (!brevoResponse.ok) {
                 const errorBody = await brevoResponse.text();
                 console.error(`A Brevo REJEITOU o envio para ${customerEmail}. Status: ${brevoResponse.status}`, errorBody);
