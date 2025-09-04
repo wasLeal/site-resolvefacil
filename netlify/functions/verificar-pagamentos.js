@@ -1,12 +1,13 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO OTIMIZADA PARA O PRIMEIRO TESTE)
+// Arquivo: netlify/functions/verificar-pagamentos.js (Versão de Produção)
 
 exports.handler = async function(event, context) {
-    console.log("--- GUARDIÃO ASAAS INICIADO ---");
+    console.log("--- GUARDIÃO ASAAS INICIADO (PRODUÇÃO) ---");
     try {
         const dezMinutosAtras = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-        const asaasUrl = `https://sandbox.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${dezMinutosAtras}`;
-        console.log(`Buscando pagamentos em: ${asaasUrl}`);
-
+        
+        // --- ALTERAÇÃO: URL de Produção ---
+        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${dezMinutosAtras}`;
+        
         const searchResponse = await fetch(asaasUrl, {
             headers: { 'access_token': process.env.ASAAS_API_KEY }
         });
@@ -16,19 +17,20 @@ exports.handler = async function(event, context) {
         const pagamentosAprovados = (await searchResponse.json()).data || [];
 
         if (pagamentosAprovados.length === 0) {
-            console.log("Nenhum pagamento novo da ASAAS encontrado nos últimos 10 minutos.");
+            console.log("Nenhum pagamento novo nos últimos 10 minutos.");
             return { statusCode: 200, body: "Nenhum pagamento novo." };
         }
 
-        console.log(`Encontrados ${pagamentosAprovados.length} pagamentos da ASAAS para processar.`);
+        console.log(`Encontrados ${pagamentosAprovados.length} pagamentos para processar.`);
 
         for (const pagamento of pagamentosAprovados) {
-            const customerResponse = await fetch(`https://sandbox.asaas.com/api/v3/customers/${pagamento.customer}`, {
+            // --- ALTERAÇÃO: URL de Produção ---
+            const customerResponse = await fetch(`https://www.asaas.com/api/v3/customers/${pagamento.customer}`, {
                 headers: { 'access_token': process.env.ASAAS_API_KEY }
             });
 
             if (!customerResponse.ok) {
-                console.warn(`PAG-${pagamento.id}: Falha ao buscar cliente ASAAS. Pulando.`);
+                console.warn(`PAG-${pagamento.id}: Falha ao buscar cliente. Pulando.`);
                 continue;
             }
 
@@ -36,11 +38,11 @@ exports.handler = async function(event, context) {
             const customerEmail = cliente.email;
 
             if (!customerEmail || !customerEmail.includes('@')) {
-                console.warn(`PAG-${pagamento.id}: Cliente ASAAS sem e-mail válido ('${customerEmail}'). Pulando.`);
+                console.warn(`PAG-${pagamento.id}: Cliente sem e-mail válido ('${customerEmail}'). Pulando.`);
                 continue;
             }
 
-            console.log(`PAG-${pagamento.id}: Tentando enviar e-mail via Brevo para ${customerEmail}`);
+            console.log(`PAG-${pagamento.id}: Enviando e-mail para ${customerEmail}`);
             
             const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
@@ -63,7 +65,7 @@ exports.handler = async function(event, context) {
         return { statusCode: 200, body: "Processamento concluído." };
 
     } catch (error) {
-        console.error("ERRO CRÍTICO NO GUARDIÃO ASAAS:", error);
+        console.error("ERRO CRÍTICO NO GUARDIÃO:", error);
         return { statusCode: 500, body: "Erro interno." };
     }
 };

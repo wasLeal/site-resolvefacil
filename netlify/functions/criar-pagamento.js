@@ -1,4 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão 100% Funcional)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão de Produção)
 
 const allowedOrigin = 'https://www.resolvefacil.online';
 
@@ -17,26 +17,26 @@ exports.handler = async function(event) {
     }
 
     try {
-        const { email } = JSON.parse(event.body);
-        if (!email) {
-            return { statusCode: 400, headers, body: 'E-mail é obrigatório.' };
+        const { name, email, cpf } = JSON.parse(event.body);
+        if (!name || !email || !cpf) {
+            return { statusCode: 400, headers, body: 'Nome, e-mail e CPF são obrigatórios.' };
         }
 
         const dadosDaCobranca = {
             billingType: "PIX",
-            // ================== AJUSTE FINAL ==================
-            value: 5.00, // Valor mínimo exigido pela Asaas
-            // ================================================
+            // --- ALTERAÇÃO: Preço Final ---
+            value: 5.99,
             dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
-                name: "Washington L S Leal",
+                name: name,
                 email: email,
-                cpfCnpj: "31502580225"
+                cpfCnpj: cpf
             }
         };
 
-        const response = await fetch('https://sandbox.asaas.com/api/v3/payments', {
+        // --- ALTERAÇÃO: URL de Produção ---
+        const response = await fetch('https://www.asaas.com/api/v3/payments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
