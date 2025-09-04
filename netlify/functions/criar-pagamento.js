@@ -1,4 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão Original com Logs Visíveis)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final com Dados Reais do Sandbox)
 
 const allowedOrigin = 'https://www.resolvefacil.online';
 
@@ -29,9 +29,11 @@ exports.handler = async function(event) {
             dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
-                name: "Cliente ResolveFácil", // Nome genérico para o teste
-                email: email,
-                cpfCnpj: "24313511031" // CPF de teste que você já tinha
+                // ================== DADOS ATUALIZADOS ==================
+                name: "Washington L S Leal", // Seu nome cadastrado
+                email: email,                 // O e-mail vindo do formulário
+                cpfCnpj: "31502580225"        // Seu CPF cadastrado, sem formatação
+                // =======================================================
             }
         };
 
@@ -39,14 +41,13 @@ exports.handler = async function(event) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'access_token': process.env.ASAAS_API_KEY // Usando a NOVA chave de API
+                'access_token': process.env.ASAAS_API_KEY
             },
             body: JSON.stringify(dadosDaCobranca)
         });
 
         if (!response.ok) {
             const error = await response.json();
-            // ESTE É O LOG QUE ANTES NÃO APARECIA E AGORA VAI APARECER
             console.error("ERRO RETORNADO PELA API ASAAS:", error);
             throw new Error('Falha ao criar cobrança na Asaas.');
         }
