@@ -2,7 +2,6 @@
 [functions]
   directory = "netlify/functions/"
 
-# O bloco abaixo existe para referência, mas o agendador está
-# DESATIVADO (comentado com #), pois usaremos o Cron-Job.org.
+# O agendador está DESATIVADO (comentado com #), pois usaremos o Cron-Job.org.
 [functions.verificar-pagamentos]
   # schedule = "*/5 * * * *"
