@@ -1,5 +1,4 @@
 // Arquivo: /netlify/functions/criar-pagamento.js (Versão Final para Asaas)
-
 const allowedOrigin = 'https://www.resolvefacil.online';
 
 exports.handler = async function(event) {
@@ -8,29 +7,16 @@ exports.handler = async function(event) {
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS'
     };
-
-    if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 204, headers, body: '' };
-    }
-
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, headers, body: 'Method Not Allowed' };
-    }
-
+    if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers, body: '' };
+    if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: 'Method Not Allowed' };
     try {
         const { email } = JSON.parse(event.body);
-        if (!email) {
-            return { statusCode: 400, headers, body: 'E-mail é obrigatório.' };
-        }
-
-        // A API da Asaas requer um CPF para criar um cliente.
-        // Como não pedimos isso no formulário, usaremos um CPF genérico válido para testes.
+        if (!email) return { statusCode: 400, headers, body: 'E-mail é obrigatório.' };
         const cpfCnpjGenerico = "51333957053"; 
-
         const dadosDaCobranca = {
             billingType: "PIX",
-            value: 3.99, // PREÇO FINAL DO PRODUTO
-            dueDate: new Date().toISOString().split('T')[0], // Vencimento para hoje
+            value: 1.00, // Preço de teste
+            dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
                 name: "Novo Cliente ResolveFácil",
@@ -39,7 +25,6 @@ exports.handler = async function(event) {
             },
             redirectUrl: "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html"
         };
-
         const response = await fetch('https://sandbox.asaas.com/api/v3/payments', {
             method: 'POST',
             headers: {
@@ -48,21 +33,17 @@ exports.handler = async function(event) {
             },
             body: JSON.stringify(dadosDaCobranca)
         });
-
         if (!response.ok) {
             const error = await response.json();
             console.error("Erro da API Asaas:", error);
             throw new Error('Falha ao criar cobrança na Asaas.');
         }
-
         const cobranca = await response.json();
-
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({ checkout_url: cobranca.invoiceUrl })
         };
-
     } catch (error) {
         console.error("Erro na função criar-pagamento:", error);
         return {
