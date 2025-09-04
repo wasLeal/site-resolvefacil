@@ -1,4 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final com Dados Reais do Sandbox)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão 100% Funcional)
 
 const allowedOrigin = 'https://www.resolvefacil.online';
 
@@ -19,21 +19,20 @@ exports.handler = async function(event) {
     try {
         const { email } = JSON.parse(event.body);
         if (!email) {
-            console.error("Erro: E-mail não foi fornecido no corpo da requisição.");
             return { statusCode: 400, headers, body: 'E-mail é obrigatório.' };
         }
 
         const dadosDaCobranca = {
             billingType: "PIX",
-            value: 1.00,
+            // ================== AJUSTE FINAL ==================
+            value: 5.00, // Valor mínimo exigido pela Asaas
+            // ================================================
             dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
-                // ================== DADOS ATUALIZADOS ==================
-                name: "Washington L S Leal", // Seu nome cadastrado
-                email: email,                 // O e-mail vindo do formulário
-                cpfCnpj: "31502580225"        // Seu CPF cadastrado, sem formatação
-                // =======================================================
+                name: "Washington L S Leal",
+                email: email,
+                cpfCnpj: "31502580225"
             }
         };
 
