@@ -1,41 +1,48 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão de Produção)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão de Produção Correta)
 
-const allowedOrigin = 'https://www.resolvefacil.online';
+const allowedOrigins = [
+    'https://www.resolvefacil.online',
+    'https://resolvefacil.online'
+];
 
 exports.handler = async function(event) {
+    const origin = event.headers.origin;
     const headers = {
-        'Access-Control-Allow-Origin': allowedOrigin,
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
     };
 
+    if (allowedOrigins.includes(origin)) {
+        headers['Access-Control-Allow-Origin'] = origin;
+    }
+
     if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 204, headers, body: '' };
+        return { statusCode: 204, headers: headers, body: '' };
     }
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, headers, body: 'Method Not Allowed' };
+        return { statusCode: 405, headers: headers, body: 'Method Not Allowed' };
     }
 
     try {
+        // Esta parte pega os dados enviados pelo formulário da loja.html
         const { name, email, cpf } = JSON.parse(event.body);
         if (!name || !email || !cpf) {
-            return { statusCode: 400, headers, body: 'Nome, e-mail e CPF são obrigatórios.' };
+            return { statusCode: 400, headers: headers, body: 'Nome, e-mail e CPF são obrigatórios.' };
         }
 
         const dadosDaCobranca = {
             billingType: "PIX",
-            // --- ALTERAÇÃO: Preço Final ---
             value: 5.99,
             dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
+                // Esta parte usa os dados do formulário, e não valores fixos
                 name: name,
                 email: email,
                 cpfCnpj: cpf
             }
         };
 
-        // --- ALTERAÇÃO: URL de Produção ---
         const response = await fetch('https://www.asaas.com/api/v3/payments', {
             method: 'POST',
             headers: {
@@ -55,7 +62,7 @@ exports.handler = async function(event) {
 
         return {
             statusCode: 200,
-            headers,
+            headers: headers,
             body: JSON.stringify({ checkout_url: cobranca.invoiceUrl })
         };
 
@@ -63,7 +70,7 @@ exports.handler = async function(event) {
         console.error("ERRO NA EXECUÇÃO DA FUNÇÃO:", error.message);
         return {
             statusCode: 500,
-            headers,
+            headers: headers,
             body: JSON.stringify({ message: 'Erro interno ao processar o pagamento.' })
         };
     }
