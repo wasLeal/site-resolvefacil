@@ -1,4 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão de Produção Correta)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão de DIAGNÓSTICO FORÇADO)
 
 const allowedOrigins = [
     'https://www.resolvefacil.online',
@@ -24,7 +24,14 @@ exports.handler = async function(event) {
     }
 
     try {
-        // Esta parte pega os dados enviados pelo formulário da loja.html
+        // ============ INÍCIO DO LOG DE DIAGNÓSTICO ============
+        console.log("-----------------------------------------");
+        console.log("--- DIAGNÓSTICO DE DADOS RECEBIDOS ---");
+        console.log("HORÁRIO DO TESTE:", new Date().toISOString());
+        console.log("CONTEÚDO BRUTO RECEBIDO (event.body):", event.body);
+        console.log("-----------------------------------------");
+        // ============ FIM DO LOG DE DIAGNÓSTICO ============
+
         const { name, email, cpf } = JSON.parse(event.body);
         if (!name || !email || !cpf) {
             return { statusCode: 400, headers: headers, body: 'Nome, e-mail e CPF são obrigatórios.' };
@@ -36,7 +43,6 @@ exports.handler = async function(event) {
             dueDate: new Date().toISOString().split('T')[0],
             description: "Acesso ao Gerador de Currículo Profissional",
             customer: {
-                // Esta parte usa os dados do formulário, e não valores fixos
                 name: name,
                 email: email,
                 cpfCnpj: cpf
