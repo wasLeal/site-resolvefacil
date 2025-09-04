@@ -1,8 +1,0 @@
-# Diz à Netlify que suas funções estão na pasta "netlify/functions/"
-[functions]
-  directory = "netlify/functions/"
-
-# Configuração de agendamento para a função Guardião
-[functions.verificar-pagamentos]
-  # A linha abaixo está "comentada" com um # para desativar o agendamento temporariamente
-  # schedule = "*/5 * * * *"
