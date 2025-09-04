@@ -1,13 +1,11 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL - À PROVA DE FALHAS)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL COM CONTORNO)
 
 exports.handler = async function(event, context) {
     console.log("--- GUARDIÃO ASAAS INICIADO (PRODUÇÃO) ---");
     try {
-        // ========== LÓGICA ANTI-REENVIO APRIMORADA ==========
-        // Busca pagamentos recebidos que AINDA NÃO foram processados por nós.
-        // Usamos o campo 'externalReference' para marcar os que já foram.
-        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&externalReference[ne]=EMAIL_ENVIADO`;
-        console.log(`Buscando pagamentos não processados...`);
+        // Buscamos pagamentos recentes, sem o filtro defeituoso da Asaas.
+        const dezMinutosAtras = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${dezMinutosAtras}`;
         
         const searchResponse = await fetch(asaasUrl, {
             headers: { 'access_token': process.env.ASAAS_API_KEY }
@@ -15,7 +13,12 @@ exports.handler = async function(event, context) {
 
         if (!searchResponse.ok) { throw new Error(`Erro ao buscar na Asaas: ${await searchResponse.text()}`); }
         
-        const pagamentosAprovados = (await searchResponse.json()).data || [];
+        const todosPagamentosRecebidos = (await searchResponse.json()).data || [];
+
+        // ========== INÍCIO DO CONTORNO PARA O BUG DA ASAAS ==========
+        // Filtramos os pagamentos AQUI, no nosso código, em vez de na API deles.
+        const pagamentosAprovados = todosPagamentosRecebidos.filter(pagamento => pagamento.externalReference !== "EMAIL_ENVIADO");
+        // ========== FIM DO CONTORNO ==========
 
         if (pagamentosAprovados.length === 0) {
             console.log("Nenhum pagamento novo para processar.");
@@ -25,6 +28,7 @@ exports.handler = async function(event, context) {
         console.log(`Encontrados ${pagamentosAprovados.length} pagamentos para processar.`);
 
         for (const pagamento of pagamentosAprovados) {
+            // O resto do código permanece o mesmo
             const paymentId = pagamento.id;
             const customerId = pagamento.customer;
 
@@ -51,7 +55,7 @@ exports.handler = async function(event, context) {
                 method: 'POST',
                 headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" }, // Use seu e-mail profissional
+                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" },
                     to: [{ email: customerEmail }],
                     subject: "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil",
                     htmlContent: `<p>Olá! Seu pagamento foi aprovado com sucesso.</p><p>Clique no link abaixo para acessar seu Gerador de Currículo Profissional:</p><p><a href="https://resolvefacil-curriculos.netlify.app/curriculo-pago.html">Acessar Produto</a></p><p>Obrigado pela sua compra!</p>`
@@ -60,12 +64,11 @@ exports.handler = async function(event, context) {
 
             if (!brevoResponse.ok) {
                 console.error(`PAG-${paymentId}: Brevo REJEITOU o envio para ${customerEmail}.`, await brevoResponse.text());
-                continue; // Pula para o próximo pagamento sem marcar como enviado
+                continue; 
             }
             
             console.log(`--- SUCESSO! PAG-${paymentId}: E-mail para ${customerEmail} enviado. ---`);
 
-            // ========== ETAPA CRÍTICA: MARCAR PAGAMENTO COMO PROCESSADO ==========
             console.log(`PAG-${paymentId}: Marcando como 'EMAIL_ENVIADO' na Asaas...`);
             const updateResponse = await fetch(`https://www.asaas.com/api/v3/payments/${paymentId}`, {
                 method: 'POST',
