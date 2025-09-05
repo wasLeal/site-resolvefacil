@@ -1,4 +1,4 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL COM CONTORNO)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL COM TEXTO DO E-MAIL OTIMIZADO)
 
 exports.handler = async function(event, context) {
     console.log("--- GUARDIÃO ASAAS INICIADO (PRODUÇÃO) ---");
@@ -14,11 +14,7 @@ exports.handler = async function(event, context) {
         if (!searchResponse.ok) { throw new Error(`Erro ao buscar na Asaas: ${await searchResponse.text()}`); }
         
         const todosPagamentosRecebidos = (await searchResponse.json()).data || [];
-
-        // ========== INÍCIO DO CONTORNO PARA O BUG DA ASAAS ==========
-        // Filtramos os pagamentos AQUI, no nosso código, em vez de na API deles.
         const pagamentosAprovados = todosPagamentosRecebidos.filter(pagamento => pagamento.externalReference !== "EMAIL_ENVIADO");
-        // ========== FIM DO CONTORNO ==========
 
         if (pagamentosAprovados.length === 0) {
             console.log("Nenhum pagamento novo para processar.");
@@ -28,7 +24,6 @@ exports.handler = async function(event, context) {
         console.log(`Encontrados ${pagamentosAprovados.length} pagamentos para processar.`);
 
         for (const pagamento of pagamentosAprovados) {
-            // O resto do código permanece o mesmo
             const paymentId = pagamento.id;
             const customerId = pagamento.customer;
 
@@ -51,14 +46,31 @@ exports.handler = async function(event, context) {
 
             console.log(`PAG-${paymentId}: Enviando e-mail para ${customerEmail}`);
             
+            // ========== INÍCIO DA ALTERAÇÃO FINAL NO TEXTO DO E-MAIL ==========
+            const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
+            
+            const htmlContent = `
+                <p>Olá! Seu pagamento foi aprovado com sucesso.</p>
+                <p>Clique no botão abaixo para acessar seu Gerador de Currículo Profissional:</p>
+                <p style="text-align: center; margin: 20px 0;">
+                    <a href="${linkDoProduto}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Produto Agora</a>
+                </p>
+                <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, por favor, copie e cole o seguinte endereço no seu navegador:</p>
+                <p style="font-size: 0.9em; color: #333; word-break: break-all;">${linkDoProduto}</p>
+                <hr style="margin: 20px 0;">
+                <p><b>Importante:</b> Seu acesso é válido por <strong>24 meses</strong> e poderá ser usado sempre que precisar através deste mesmo link.</p>
+                <p>Obrigado pela sua compra!</p>
+            `;
+            // ========== FIM DA ALTERAÇÃO ==========
+            
             const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
                 headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" },
+                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" }, // Lembre-se de configurar seu e-mail profissional
                     to: [{ email: customerEmail }],
                     subject: "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil",
-                    htmlContent: `<p>Olá! Seu pagamento foi aprovado com sucesso.</p><p>Clique no link abaixo para acessar seu Gerador de Currículo Profissional:</p><p><a href="https://resolvefacil-curriculos.netlify.app/curriculo-pago.html">Acessar Produto</a></p><p>Obrigado pela sua compra!</p>`
+                    htmlContent: htmlContent
                 })
             });
 
