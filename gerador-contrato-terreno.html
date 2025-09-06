@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Contrato - ResolveFácil</title>
+    <title>Gerador de Contrato Terreno - ResolveFácil</title>
     <meta name="description" content="Crie seu contrato particular de cessão de direitos de forma rápida e segura.">
     <link rel="icon" href="favicon.png" type="image/png">
     
@@ -140,14 +140,14 @@
 
                 <section class="form-section">
                     <h2><i class="fas fa-map-marked-alt"></i>Dados do Terreno</h2>
-                    <div class="form-group"><label>Descrição (Inicie com "Terreno localizado...")</label><textarea id="imovel-descricao" rows="3" required></textarea></div>
-                    <div class="form-group"><label>Medidas (Ex: 10m de frente por 30m de fundos)</label><input type="text" id="imovel-medidas" required></div>
+                    <div class="form-group"><label>Descrição Completa do Terreno</label><textarea id="imovel-descricao" rows="3" placeholder="Ex: Terreno localizado no Bairro de Santa Etelvina, na Rua: Parintins nº 12, Prox. ao igarapé do passarinho." required></textarea></div>
+                    <div class="form-group"><label>Medidas do Terreno</label><input type="text" id="imovel-medidas" placeholder="Ex: 10m de frente por 60m de fundos." required></div>
                 </section>
 
                 <section class="form-section">
                     <h2><i class="fas fa-dollar-sign"></i>Dados Financeiros</h2>
                     <div class="form-grid">
-                        <div class="form-group"><label>Valor Total (R$)</label><input type="text" id="financeiro-valor-total" placeholder="Ex: 4000,00" required></div>
+                        <div class="form-group"><label>Valor Total (R$)</label><input type="text" id="financeiro-valor-total" placeholder="Ex: 4000 ou 4000,00" required></div>
                         <div class="form-group"><label>Valor Total (por extenso)</label><input type="text" id="financeiro-valor-extenso" required></div>
                     </div>
                     <div class="form-group">
@@ -161,7 +161,7 @@
                          <div class="form-grid">
                             <div class="form-group"><label>Valor da Entrada (R$)</label><input type="text" id="financeiro-entrada-valor" placeholder="Ex: 1000,00"></div>
                             <div class="form-group"><label>Valor da Entrada (por extenso)</label><input type="text" id="financeiro-entrada-extenso"></div>
-                            <div class="form-group"><label>Nº de Parcelas (por extenso)</label><input type="text" id="financeiro-parcelas-num"></div>
+                            <div class="form-group"><label>Nº de Parcelas (por extenso)</label><input type="text" id="financeiro-parcelas-num" placeholder="Ex: seis"></div>
                             <div class="form-group"><label>Valor da Parcela (R$)</label><input type="text" id="financeiro-parcelas-valor" placeholder="Ex: 500,00"></div>
                             <div class="form-group"><label>Valor da Parcela (por extenso)</label><input type="text" id="financeiro-parcelas-extenso"></div>
                             <div class="form-group"><label>Dia do Vencimento</label><input type="number" id="financeiro-parcelas-vencimento" min="1" max="31"></div>
@@ -211,6 +211,7 @@
 
     <footer id="footer-container">
     </footer>
+
     <script src="menu.js"></script>
     <script src="chatbot.js" defer></script>
 
@@ -232,8 +233,8 @@
         });
         
         function parseCurrency(valueString) {
-            if (!valueString) return 0;
-            const cleanString = String(valueString).replace(/\./g, '').replace(',', '.');
+            if (!valueString || typeof valueString !== 'string') return 0;
+            const cleanString = valueString.replace(/\./g, '').replace(',', '.');
             return parseFloat(cleanString) || 0;
         }
         
@@ -304,14 +305,14 @@
             };
 
             let contractText = `
-                <div class="document-body" style="font-family: Arial, sans-serif; padding: 40px; border: 1px solid #ccc; background: #fff; text-align: justify;">
+                <div class="document-body">
                     <h2 style="text-align: center; margin-bottom: 0;">CONTRATO PARTICULAR:</h2>
                     <h3 style="text-align: center; margin-top: 0; font-weight: normal;">De cessão e transferência de direito à indenização.</h3>
                     <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
                     <br>
                     <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
                     <p>{{cedente2_qualificacao}}</p>
-                    <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}} {{imovel_medidas}}</p>
+                    <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}}, {{imovel_medidas}}</p>
                     <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}.</p>
                     <br>
                     <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
@@ -399,13 +400,14 @@
                 <head>
                     <title>Pré-visualização do Contrato</title>
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 0; background-color: #f0f0f0; }
+                        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin: 0; background-color: #f0f0f0; }
                         .page-container { width: 210mm; min-height: 297mm; padding: 20mm; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                        .document-body p { line-height: 1.5; margin-bottom: 1em; }
                         .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; text-align: right; }
                         .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
                         @media print {
                             body { background-color: white; }
-                            .page-container { margin: 0; box-shadow: none; border: none; }
+                            .page-container { margin: 0; padding: 10mm; box-shadow: none; border: none; }
                             .print-controls { display: none; }
                         }
                     </style>
