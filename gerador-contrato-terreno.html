@@ -304,8 +304,6 @@
                 }
             };
             
-            // ========== INÍCIO DA ALTERAÇÃO - ESTRUTURA E ESTILO DO DOCUMENTO GERADO ==========
-            
             const contractBody = `
                 <div class="document-body">
                     <div class="page-1">
@@ -324,41 +322,46 @@
                         <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
                         <p><strong>QUARTA</strong> – O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.</p>
                         <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
-                        <p><strong>SEXTA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
+                        <p><strong>SEXTA</strong> – Será de exclusiva responsabilidade do(a) Cessionário(a) solicitar e obter os documentos e autorizações para aprovação do empreendimento relativos à implantação do empreendimento habitacional no Imóvel, aprovação de projetos da Prefeitura Municipal e dos demais Órgãos e autoridades responsáveis pela vigilância e preservação do meio ambiente. A outorga da presente opção de compra e venda não implica a(o) Cedente, agora e no futuro, em quaisquer obrigações, vinculações ou ônus com os órgãos públicos envolvidos no plano habitacional já mencionado, sendo por conta e risco do(a) PROMITENTE COMPRADOR(A) as despesas e investimentos necessários.</p>
+                        <p><strong>Parágrafo Único:</strong> As despesas com taxas, emolumentos, laudos e quaisquer outros documentos necessárias à implantação do empreendimento, caberão exclusivamente a(o) Cessionário(a), sem qualquer participação do(a) Cedente.</p>
+                        <p><strong>SÉTIMA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
                     </div>
                     <div class="page-2">
-                        <p style="text-align: center;">{{contrato_data}}.</p>
-                        <br><br>
+                        <p>{{contrato_data}}.</p>
                         <div class="signatures">
-                            <div class="signature-block">
-                                <p>______________________________________________________</p>
-                                <p>{{cedente1_nome}}</p>
-                                <p>Cedente.</p>
-                            </div>
-                            {{assinatura_cedente2}}
-                            <div class="signature-block">
-                                <p>_______________________________________________________</p>
-                                <p>{{cessionario_nome}}</p>
-                                <p>Cessionário.</p>
+                            <div class="signature-row">
+                                <div class="signature-block">
+                                    <p>_______________________________________</p>
+                                    <p>{{cedente1_nome}}</p>
+                                    <p>Cedente</p>
+                                    {{assinatura_cedente2}}
+                                </div>
+                                <div class="signature-block">
+                                    <p>_______________________________________</p>
+                                    <p>{{cessionario_nome}}</p>
+                                    <p>Cessionário</p>
+                                </div>
                             </div>
                             <div class="witness-section">
                                 <p><strong>TESTEMUNHAS:</strong></p>
                             </div>
-                            <div class="signature-block">
-                                <p>_______________________________________________________</p>
-                                <p>{{testemunha1_nome}}</p>
-                                <p>CPF: {{testemunha1_cpf}}</p>
-                            </div>
-                            <div class="signature-block">
-                                <p>_______________________________________________________</p>
-                                <p>{{testemunha2_nome}}</p>
-                                <p>CPF: {{testemunha2_cpf}}</p>
+                            <div class="signature-row">
+                                <div class="signature-block">
+                                    <p>_______________________________________</p>
+                                    <p>{{testemunha1_nome}}</p>
+                                    <p>CPF: {{testemunha1_cpf}}</p>
+                                </div>
+                                <div class="signature-block">
+                                    <p>_______________________________________</p>
+                                    <p>{{testemunha2_nome}}</p>
+                                    <p>CPF: {{testemunha2_cpf}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-
+            
             let populatedText = contractBody;
             
             let cedentesNomes = data.cedente1.nome;
@@ -378,11 +381,10 @@
             let assinaturaCedente2 = "";
             if(data.cedente1.isCasado) {
                 assinaturaCedente2 = `
-                    <div class="signature-block">
-                        <p>______________________________________________________</p>
-                        <p>${data.cedente2.nome}</p>
-                        <p>Cedente.</p>
-                    </div>
+                    <br>
+                    <p>_______________________________________</p>
+                    <p>${data.cedente2.nome}</p>
+                    <p>Cedente</p>
                 `;
             }
             populatedText = populatedText.replace('{{assinatura_cedente2}}', assinaturaCedente2);
@@ -419,11 +421,11 @@
                     <style>
                         @page {
                             size: A4;
-                            margin: 2cm;
+                            margin: 3cm 2cm 2cm 3cm; /* Margens ABNT: Superior, Direita, Inferior, Esquerda */
                         }
                         body { 
                             font-family: 'Times New Roman', Times, serif; 
-                            font-size: 12.5pt; /* Fonte levemente aumentada */
+                            font-size: 12pt;
                             margin: 0; 
                             background-color: #f0f0f0; 
                         }
@@ -434,25 +436,39 @@
                             box-shadow: 0 0 10px rgba(0,0,0,0.1); 
                         }
                         .document-body .page-1 {
-                            min-height: 257mm; /* Altura ajustada para preencher a página A4, descontando margens */
+                            padding: 3cm 2cm 2cm 3cm;
                             text-align: justify;
-                            padding: 2cm;
                         }
                         .document-body .page-2 {
-                            page-break-before: always; /* Força a quebra de página */
+                            page-break-before: always;
                             text-align: center;
-                            padding: 2cm;
+                            padding: 3cm 2cm 2cm 3cm;
                         }
                         .document-body p { 
-                            line-height: 1.6; /* Espaçamento entre linhas aumentado */
-                            margin-bottom: 1.2em;
+                            line-height: 1.5;
+                            margin-top: 0;
+                            margin-bottom: 1em;
                         }
-                        .signatures .signature-block {
-                            margin-bottom: 25px; /* Espaçamento entre assinaturas */
+                        .signatures {
+                            margin-top: 2cm;
+                        }
+                        .signature-row {
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: flex-start;
+                            margin-top: 2cm;
+                            text-align: center;
+                        }
+                        .signature-block {
+                            width: 45%;
+                        }
+                        .signature-block p {
+                            line-height: 1.2;
+                            margin: 0;
                         }
                         .witness-section {
-                            margin-top: 25px;
-                            margin-bottom: 15px;
+                            margin-top: 3cm;
+                            margin-bottom: 0.5cm;
                         }
                         .print-controls { 
                             position: fixed; 
@@ -473,7 +489,7 @@
                             body { background-color: white; }
                             .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
                             .document-body .page-1, .document-body .page-2 {
-                                padding: 0; /* Remove padding extra na impressão */
+                                padding: 0;
                             }
                             .print-controls { display: none; }
                         }
