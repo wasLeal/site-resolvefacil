@@ -140,7 +140,7 @@
 
                 <section class="form-section">
                     <h2><i class="fas fa-map-marked-alt"></i>Dados do Terreno</h2>
-                    <div class="form-group"><label>Descrição Completa do Terreno</label><textarea id="imovel-descricao" rows="3" placeholder="Ex: Terreno localizado no Bairro de Santa Etelvina, na Rua: Parintins nº 12, Prox. ao igarapé do passarinho." required></textarea></div>
+                    <div class="form-group"><label for="imovel-descricao">Descrição Completa do Terreno</label><textarea id="imovel-descricao" rows="3" placeholder="Ex: Terreno localizado no Bairro de Santa Etelvina, na Rua: Parintins nº 12, Prox. ao igarapé do passarinho." required></textarea></div>
                     <div class="form-group"><label>Medidas do Terreno</label><input type="text" id="imovel-medidas" placeholder="Ex: 10m de frente por 60m de fundos." required></div>
                 </section>
 
@@ -306,8 +306,8 @@
 
             let contractText = `
                 <div class="document-body">
-                    <h2 style="text-align: center; margin-bottom: 0;">CONTRATO PARTICULAR:</h2>
-                    <h3 style="text-align: center; margin-top: 0; font-weight: normal;">De cessão e transferência de direito à indenização.</h3>
+                    <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt;">CONTRATO PARTICULAR:</h2>
+                    <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
                     <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
                     <br>
                     <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
@@ -324,13 +324,13 @@
                     <p><strong>SEXTA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
                     <br>
                     <p style="text-align: center;">{{contrato_data}}.</p>
-                    <br><br>
+                    <br>
                     <div style="text-align: center; line-height: 1.2;">
                         <p>______________________________________________________</p>
                         <p>{{cedente1_nome}}</p>
                         <p>Cedente.</p>
                         {{assinatura_cedente2}}
-                        <p style="margin-top: 20px;">_______________________________________________________</p>
+                        <p style="margin-top: 15px;">_______________________________________________________</p>
                         <p>{{cessionario_nome}}</p>
                         <p>Cessionário.</p>
                         <br>
@@ -339,7 +339,7 @@
                         <p>_______________________________________________________</p>
                         <p>{{testemunha1_nome}}</p>
                         <p>CPF: {{testemunha1_cpf}}</p>
-                        <p style="margin-top: 20px;">_______________________________________________________</p>
+                        <p style="margin-top: 15px;">_______________________________________________________</p>
                         <p>{{testemunha2_nome}}</p>
                         <p>CPF: {{testemunha2_cpf}}</p>
                     </div>
@@ -363,7 +363,7 @@
             let assinaturaCedente2 = "";
             if(data.cedente1.isCasado) {
                 assinaturaCedente2 = `
-                    <p style="margin-top: 20px;">______________________________________________________</p>
+                    <p style="margin-top: 15px;">______________________________________________________</p>
                     <p>${data.cedente2.nome}</p>
                     <p>Cedente.</p>
                 `;
@@ -400,14 +400,51 @@
                 <head>
                     <title>Pré-visualização do Contrato</title>
                     <style>
-                        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin: 0; background-color: #f0f0f0; }
-                        .page-container { width: 210mm; min-height: 297mm; padding: 20mm; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-                        .document-body p { line-height: 1.5; margin-bottom: 1em; }
-                        .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; text-align: right; }
-                        .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                        @page {
+                            size: A4;
+                            margin: 2cm;
+                        }
+                        body { 
+                            font-family: 'Times New Roman', Times, serif; 
+                            font-size: 12pt; 
+                            margin: 0; 
+                            background-color: #f0f0f0; 
+                        }
+                        .page-container { 
+                            width: 210mm; 
+                            min-height: 297mm; 
+                            padding: 2cm; 
+                            margin: 20px auto; 
+                            background: white; 
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+                        }
+                        .document-body h2, .document-body h3 {
+                            text-align: center;
+                        }
+                        .document-body p { 
+                            line-height: 1.5; 
+                            margin-bottom: 1.2em;
+                            text-align: justify;
+                        }
+                        .print-controls { 
+                            position: fixed; 
+                            top: 20px; 
+                            right: 20px; 
+                            z-index: 100; 
+                            text-align: right; 
+                        }
+                        .print-btn { 
+                            padding: 10px 20px; 
+                            background-color: #003459; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 5px; 
+                            cursor: pointer; 
+                            font-weight: bold; 
+                        }
                         @media print {
                             body { background-color: white; }
-                            .page-container { margin: 0; padding: 10mm; box-shadow: none; border: none; }
+                            .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
                             .print-controls { display: none; }
                         }
                     </style>
