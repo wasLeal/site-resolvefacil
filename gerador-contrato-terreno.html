@@ -303,80 +303,97 @@
                     t2_cpf: document.getElementById('testemunha2-cpf').value
                 }
             };
-
-            let contractText = `
+            
+            // ========== INÍCIO DA ALTERAÇÃO - ESTRUTURA E ESTILO DO DOCUMENTO GERADO ==========
+            
+            const contractBody = `
                 <div class="document-body">
-                    <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt;">CONTRATO PARTICULAR:</h2>
-                    <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
-                    <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
-                    <br>
-                    <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
-                    <p>{{cedente2_qualificacao}}</p>
-                    <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}}, {{imovel_medidas}}</p>
-                    <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}.</p>
-                    <br>
-                    <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
-                    <p><strong>PRIMEIRA</strong> - {{clausula_pagamento}}</p>
-                    <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
-                    <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
-                    <p><strong>QUARTA</strong> – O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.</p>
-                    <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
-                    <p><strong>SEXTA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
-                    <br>
-                    <p style="text-align: center;">{{contrato_data}}.</p>
-                    <br>
-                    <div style="text-align: center; line-height: 1.2;">
-                        <p>______________________________________________________</p>
-                        <p>{{cedente1_nome}}</p>
-                        <p>Cedente.</p>
-                        {{assinatura_cedente2}}
-                        <p style="margin-top: 15px;">_______________________________________________________</p>
-                        <p>{{cessionario_nome}}</p>
-                        <p>Cessionário.</p>
+                    <div class="page-1">
+                        <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt; font-weight: bold;">CONTRATO PARTICULAR:</h2>
+                        <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
+                        <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
                         <br>
-                        <p><strong>TESTEMUNHAS:</strong></p>
+                        <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
+                        <p>{{cedente2_qualificacao}}</p>
+                        <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}}, {{imovel_medidas}}</p>
+                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}.</p>
                         <br>
-                        <p>_______________________________________________________</p>
-                        <p>{{testemunha1_nome}}</p>
-                        <p>CPF: {{testemunha1_cpf}}</p>
-                        <p style="margin-top: 15px;">_______________________________________________________</p>
-                        <p>{{testemunha2_nome}}</p>
-                        <p>CPF: {{testemunha2_cpf}}</p>
+                        <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
+                        <p><strong>PRIMEIRA</strong> - {{clausula_pagamento}}</p>
+                        <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
+                        <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
+                        <p><strong>QUARTA</strong> – O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.</p>
+                        <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
+                        <p><strong>SEXTA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
+                    </div>
+                    <div class="page-2">
+                        <p style="text-align: center;">{{contrato_data}}.</p>
+                        <br><br>
+                        <div class="signatures">
+                            <div class="signature-block">
+                                <p>______________________________________________________</p>
+                                <p>{{cedente1_nome}}</p>
+                                <p>Cedente.</p>
+                            </div>
+                            {{assinatura_cedente2}}
+                            <div class="signature-block">
+                                <p>_______________________________________________________</p>
+                                <p>{{cessionario_nome}}</p>
+                                <p>Cessionário.</p>
+                            </div>
+                            <div class="witness-section">
+                                <p><strong>TESTEMUNHAS:</strong></p>
+                            </div>
+                            <div class="signature-block">
+                                <p>_______________________________________________________</p>
+                                <p>{{testemunha1_nome}}</p>
+                                <p>CPF: {{testemunha1_cpf}}</p>
+                            </div>
+                            <div class="signature-block">
+                                <p>_______________________________________________________</p>
+                                <p>{{testemunha2_nome}}</p>
+                                <p>CPF: {{testemunha2_cpf}}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
+
+            let populatedText = contractBody;
             
             let cedentesNomes = data.cedente1.nome;
             if(data.cedente1.isCasado) cedentesNomes += ` E ${data.cedente2.nome}`;
-            contractText = contractText.replace('{{cedentes_nomes}}', cedentesNomes);
+            populatedText = populatedText.replace('{{cedentes_nomes}}', cedentesNomes);
             
             let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
             if(!data.cedente1.isCasado) cedente1Qualificacao += `, domiciliado(a) e residente na ${data.cedente1.endereco}`;
-            contractText = contractText.replace('{{cedente1_qualificacao}}', cedente1Qualificacao);
+            populatedText = populatedText.replace('{{cedente1_qualificacao}}', cedente1Qualificacao);
 
             let cedente2Html = "";
             if(data.cedente1.isCasado) {
                 cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${data.cedente1.endereco}`;
             }
-            contractText = contractText.replace('{{cedente2_qualificacao}}', cedente2Html);
+            populatedText = populatedText.replace('{{cedente2_qualificacao}}', cedente2Html);
 
             let assinaturaCedente2 = "";
             if(data.cedente1.isCasado) {
                 assinaturaCedente2 = `
-                    <p style="margin-top: 15px;">______________________________________________________</p>
-                    <p>${data.cedente2.nome}</p>
-                    <p>Cedente.</p>
+                    <div class="signature-block">
+                        <p>______________________________________________________</p>
+                        <p>${data.cedente2.nome}</p>
+                        <p>Cedente.</p>
+                    </div>
                 `;
             }
-            contractText = contractText.replace('{{assinatura_cedente2}}', assinaturaCedente2);
-            contractText = contractText.replace(/{{cedente1_nome}}/g, data.cedente1.nome);
+            populatedText = populatedText.replace('{{assinatura_cedente2}}', assinaturaCedente2);
+            populatedText = populatedText.replace(/{{cedente1_nome}}/g, data.cedente1.nome);
 
             let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${data.cessionario.endereco}`;
-            contractText = contractText.replace('{{cessionario_qualificacao}}', cessionarioQualificacao);
-            contractText = contractText.replace(/{{cessionario_nome}}/g, data.cessionario.nome);
+            populatedText = populatedText.replace('{{cessionario_qualificacao}}', cessionarioQualificacao);
+            populatedText = populatedText.replace(/{{cessionario_nome}}/g, data.cessionario.nome);
             
-            contractText = contractText.replace('{{imovel_descricao}}', data.imovel.descricao);
-            contractText = contractText.replace('{{imovel_medidas}}', data.imovel.medidas);
+            populatedText = populatedText.replace('{{imovel_descricao}}', data.imovel.descricao);
+            populatedText = populatedText.replace('{{imovel_medidas}}', data.imovel.medidas);
 
             let clausulaPagamento = `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal})`;
             if(data.financeiro.tipoPagamento === 'a_vista') {
@@ -384,15 +401,15 @@
             } else {
                 clausulaPagamento += `, sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}.`;
             }
-            contractText = contractText.replace('{{clausula_pagamento}}', clausulaPagamento);
+            populatedText = populatedText.replace('{{clausula_pagamento}}', clausulaPagamento);
             
-            contractText = contractText.replace('{{contrato_foro}}', data.final.foro);
-            contractText = contractText.replace('{{contrato_data}}', data.final.data);
+            populatedText = populatedText.replace('{{contrato_foro}}', data.final.foro);
+            populatedText = populatedText.replace('{{contrato_data}}', data.final.data);
 
-            contractText = contractText.replace('{{testemunha1_nome}}', data.testemunhas.t1_nome);
-            contractText = contractText.replace('{{testemunha1_cpf}}', data.testemunhas.t1_cpf);
-            contractText = contractText.replace('{{testemunha2_nome}}', data.testemunhas.t2_nome);
-            contractText = contractText.replace('{{testemunha2_cpf}}', data.testemunhas.t2_cpf);
+            populatedText = populatedText.replace('{{testemunha1_nome}}', data.testemunhas.t1_nome);
+            populatedText = populatedText.replace('{{testemunha1_cpf}}', data.testemunhas.t1_cpf);
+            populatedText = populatedText.replace('{{testemunha2_nome}}', data.testemunhas.t2_nome);
+            populatedText = populatedText.replace('{{testemunha2_cpf}}', data.testemunhas.t2_cpf);
 
             const previewWindow = window.open('', '_blank');
             const previewContent = `
@@ -406,32 +423,42 @@
                         }
                         body { 
                             font-family: 'Times New Roman', Times, serif; 
-                            font-size: 12pt; 
+                            font-size: 12.5pt; /* Fonte levemente aumentada */
                             margin: 0; 
                             background-color: #f0f0f0; 
                         }
                         .page-container { 
-                            width: 210mm; 
-                            min-height: 297mm; 
-                            padding: 2cm; 
+                            width: 210mm;
                             margin: 20px auto; 
                             background: white; 
                             box-shadow: 0 0 10px rgba(0,0,0,0.1); 
                         }
-                        .document-body h2, .document-body h3 {
+                        .document-body .page-1 {
+                            min-height: 257mm; /* Altura ajustada para preencher a página A4, descontando margens */
+                            text-align: justify;
+                            padding: 2cm;
+                        }
+                        .document-body .page-2 {
+                            page-break-before: always; /* Força a quebra de página */
                             text-align: center;
+                            padding: 2cm;
                         }
                         .document-body p { 
-                            line-height: 1.5; 
+                            line-height: 1.6; /* Espaçamento entre linhas aumentado */
                             margin-bottom: 1.2em;
-                            text-align: justify;
+                        }
+                        .signatures .signature-block {
+                            margin-bottom: 25px; /* Espaçamento entre assinaturas */
+                        }
+                        .witness-section {
+                            margin-top: 25px;
+                            margin-bottom: 15px;
                         }
                         .print-controls { 
                             position: fixed; 
                             top: 20px; 
                             right: 20px; 
                             z-index: 100; 
-                            text-align: right; 
                         }
                         .print-btn { 
                             padding: 10px 20px; 
@@ -445,6 +472,9 @@
                         @media print {
                             body { background-color: white; }
                             .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
+                            .document-body .page-1, .document-body .page-2 {
+                                padding: 0; /* Remove padding extra na impressão */
+                            }
                             .print-controls { display: none; }
                         }
                     </style>
@@ -453,7 +483,7 @@
                     <div class="print-controls">
                         <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
                     </div>
-                    <div class="page-container">${contractText}</div>
+                    <div class="page-container">${populatedText}</div>
                 </body>
                 </html>
             `;
