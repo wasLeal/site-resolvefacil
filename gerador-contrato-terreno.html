@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Contrato - ResolveFácil</title>
+    <meta name="description" content="Crie seu contrato particular de cessão de direitos de forma rápida e segura.">
+    <link rel="icon" href="favicon.png" type="image/png">
+    
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-servicos: #f2f2ed;
+            --body-text-servicos: #3e5a6a;
+            --card-bg: #ffffff;
+            --input-border: #cccccc;
+            --input-focus-border: #003459;
+            --danger-color: #d9534f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg-servicos); color: var(--body-text-servicos); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
+        #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        #menu-container nav a:hover { color: var(--highlight); }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
+        .mobile-nav a:hover { color: var(--highlight); }
+        main { flex: 1; padding: 20px; }
+        .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+        .generator-header { text-align: center; margin-bottom: 30px; }
+        .generator-header h1 { font-size: clamp(1.8em, 5vw, 2.5em); color: var(--primary-bg); margin-bottom: 10px; }
+        .generator-header p { font-size: 1.1em; color: var(--secondary-bg); }
+        .form-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .form-section:last-of-type { border-bottom: none; }
+        .form-section h2 { font-size: 1.5em; color: var(--primary-bg); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-section h2 i { color: var(--highlight); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="number"], .form-group input[type="date"], .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 1em; transition: border-color 0.3s; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--input-focus-border); }
+        .checkbox-group, .radio-group { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+        .hidden { display: none; }
+        .generator-footer { text-align: center; margin-top: 30px; }
+        .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .generate-btn:hover { background-color: var(--button-hover); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .security-seals-section { background-color: var(--body-bg-servicos); padding: 40px 20px 0; text-align: center; }
+        .security-seals-container { display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap; }
+        .security-seals-container img { height: 50px; width: auto; object-fit: contain; }
+        .social-icons { background-color: var(--body-bg-servicos); text-align: center; padding: 30px 20px; }
+        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
+        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--body-text-servicos); }
+        .social-icons a:hover { transform: scale(1.2); }
+        .social-icons .fab { font-size: 2.5em; }
+        .social-icons .fa-instagram:hover { color: #C13584; }
+        .social-icons .fa-facebook:hover { color: #1877F2; }
+        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
+        footer { background-color: var(--secondary-bg); color: var(--text-color); text-align: center; padding: 20px; font-size: 0.9em; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        footer a { color: var(--text-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
+        footer a:hover { color: var(--highlight); }
+        @media (max-width: 768px) { .generator-container { padding: 20px; } #menu-container nav ul { display: none; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
+        @media (min-width: 769px) { #menu-container nav ul { display: flex; } .hamburger { display: none; } .mobile-nav { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="https://www.resolvefacil.online" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            <div id="menu-container"></div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <div class="generator-container">
+            <div class="generator-header">
+                <h1>Gerador de Contrato de Cessão de Direitos (Terrenos)</h1>
+                <p>Preencha os campos abaixo para gerar seu documento personalizado.</p>
+            </div>
+            
+            <form id="contract-form">
+                <section class="form-section">
+                    <h2><i class="fas fa-users"></i>Dados do(s) Vendedor(es) / Cedente(s)</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="cedente1-nome" required></div>
+                        <div class="form-group"><label>Nacionalidade</label><input type="text" id="cedente1-nacionalidade" value="Brasileiro(a)" required></div>
+                        <div class="form-group"><label>Profissão</label><input type="text" id="cedente1-profissao" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="cedente1-rg" required></div>
+                        <div class="form-group"><label>CPF</label><input type="text" id="cedente1-cpf" required></div>
+                        <div class="form-group"><label>Estado Civil</label><div class="checkbox-group"><input type="checkbox" id="isMarried"><label for="isMarried">É casado(a)?</label></div></div>
+                    </div>
+                    <div id="spouse-fields" class="hidden">
+                        <h3 style="margin-top:20px; color: #3e5a6a;">Dados do Cônjuge</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nome Completo do Cônjuge</label><input type="text" id="cedente2-nome"></div>
+                            <div class="form-group"><label>Nacionalidade</label><input type="text" id="cedente2-nacionalidade" value="Brasileiro(a)"></div>
+                            <div class="form-group"><label>Profissão</label><input type="text" id="cedente2-profissao"></div>
+                            <div class="form-group"><label>RG</label><input type="text" id="cedente2-rg"></div>
+                            <div class="form-group"><label>CPF</label><input type="text" id="cedente2-cpf"></div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;"><label for="cedente-endereco">Endereço Completo dos Vendedores</label><input type="text" id="cedente-endereco" placeholder="Rua, Número, Bairro, Cidade - Estado" required></div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i>Dados do Comprador / Cessionário</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="cessionario-nome" required></div>
+                        <div class="form-group"><label>Nacionalidade</label><input type="text" id="cessionario-nacionalidade" value="Brasileiro(a)" required></div>
+                        <div class="form-group"><label>Estado Civil</label><input type="text" id="cessionario-estado-civil" required></div>
+                        <div class="form-group"><label>Profissão</label><input type="text" id="cessionario-profissao" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="cessionario-rg" required></div>
+                        <div class="form-group"><label>CPF</label><input type="text" id="cessionario-cpf" required></div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;"><label for="cessionario-endereco">Endereço Completo do Comprador</label><input type="text" id="cessionario-endereco" placeholder="Rua, Número, Bairro, Cidade - Estado" required></div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-map-marked-alt"></i>Dados do Terreno</h2>
+                    <div class="form-group"><label>Descrição (Inicie com "Terreno localizado...")</label><textarea id="imovel-descricao" rows="3" required></textarea></div>
+                    <div class="form-group"><label>Medidas (Ex: 10m de frente por 30m de fundos)</label><input type="text" id="imovel-medidas" required></div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-dollar-sign"></i>Dados Financeiros</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Valor Total (R$)</label><input type="text" id="financeiro-valor-total" placeholder="Ex: 4000,00" required></div>
+                        <div class="form-group"><label>Valor Total (por extenso)</label><input type="text" id="financeiro-valor-extenso" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de Pagamento</label>
+                        <div class="radio-group">
+                            <input type="radio" id="pay-avista" name="paymentType" value="a_vista" checked><label for="pay-avista">À Vista</label>
+                            <input type="radio" id="pay-parcelado" name="paymentType" value="parcelado"><label for="pay-parcelado">Parcelado</label>
+                        </div>
+                    </div>
+                    <div id="installment-fields" class="hidden">
+                         <div class="form-grid">
+                            <div class="form-group"><label>Valor da Entrada (R$)</label><input type="text" id="financeiro-entrada-valor" placeholder="Ex: 1000,00"></div>
+                            <div class="form-group"><label>Valor da Entrada (por extenso)</label><input type="text" id="financeiro-entrada-extenso"></div>
+                            <div class="form-group"><label>Nº de Parcelas (por extenso)</label><input type="text" id="financeiro-parcelas-num"></div>
+                            <div class="form-group"><label>Valor da Parcela (R$)</label><input type="text" id="financeiro-parcelas-valor" placeholder="Ex: 500,00"></div>
+                            <div class="form-group"><label>Valor da Parcela (por extenso)</label><input type="text" id="financeiro-parcelas-extenso"></div>
+                            <div class="form-group"><label>Dia do Vencimento</label><input type="number" id="financeiro-parcelas-vencimento" min="1" max="31"></div>
+                            <div class="form-group"><label>Data Início das Parcelas</label><input type="text" id="financeiro-parcelas-inicio" placeholder="Ex: 15 de janeiro de 2025"></div>
+                            <div class="form-group"><label>Data Fim das Parcelas</label><input type="text" id="financeiro-parcelas-fim" placeholder="Ex: 15 de junho de 2025"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-file-signature"></i>Dados Finais e Testemunhas</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Cidade/Estado do Foro</label><input type="text" id="contrato-foro" value="Manaus, Estado do Amazonas" required></div>
+                        <div class="form-group"><label>Data de Assinatura</label><input type="text" id="contrato-data" placeholder="Ex: Manaus, 18 de dezembro de 2025" required></div>
+                    </div>
+                    <div class="form-grid" style="margin-top:20px;">
+                        <div class="form-group"><label>Nome da 1ª Testemunha</label><input type="text" id="testemunha1-nome" required></div>
+                        <div class="form-group"><label>CPF da 1ª Testemunha</label><input type="text" id="testemunha1-cpf" required></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome da 2ª Testemunha</label><input type="text" id="testemunha2-nome" required></div>
+                        <div class="form-group"><label>CPF da 2ª Testemunha</label><input type="text" id="testemunha2-cpf" required></div>
+                    </div>
+                </section>
+
+                <div class="generator-footer">
+                    <button id="generate-btn" type="submit" class="generate-btn">Gerar Contrato</button>
+                </div>
+            </form>
+        </div>
+
+        <section class="security-seals-section">
+            <div class="security-seals-container">
+                <img src="imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
+                <img src="imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
+                <img src="imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
+            </div>
+        </section>
+        <div class="social-icons">
+            <div class="social-icons-wrapper">
+                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer-container">
+    </footer>
+    <script src="menu.js"></script>
+    <script src="chatbot.js" defer></script>
+
+    <script>
+        // Lógica para campos condicionais
+        const isMarriedCheckbox = document.getElementById('isMarried');
+        const spouseFields = document.getElementById('spouse-fields');
+        const paymentTypeRadios = document.querySelectorAll('input[name="paymentType"]');
+        const installmentFields = document.getElementById('installment-fields');
+
+        isMarriedCheckbox.addEventListener('change', () => {
+            spouseFields.classList.toggle('hidden', !isMarriedCheckbox.checked);
+        });
+
+        paymentTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                installmentFields.classList.toggle('hidden', event.target.value !== 'parcelado');
+            });
+        });
+        
+        function parseCurrency(valueString) {
+            if (!valueString) return 0;
+            const cleanString = String(valueString).replace(/\./g, '').replace(',', '.');
+            return parseFloat(cleanString) || 0;
+        }
+        
+        function formatCurrency(number) {
+            return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        const contractForm = document.getElementById('contract-form');
+        contractForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            
+            const cedente1IsCasado = document.getElementById('isMarried').checked;
+
+            const data = {
+                cedente1: {
+                    nome: document.getElementById('cedente1-nome').value.toUpperCase(),
+                    nacionalidade: document.getElementById('cedente1-nacionalidade').value,
+                    profissao: document.getElementById('cedente1-profissao').value,
+                    rg: document.getElementById('cedente1-rg').value,
+                    cpf: document.getElementById('cedente1-cpf').value,
+                    isCasado: cedente1IsCasado,
+                    estado_civil: cedente1IsCasado ? "casado(a)" : "solteiro(a)",
+                    endereco: document.getElementById('cedente-endereco').value
+                },
+                cedente2: {
+                    nome: document.getElementById('cedente2-nome').value.toUpperCase(),
+                    nacionalidade: document.getElementById('cedente2-nacionalidade').value,
+                    profissao: document.getElementById('cedente2-profissao').value,
+                    rg: document.getElementById('cedente2-rg').value,
+                    cpf: document.getElementById('cedente2-cpf').value
+                },
+                cessionario: {
+                    nome: document.getElementById('cessionario-nome').value.toUpperCase(),
+                    nacionalidade: document.getElementById('cessionario-nacionalidade').value,
+                    estadoCivil: document.getElementById('cessionario-estado-civil').value,
+                    profissao: document.getElementById('cessionario-profissao').value,
+                    rg: document.getElementById('cessionario-rg').value,
+                    cpf: document.getElementById('cessionario-cpf').value,
+                    endereco: document.getElementById('cessionario-endereco').value
+                },
+                imovel: {
+                    descricao: document.getElementById('imovel-descricao').value,
+                    medidas: document.getElementById('imovel-medidas').value
+                },
+                financeiro: {
+                    valorTotal: formatCurrency(parseCurrency(document.getElementById('financeiro-valor-total').value)),
+                    valorExtenso: document.getElementById('financeiro-valor-extenso').value.toUpperCase(),
+                    tipoPagamento: document.querySelector('input[name="paymentType"]:checked').value,
+                    entradaValor: formatCurrency(parseCurrency(document.getElementById('financeiro-entrada-valor').value)),
+                    entradaExtenso: document.getElementById('financeiro-entrada-extenso').value.toUpperCase(),
+                    numParcelasExtenso: document.getElementById('financeiro-parcelas-num').value,
+                    valorParcela: formatCurrency(parseCurrency(document.getElementById('financeiro-parcelas-valor').value)),
+                    parcelaExtenso: document.getElementById('financeiro-parcelas-extenso').value.toUpperCase(),
+                    diaVencimento: document.getElementById('financeiro-parcelas-vencimento').value,
+                    inicioParcelas: document.getElementById('financeiro-parcelas-inicio').value,
+                    fimParcelas: document.getElementById('financeiro-parcelas-fim').value
+                },
+                final: {
+                    foro: document.getElementById('contrato-foro').value,
+                    data: document.getElementById('contrato-data').value,
+                },
+                testemunhas: {
+                    t1_nome: document.getElementById('testemunha1-nome').value.toUpperCase(),
+                    t1_cpf: document.getElementById('testemunha1-cpf').value,
+                    t2_nome: document.getElementById('testemunha2-nome').value.toUpperCase(),
+                    t2_cpf: document.getElementById('testemunha2-cpf').value
+                }
+            };
+
+            let contractText = `
+                <div class="document-body" style="font-family: Arial, sans-serif; padding: 40px; border: 1px solid #ccc; background: #fff; text-align: justify;">
+                    <h2 style="text-align: center; margin-bottom: 0;">CONTRATO PARTICULAR:</h2>
+                    <h3 style="text-align: center; margin-top: 0; font-weight: normal;">De cessão e transferência de direito à indenização.</h3>
+                    <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
+                    <br>
+                    <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
+                    <p>{{cedente2_qualificacao}}</p>
+                    <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}} {{imovel_medidas}}</p>
+                    <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}.</p>
+                    <br>
+                    <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
+                    <p><strong>PRIMEIRA</strong> - {{clausula_pagamento}}</p>
+                    <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
+                    <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
+                    <p><strong>QUARTA</strong> – O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.</p>
+                    <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
+                    <p><strong>SEXTA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
+                    <br>
+                    <p style="text-align: center;">{{contrato_data}}.</p>
+                    <br><br>
+                    <div style="text-align: center; line-height: 1.2;">
+                        <p>______________________________________________________</p>
+                        <p>{{cedente1_nome}}</p>
+                        <p>Cedente.</p>
+                        {{assinatura_cedente2}}
+                        <p style="margin-top: 20px;">_______________________________________________________</p>
+                        <p>{{cessionario_nome}}</p>
+                        <p>Cessionário.</p>
+                        <br>
+                        <p><strong>TESTEMUNHAS:</strong></p>
+                        <br>
+                        <p>_______________________________________________________</p>
+                        <p>{{testemunha1_nome}}</p>
+                        <p>CPF: {{testemunha1_cpf}}</p>
+                        <p style="margin-top: 20px;">_______________________________________________________</p>
+                        <p>{{testemunha2_nome}}</p>
+                        <p>CPF: {{testemunha2_cpf}}</p>
+                    </div>
+                </div>
+            `;
+            
+            let cedentesNomes = data.cedente1.nome;
+            if(data.cedente1.isCasado) cedentesNomes += ` E ${data.cedente2.nome}`;
+            contractText = contractText.replace('{{cedentes_nomes}}', cedentesNomes);
+            
+            let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
+            if(!data.cedente1.isCasado) cedente1Qualificacao += `, domiciliado(a) e residente na ${data.cedente1.endereco}`;
+            contractText = contractText.replace('{{cedente1_qualificacao}}', cedente1Qualificacao);
+
+            let cedente2Html = "";
+            if(data.cedente1.isCasado) {
+                cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${data.cedente1.endereco}`;
+            }
+            contractText = contractText.replace('{{cedente2_qualificacao}}', cedente2Html);
+
+            let assinaturaCedente2 = "";
+            if(data.cedente1.isCasado) {
+                assinaturaCedente2 = `
+                    <p style="margin-top: 20px;">______________________________________________________</p>
+                    <p>${data.cedente2.nome}</p>
+                    <p>Cedente.</p>
+                `;
+            }
+            contractText = contractText.replace('{{assinatura_cedente2}}', assinaturaCedente2);
+            contractText = contractText.replace(/{{cedente1_nome}}/g, data.cedente1.nome);
+
+            let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${data.cessionario.endereco}`;
+            contractText = contractText.replace('{{cessionario_qualificacao}}', cessionarioQualificacao);
+            contractText = contractText.replace(/{{cessionario_nome}}/g, data.cessionario.nome);
+            
+            contractText = contractText.replace('{{imovel_descricao}}', data.imovel.descricao);
+            contractText = contractText.replace('{{imovel_medidas}}', data.imovel.medidas);
+
+            let clausulaPagamento = `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal})`;
+            if(data.financeiro.tipoPagamento === 'a_vista') {
+                clausulaPagamento += `, pago neste ato, em moeda corrente do país.`;
+            } else {
+                clausulaPagamento += `, sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}.`;
+            }
+            contractText = contractText.replace('{{clausula_pagamento}}', clausulaPagamento);
+            
+            contractText = contractText.replace('{{contrato_foro}}', data.final.foro);
+            contractText = contractText.replace('{{contrato_data}}', data.final.data);
+
+            contractText = contractText.replace('{{testemunha1_nome}}', data.testemunhas.t1_nome);
+            contractText = contractText.replace('{{testemunha1_cpf}}', data.testemunhas.t1_cpf);
+            contractText = contractText.replace('{{testemunha2_nome}}', data.testemunhas.t2_nome);
+            contractText = contractText.replace('{{testemunha2_cpf}}', data.testemunhas.t2_cpf);
+
+            const previewWindow = window.open('', '_blank');
+            const previewContent = `
+                <html>
+                <head>
+                    <title>Pré-visualização do Contrato</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; background-color: #f0f0f0; }
+                        .page-container { width: 210mm; min-height: 297mm; padding: 20mm; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                        .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; text-align: right; }
+                        .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                        @media print {
+                            body { background-color: white; }
+                            .page-container { margin: 0; box-shadow: none; border: none; }
+                            .print-controls { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-controls">
+                        <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
+                    </div>
+                    <div class="page-container">${contractText}</div>
+                </body>
+                </html>
+            `;
+            previewWindow.document.write(previewContent);
+            previewWindow.document.close();
+        });
+    </script>
+
+</body>
+</html>
