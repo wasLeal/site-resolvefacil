@@ -216,268 +216,270 @@
     <script src="chatbot.js" defer></script>
 
     <script>
-        // Lógica para campos condicionais
-        const isMarriedCheckbox = document.getElementById('isMarried');
-        const spouseFields = document.getElementById('spouse-fields');
-        const paymentTypeRadios = document.querySelectorAll('input[name="paymentType"]');
-        const installmentFields = document.getElementById('installment-fields');
-
-        isMarriedCheckbox.addEventListener('change', () => {
-            spouseFields.classList.toggle('hidden', !isMarriedCheckbox.checked);
-        });
-
-        paymentTypeRadios.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                installmentFields.classList.toggle('hidden', event.target.value !== 'parcelado');
-            });
-        });
-        
-        function parseCurrency(valueString) {
-            if (!valueString || typeof valueString !== 'string') return 0;
-            const cleanString = valueString.replace(/\./g, '').replace(',', '.');
-            return parseFloat(cleanString) || 0;
-        }
-        
-        function formatCurrency(number) {
-            return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function addFinalPeriod(text) {
-            if (!text || typeof text !== 'string') return '';
-            const trimmedText = text.trim();
-            const punctuation = ['.', ',', ';', ':'];
-            if (punctuation.some(p => trimmedText.endsWith(p))) {
-                return trimmedText;
-            }
-            return trimmedText + '.';
-        }
-
         const contractForm = document.getElementById('contract-form');
-        contractForm.addEventListener('submit', (event) => {
-            event.preventDefault();
+        if (contractForm) {
+            // Lógica para campos condicionais
+            const isMarriedCheckbox = document.getElementById('isMarried');
+            const spouseFields = document.getElementById('spouse-fields');
+            const paymentTypeRadios = document.querySelectorAll('input[name="paymentType"]');
+            const installmentFields = document.getElementById('installment-fields');
+
+            isMarriedCheckbox.addEventListener('change', () => {
+                spouseFields.classList.toggle('hidden', !isMarriedCheckbox.checked);
+            });
+
+            paymentTypeRadios.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    installmentFields.classList.toggle('hidden', event.target.value !== 'parcelado');
+                });
+            });
             
-            const cedente1IsCasado = document.getElementById('isMarried').checked;
+            function parseCurrency(valueString) {
+                if (!valueString || typeof valueString !== 'string') return 0;
+                const cleanString = valueString.replace(/\./g, '').replace(',', '.');
+                return parseFloat(cleanString) || 0;
+            }
+            
+            function formatCurrency(number) {
+                return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
 
-            const data = {
-                cedente1: {
-                    nome: document.getElementById('cedente1-nome').value.toUpperCase(),
-                    nacionalidade: document.getElementById('cedente1-nacionalidade').value,
-                    profissao: document.getElementById('cedente1-profissao').value,
-                    rg: document.getElementById('cedente1-rg').value,
-                    cpf: document.getElementById('cedente1-cpf').value,
-                    isCasado: cedente1IsCasado,
-                    estado_civil: cedente1IsCasado ? "casado(a)" : "solteiro(a)",
-                    endereco: addFinalPeriod(document.getElementById('cedente-endereco').value)
-                },
-                cedente2: {
-                    nome: document.getElementById('cedente2-nome').value.toUpperCase(),
-                    nacionalidade: document.getElementById('cedente2-nacionalidade').value,
-                    profissao: document.getElementById('cedente2-profissao').value,
-                    rg: document.getElementById('cedente2-rg').value,
-                    cpf: document.getElementById('cedente2-cpf').value
-                },
-                cessionario: {
-                    nome: document.getElementById('cessionario-nome').value.toUpperCase(),
-                    nacionalidade: document.getElementById('cessionario-nacionalidade').value,
-                    estadoCivil: document.getElementById('cessionario-estado-civil').value,
-                    profissao: document.getElementById('cessionario-profissao').value,
-                    rg: document.getElementById('cessionario-rg').value,
-                    cpf: document.getElementById('cessionario-cpf').value,
-                    endereco: addFinalPeriod(document.getElementById('cessionario-endereco').value)
-                },
-                imovel: {
-                    descricao: document.getElementById('imovel-descricao').value,
-                    medidas: addFinalPeriod(document.getElementById('imovel-medidas').value)
-                },
-                financeiro: {
-                    valorTotal: formatCurrency(parseCurrency(document.getElementById('financeiro-valor-total').value)),
-                    valorExtenso: document.getElementById('financeiro-valor-extenso').value.toUpperCase(),
-                    tipoPagamento: document.querySelector('input[name="paymentType"]:checked').value,
-                    entradaValor: formatCurrency(parseCurrency(document.getElementById('financeiro-entrada-valor').value)),
-                    entradaExtenso: document.getElementById('financeiro-entrada-extenso').value.toUpperCase(),
-                    numParcelasExtenso: document.getElementById('financeiro-parcelas-num').value,
-                    valorParcela: formatCurrency(parseCurrency(document.getElementById('financeiro-parcelas-valor').value)),
-                    parcelaExtenso: document.getElementById('financeiro-parcelas-extenso').value.toUpperCase(),
-                    diaVencimento: document.getElementById('financeiro-parcelas-vencimento').value,
-                    inicioParcelas: document.getElementById('financeiro-parcelas-inicio').value,
-                    fimParcelas: document.getElementById('financeiro-parcelas-fim').value
-                },
-                final: {
-                    foro: document.getElementById('contrato-foro').value,
-                    data: addFinalPeriod(document.getElementById('contrato-data').value),
-                },
-                testemunhas: {
-                    t1_nome: document.getElementById('testemunha1-nome').value.toUpperCase(),
-                    t1_cpf: document.getElementById('testemunha1-cpf').value,
-                    t2_nome: document.getElementById('testemunha2-nome').value.toUpperCase(),
-                    t2_cpf: document.getElementById('testemunha2-cpf').value
+            function addFinalPeriod(text) {
+                if (!text || typeof text !== 'string') return '';
+                const trimmedText = text.trim();
+                const punctuation = ['.', ',', ';', ':'];
+                if (punctuation.some(p => trimmedText.endsWith(p))) {
+                    return trimmedText;
                 }
-            };
-
-            let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
-            if(!data.cedente1.isCasado) {
-                cedente1Qualificacao += `, domiciliado(a) e residente na ${data.cedente1.endereco}`;
+                return trimmedText + '.';
             }
 
-            let cedente2Html = "";
-            if(data.cedente1.isCasado) {
-                cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${data.cedente1.endereco}`;
-            }
+            contractForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                
+                const cedente1IsCasado = document.getElementById('isMarried').checked;
 
-            let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${data.cessionario.endereco}`;
+                const data = {
+                    cedente1: {
+                        nome: document.getElementById('cedente1-nome').value.toUpperCase(),
+                        nacionalidade: document.getElementById('cedente1-nacionalidade').value,
+                        profissao: document.getElementById('cedente1-profissao').value,
+                        rg: document.getElementById('cedente1-rg').value,
+                        cpf: document.getElementById('cedente1-cpf').value,
+                        isCasado: cedente1IsCasado,
+                        estado_civil: cedente1IsCasado ? "casado(a)" : "solteiro(a)",
+                        endereco: document.getElementById('cedente-endereco').value
+                    },
+                    cedente2: {
+                        nome: document.getElementById('cedente2-nome').value.toUpperCase(),
+                        nacionalidade: document.getElementById('cedente2-nacionalidade').value,
+                        profissao: document.getElementById('cedente2-profissao').value,
+                        rg: document.getElementById('cedente2-rg').value,
+                        cpf: document.getElementById('cedente2-cpf').value
+                    },
+                    cessionario: {
+                        nome: document.getElementById('cessionario-nome').value.toUpperCase(),
+                        nacionalidade: document.getElementById('cessionario-nacionalidade').value,
+                        estadoCivil: document.getElementById('cessionario-estado-civil').value,
+                        profissao: document.getElementById('cessionario-profissao').value,
+                        rg: document.getElementById('cessionario-rg').value,
+                        cpf: document.getElementById('cessionario-cpf').value,
+                        endereco: document.getElementById('cessionario-endereco').value
+                    },
+                    imovel: {
+                        descricao: document.getElementById('imovel-descricao').value,
+                        medidas: document.getElementById('imovel-medidas').value
+                    },
+                    financeiro: {
+                        valorTotal: formatCurrency(parseCurrency(document.getElementById('financeiro-valor-total').value)),
+                        valorExtenso: document.getElementById('financeiro-valor-extenso').value.toUpperCase(),
+                        tipoPagamento: document.querySelector('input[name="paymentType"]:checked').value,
+                        entradaValor: formatCurrency(parseCurrency(document.getElementById('financeiro-entrada-valor').value)),
+                        entradaExtenso: document.getElementById('financeiro-entrada-extenso').value.toUpperCase(),
+                        numParcelasExtenso: document.getElementById('financeiro-parcelas-num').value,
+                        valorParcela: formatCurrency(parseCurrency(document.getElementById('financeiro-parcelas-valor').value)),
+                        parcelaExtenso: document.getElementById('financeiro-parcelas-extenso').value.toUpperCase(),
+                        diaVencimento: document.getElementById('financeiro-parcelas-vencimento').value,
+                        inicioParcelas: document.getElementById('financeiro-parcelas-inicio').value,
+                        fimParcelas: document.getElementById('financeiro-parcelas-fim').value
+                    },
+                    final: {
+                        foro: document.getElementById('contrato-foro').value,
+                        data: document.getElementById('contrato-data').value,
+                    },
+                    testemunhas: {
+                        t1_nome: document.getElementById('testemunha1-nome').value.toUpperCase(),
+                        t1_cpf: document.getElementById('testemunha1-cpf').value,
+                        t2_nome: document.getElementById('testemunha2-nome').value.toUpperCase(),
+                        t2_cpf: document.getElementById('testemunha2-cpf').value
+                    }
+                };
+                
+                let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
+                if(!data.cedente1.isCasado) {
+                    cedente1Qualificacao += `, domiciliado(a) e residente na ${addFinalPeriod(data.cedente1.endereco)}`;
+                }
 
-            const contractBody = `
-                <div class="document-body">
-                    <div class="page-1">
-                        <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt; font-weight: bold;">CONTRATO DE COMPRA E VENDA DE TERRENO:</h2>
-                        <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
-                        <p style="text-align: center;">Que fazem entre si: ${data.cedente1.isCasado ? `${data.cedente1.nome} E ${data.cedente2.nome}` : data.cedente1.nome} (Cedentes) e ${data.cessionario.nome} (Cessionário), pela forma seguinte:</p>
-                        <br>
-                        <p>PELO presente instrumento particular e na melhor forma de direito, ${addFinalPeriod(cedente1Qualificacao)}</p>
-                        <p>${addFinalPeriod(cedente2Html)}</p>
-                        <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: ${data.imovel.descricao}, ${data.imovel.medidas}</p>
-                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a ${addFinalPeriod(cessionarioQualificacao)}</p>
-                        <br>
-                        <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
-                        <p><strong>PRIMEIRA</strong> - ${data.financeiro.tipoPagamento === 'a_vista' ? `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), pago neste ato, em moeda corrente do país.` : `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}.`}</p>
-                        <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
-                        <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
-                        <p><strong>QUARTA</strong> – ${data.financeiro.tipoPagamento === 'a_vista' ? 'O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.' : 'A quitação plena, geral e irrevogável, referente ao valor total deste contrato, será outorgada pelo(a) Cedente ao(à) Cessionário(a) através de um recibo de quitação final, a ser emitido somente após a devida compensação da última parcela aqui prevista.'}</p>
-                        <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de ${data.final.foro}, para qualquer ação resultante deste contrato.</p>
-                        <p><strong>SEXTA</strong> – Será de exclusiva responsabilidade do(a) Cessionário(a) solicitar e obter os documentos e autorizações para aprovação do empreendimento relativos à implantação do empreendimento habitacional no Imóvel, aprovação de projetos da Prefeitura Municipal e dos demais Órgãos e autoridades responsáveis pela vigilância e preservação do meio ambiente. A outorga da presente opção de compra e venda não implica ao Cedente, agora e no futuro, em quaisquer obrigações, vinculações ou ônus com os órgãos públicos envolvidos no plano habitacional já mencionado, sendo por conta e risco do(a) PROMITENTE COMPRADOR(A) as despesas e investimentos necessários.</p>
-                        <p><strong>Parágrafo Único:</strong> As despesas com taxas, emolumentos, laudos e quaisquer outros documentos necessárias à implantação do empreendimento, caberão exclusivamente a(o) Cessionário(a), sem qualquer participação do(a) Cedente.</p>
-                        <p><strong>SÉTIMA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
-                    </div>
-                    <div class="page-2">
-                        <p>${data.final.data}</p>
-                        <div class="signatures">
-                            <div class="signature-row">
-                                <div class="signature-block">
-                                    <p>_______________________________________</p>
-                                    <p>${data.cedente1.nome}</p>
-                                    <p>Cedente</p>
-                                    ${data.cedente1.isCasado ? `<br><p>_______________________________________</p><p>${data.cedente2.nome}</p><p>Cedente</p>` : ''}
+                let cedente2Html = "";
+                if(data.cedente1.isCasado) {
+                    cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${addFinalPeriod(data.cedente1.endereco)}`;
+                }
+
+                let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${addFinalPeriod(data.cessionario.endereco)}`;
+
+                const contractBody = `
+                    <div class="document-body">
+                        <div class="page-1">
+                            <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt; font-weight: bold;">CONTRATO DE COMPRA E VENDA DE TERRENO:</h2>
+                            <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
+                            <p style="text-align: center;">Que fazem entre si: ${data.cedente1.isCasado ? `${data.cedente1.nome} E ${data.cedente2.nome}` : data.cedente1.nome} (Cedentes) e ${data.cessionario.nome} (Cessionário), pela forma seguinte:</p>
+                            <br>
+                            <p>PELO presente instrumento particular e na melhor forma de direito, ${addFinalPeriod(cedente1Qualificacao)}</p>
+                            <p>${addFinalPeriod(cedente2Html)}</p>
+                            <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: ${addFinalPeriod(data.imovel.descricao + ', ' + data.imovel.medidas)}</p>
+                            <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a ${addFinalPeriod(cessionarioQualificacao)}</p>
+                            <br>
+                            <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
+                            <p><strong>PRIMEIRA</strong> - ${addFinalPeriod(data.financeiro.tipoPagamento === 'a_vista' ? `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), pago neste ato, em moeda corrente do país` : `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}`)}</p>
+                            <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
+                            <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
+                            <p><strong>QUARTA</strong> – ${addFinalPeriod(data.financeiro.tipoPagamento === 'a_vista' ? 'O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento' : 'A quitação plena, geral e irrevogável, referente ao valor total deste contrato, será outorgada pelo(a) Cedente ao(à) Cessionário(a) através de um recibo de quitação final, a ser emitido somente após a devida compensação da última parcela aqui prevista')}</p>
+                            <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de ${addFinalPeriod(data.final.foro)}, para qualquer ação resultante deste contrato.</p>
+                            <p><strong>SEXTA</strong> – Será de exclusiva responsabilidade do(a) Cessionário(a) solicitar e obter os documentos e autorizações para aprovação do empreendimento relativos à implantação do empreendimento habitacional no Imóvel, aprovação de projetos da Prefeitura Municipal e dos demais Órgãos e autoridades responsáveis pela vigilância e preservação do meio ambiente. A outorga da presente opção de compra e venda não implica ao Cedente, agora e no futuro, em quaisquer obrigações, vinculações ou ônus com os órgãos públicos envolvidos no plano habitacional já mencionado, sendo por conta e risco do(a) PROMITENTE COMPRADOR(A) as despesas e investimentos necessários.</p>
+                            <p><strong>Parágrafo Único:</strong> As despesas com taxas, emolumentos, laudos e quaisquer outros documentos necessárias à implantação do empreendimento, caberão exclusivamente a(o) Cessionário(a), sem qualquer participação do(a) Cedente.</p>
+                            <p><strong>SÉTIMA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
+                        </div>
+                        <div class="page-2">
+                            <p>${addFinalPeriod(data.final.data)}</p>
+                            <div class="signatures">
+                                <div class="signature-row">
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.cedente1.nome}</p>
+                                        <p>Cedente</p>
+                                        ${data.cedente1.isCasado ? `<br><p>_______________________________________</p><p>${data.cedente2.nome}</p><p>Cedente</p>` : ''}
+                                    </div>
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.cessionario.nome}</p>
+                                        <p>Cessionário</p>
+                                    </div>
                                 </div>
-                                <div class="signature-block">
-                                    <p>_______________________________________</p>
-                                    <p>${data.cessionario.nome}</p>
-                                    <p>Cessionário</p>
+                                <div class="witness-section">
+                                    <p><strong>TESTEMUNHAS:</strong></p>
                                 </div>
-                            </div>
-                            <div class="witness-section">
-                                <p><strong>TESTEMUNHAS:</strong></p>
-                            </div>
-                            <div class="signature-row">
-                                <div class="signature-block">
-                                    <p>_______________________________________</p>
-                                    <p>${data.testemunhas.t1_nome}</p>
-                                    <p>CPF: ${data.testemunhas.t1_cpf}</p>
-                                </div>
-                                <div class="signature-block">
-                                    <p>_______________________________________</p>
-                                    <p>${data.testemunhas.t2_nome}</p>
-                                    <p>CPF: ${data.testemunhas.t2_cpf}</p>
+                                <div class="signature-row">
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.testemunhas.t1_nome}</p>
+                                        <p>CPF: ${data.testemunhas.t1_cpf}</p>
+                                    </div>
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.testemunhas.t2_nome}</p>
+                                        <p>CPF: ${data.testemunhas.t2_cpf}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            const previewWindow = window.open('', '_blank');
-            const previewContent = `
-                <html>
-                <head>
-                    <title>Pré-visualização do Contrato</title>
-                    <style>
-                        @page {
-                            size: A4;
-                            margin: 3cm 2cm 2cm 3cm;
-                        }
-                        body { 
-                            font-family: 'Times New Roman', Times, serif; 
-                            font-size: 12pt;
-                            margin: 0; 
-                            background-color: #f0f0f0; 
-                        }
-                        .page-container { 
-                            width: 210mm;
-                            margin: 20px auto; 
-                            background: white; 
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
-                        }
-                        .document-body .page-1 {
-                            min-height: 247mm;
-                            padding: 3cm 2cm 2cm 3cm;
-                            text-align: justify;
-                        }
-                        .document-body .page-2 {
-                            page-break-before: always;
-                            text-align: center;
-                            padding: 3cm 2cm 2cm 3cm;
-                        }
-                        .document-body p { 
-                            line-height: 1.5;
-                            margin-top: 0;
-                            margin-bottom: 1em;
-                        }
-                        .signatures {
-                            margin-top: 2cm;
-                        }
-                        .signature-row {
-                            display: flex;
-                            justify-content: space-around;
-                            align-items: flex-start;
-                            margin-top: 2cm;
-                            text-align: center;
-                        }
-                        .signature-block {
-                            width: 45%;
-                        }
-                        .signature-block p {
-                            line-height: 1.2;
-                            margin: 0;
-                        }
-                        .witness-section {
-                            margin-top: 3cm;
-                            margin-bottom: 0.5cm;
-                        }
-                        .print-controls { 
-                            position: fixed; 
-                            top: 20px; 
-                            right: 20px; 
-                            z-index: 100; 
-                        }
-                        .print-btn { 
-                            padding: 10px 20px; 
-                            background-color: #003459; 
-                            color: white; 
-                            border: none; 
-                            border-radius: 5px; 
-                            cursor: pointer; 
-                            font-weight: bold; 
-                        }
-                        @media print {
-                            body { background-color: white; }
-                            .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
-                            .document-body .page-1, .document-body .page-2 {
-                                padding: 0;
+                const previewWindow = window.open('', '_blank');
+                const previewContent = `
+                    <html>
+                    <head>
+                        <title>Pré-visualização do Contrato</title>
+                        <style>
+                            @page {
+                                size: A4;
+                                margin: 3cm 2cm 2cm 3cm;
                             }
-                            .print-controls { display: none; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="print-controls">
-                        <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
-                    </div>
-                    <div class="page-container">${populatedText}</div>
-                </body>
-                </html>
-            `;
-            previewWindow.document.write(previewContent);
-            previewWindow.document.close();
-        });
+                            body { 
+                                font-family: 'Times New Roman', Times, serif; 
+                                font-size: 12pt;
+                                margin: 0; 
+                                background-color: #f0f0f0; 
+                            }
+                            .page-container { 
+                                width: 210mm;
+                                margin: 20px auto; 
+                                background: white; 
+                                box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+                            }
+                            .document-body .page-1 {
+                                min-height: 247mm;
+                                padding: 3cm 2cm 2cm 3cm;
+                                text-align: justify;
+                            }
+                            .document-body .page-2 {
+                                page-break-before: always;
+                                text-align: center;
+                                padding: 3cm 2cm 2cm 3cm;
+                            }
+                            .document-body p { 
+                                line-height: 1.5;
+                                margin-top: 0;
+                                margin-bottom: 1em;
+                            }
+                            .signatures {
+                                margin-top: 2cm;
+                            }
+                            .signature-row {
+                                display: flex;
+                                justify-content: space-around;
+                                align-items: flex-start;
+                                margin-top: 2cm;
+                                text-align: center;
+                            }
+                            .signature-block {
+                                width: 45%;
+                            }
+                            .signature-block p {
+                                line-height: 1.2;
+                                margin: 0;
+                            }
+                            .witness-section {
+                                margin-top: 3cm;
+                                margin-bottom: 0.5cm;
+                            }
+                            .print-controls { 
+                                position: fixed; 
+                                top: 20px; 
+                                right: 20px; 
+                                z-index: 100; 
+                            }
+                            .print-btn { 
+                                padding: 10px 20px; 
+                                background-color: #003459; 
+                                color: white; 
+                                border: none; 
+                                border-radius: 5px; 
+                                cursor: pointer; 
+                                font-weight: bold; 
+                            }
+                            @media print {
+                                body { background-color: white; }
+                                .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
+                                .document-body .page-1, .document-body .page-2 {
+                                    padding: 0;
+                                }
+                                .print-controls { display: none; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="print-controls">
+                            <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
+                        </div>
+                        <div class="page-container">${contractBody}</div>
+                    </body>
+                    </html>
+                `;
+                previewWindow.document.write(previewContent);
+                previewWindow.document.close();
+            });
+        }
     </script>
 
 </body>
