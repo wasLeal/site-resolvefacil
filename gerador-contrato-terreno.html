@@ -232,7 +232,6 @@
             });
         });
         
-        // Funções auxiliares
         function parseCurrency(valueString) {
             if (!valueString || typeof valueString !== 'string') return 0;
             const cleanString = valueString.replace(/\./g, '').replace(',', '.');
@@ -246,13 +245,13 @@
         function addFinalPeriod(text) {
             if (!text || typeof text !== 'string') return '';
             const trimmedText = text.trim();
-            if (trimmedText.endsWith('.') || trimmedText.endsWith(',') || trimmedText.endsWith(';') || trimmedText.endsWith(':')) {
+            const punctuation = ['.', ',', ';', ':'];
+            if (punctuation.some(p => trimmedText.endsWith(p))) {
                 return trimmedText;
             }
             return trimmedText + '.';
         }
 
-        // Lógica principal do formulário
         const contractForm = document.getElementById('contract-form');
         contractForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -315,41 +314,53 @@
                 }
             };
 
+            let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
+            if(!data.cedente1.isCasado) {
+                cedente1Qualificacao += `, domiciliado(a) e residente na ${data.cedente1.endereco}`;
+            }
+
+            let cedente2Html = "";
+            if(data.cedente1.isCasado) {
+                cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${data.cedente1.endereco}`;
+            }
+
+            let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${data.cessionario.endereco}`;
+
             const contractBody = `
                 <div class="document-body">
                     <div class="page-1">
                         <h2 style="text-align: center; margin-bottom: 0; font-size: 14pt; font-weight: bold;">CONTRATO DE COMPRA E VENDA DE TERRENO:</h2>
                         <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
-                        <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
+                        <p style="text-align: center;">Que fazem entre si: ${data.cedente1.isCasado ? `${data.cedente1.nome} E ${data.cedente2.nome}` : data.cedente1.nome} (Cedentes) e ${data.cessionario.nome} (Cessionário), pela forma seguinte:</p>
                         <br>
-                        <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}</p>
-                        <p>{{cedente2_qualificacao}}</p>
-                        <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}}, {{imovel_medidas}}</p>
-                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}</p>
+                        <p>PELO presente instrumento particular e na melhor forma de direito, ${addFinalPeriod(cedente1Qualificacao)}</p>
+                        <p>${addFinalPeriod(cedente2Html)}</p>
+                        <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: ${data.imovel.descricao}, ${data.imovel.medidas}</p>
+                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a ${addFinalPeriod(cessionarioQualificacao)}</p>
                         <br>
                         <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
-                        <p><strong>PRIMEIRA</strong> - {{clausula_pagamento}}</p>
+                        <p><strong>PRIMEIRA</strong> - ${data.financeiro.tipoPagamento === 'a_vista' ? `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), pago neste ato, em moeda corrente do país.` : `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal}), sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}.`}</p>
                         <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
                         <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
-                        <p><strong>QUARTA</strong> – {{clausula_quitacao}}</p>
-                        <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
+                        <p><strong>QUARTA</strong> – ${data.financeiro.tipoPagamento === 'a_vista' ? 'O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.' : 'A quitação plena, geral e irrevogável, referente ao valor total deste contrato, será outorgada pelo(a) Cedente ao(à) Cessionário(a) através de um recibo de quitação final, a ser emitido somente após a devida compensação da última parcela aqui prevista.'}</p>
+                        <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de ${data.final.foro}, para qualquer ação resultante deste contrato.</p>
                         <p><strong>SEXTA</strong> – Será de exclusiva responsabilidade do(a) Cessionário(a) solicitar e obter os documentos e autorizações para aprovação do empreendimento relativos à implantação do empreendimento habitacional no Imóvel, aprovação de projetos da Prefeitura Municipal e dos demais Órgãos e autoridades responsáveis pela vigilância e preservação do meio ambiente. A outorga da presente opção de compra e venda não implica ao Cedente, agora e no futuro, em quaisquer obrigações, vinculações ou ônus com os órgãos públicos envolvidos no plano habitacional já mencionado, sendo por conta e risco do(a) PROMITENTE COMPRADOR(A) as despesas e investimentos necessários.</p>
                         <p><strong>Parágrafo Único:</strong> As despesas com taxas, emolumentos, laudos e quaisquer outros documentos necessárias à implantação do empreendimento, caberão exclusivamente a(o) Cessionário(a), sem qualquer participação do(a) Cedente.</p>
                         <p><strong>SÉTIMA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
                     </div>
                     <div class="page-2">
-                        <p>{{contrato_data}}</p>
+                        <p>${data.final.data}</p>
                         <div class="signatures">
                             <div class="signature-row">
                                 <div class="signature-block">
                                     <p>_______________________________________</p>
-                                    <p>{{cedente1_nome}}</p>
+                                    <p>${data.cedente1.nome}</p>
                                     <p>Cedente</p>
-                                    {{assinatura_cedente2}}
+                                    ${data.cedente1.isCasado ? `<br><p>_______________________________________</p><p>${data.cedente2.nome}</p><p>Cedente</p>` : ''}
                                 </div>
                                 <div class="signature-block">
                                     <p>_______________________________________</p>
-                                    <p>{{cessionario_nome}}</p>
+                                    <p>${data.cessionario.nome}</p>
                                     <p>Cessionário</p>
                                 </div>
                             </div>
@@ -359,79 +370,19 @@
                             <div class="signature-row">
                                 <div class="signature-block">
                                     <p>_______________________________________</p>
-                                    <p>{{testemunha1_nome}}</p>
-                                    <p>CPF: {{testemunha1_cpf}}</p>
+                                    <p>${data.testemunhas.t1_nome}</p>
+                                    <p>CPF: ${data.testemunhas.t1_cpf}</p>
                                 </div>
                                 <div class="signature-block">
                                     <p>_______________________________________</p>
-                                    <p>{{testemunha2_nome}}</p>
-                                    <p>CPF: {{testemunha2_cpf}}</p>
+                                    <p>${data.testemunhas.t2_nome}</p>
+                                    <p>CPF: ${data.testemunhas.t2_cpf}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            
-            let populatedText = contractBody;
-            
-            let cedentesNomes = data.cedente1.nome;
-            if(data.cedente1.isCasado) cedentesNomes += ` E ${data.cedente2.nome}`;
-            populatedText = populatedText.replace('{{cedentes_nomes}}', cedentesNomes);
-            
-            let cedente1Qualificacao = `${data.cedente1.nome}, ${data.cedente1.nacionalidade}, ${data.cedente1.estado_civil}, ${data.cedente1.profissao}, portador(a) da RG: ${data.cedente1.rg}, e devidamente inscrito(a) no CPF: ${data.cedente1.cpf}`;
-            if(!data.cedente1.isCasado) cedente1Qualificacao += `, domiciliado(a) e residente na ${data.cedente1.endereco}`;
-            populatedText = populatedText.replace('{{cedente1_qualificacao}}', cedente1Qualificacao);
-
-            let cedente2Html = "";
-            if(data.cedente1.isCasado) {
-                cedente2Html = `E sua(seu) esposa(o), ${data.cedente2.nome}, ${data.cedente2.nacionalidade}, casado(a), ${data.cedente2.profissao}, portador(a) da RG: ${data.cedente2.rg}, e devidamente inscrito(a) no CPF: ${data.cedente2.cpf}, ambos domiciliados e residentes na ${data.cedente1.endereco}`;
-            }
-            populatedText = populatedText.replace('{{cedente2_qualificacao}}', cedente2Html);
-
-            let assinaturaCedente2 = "";
-            if(data.cedente1.isCasado) {
-                assinaturaCedente2 = `
-                    <br>
-                    <p>_______________________________________</p>
-                    <p>${data.cedente2.nome}</p>
-                    <p>Cedente</p>
-                `;
-            }
-            populatedText = populatedText.replace('{{assinatura_cedente2}}', assinaturaCedente2);
-            populatedText = populatedText.replace(/{{cedente1_nome}}/g, data.cedente1.nome);
-
-            let cessionarioQualificacao = `${data.cessionario.nome}, ${data.cessionario.nacionalidade}, ${data.cessionario.estadoCivil}, ${data.cessionario.profissao}, portador(a) da RG: ${data.cessionario.rg} e devidamente inscrito(a) no CPF nº.: ${data.cessionario.cpf}, domiciliado(a) na ${data.cessionario.endereco}`;
-            populatedText = populatedText.replace('{{cessionario_qualificacao}}', cessionarioQualificacao);
-            populatedText = populatedText.replace(/{{cessionario_nome}}/g, data.cessionario.nome);
-            
-            populatedText = populatedText.replace('{{imovel_descricao}}', data.imovel.descricao);
-            populatedText = populatedText.replace('{{imovel_medidas}}', data.imovel.medidas);
-
-            let clausulaPagamento = `O preço certo e ajustado para cessão é de ${data.financeiro.valorExtenso} (R$ ${data.financeiro.valorTotal})`;
-            if(data.financeiro.tipoPagamento === 'a_vista') {
-                clausulaPagamento += `, pago neste ato, em moeda corrente do país.`;
-            } else {
-                clausulaPagamento += `, sendo que de entrada foi pago a vista, e em moeda legal do país, o valor de ${data.financeiro.entradaExtenso} (R$ ${data.financeiro.entradaValor}), e ficando mais ${data.financeiro.numParcelasExtenso} parcelas de ${data.financeiro.parcelaExtenso} (R$ ${data.financeiro.valorParcela}) acertado para todo dia ${data.financeiro.diaVencimento} de cada mês subsequente, começando em ${data.financeiro.inicioParcelas} e seu término em ${data.financeiro.fimParcelas}.`;
-            }
-            populatedText = populatedText.replace('{{clausula_pagamento}}', clausulaPagamento);
-            
-            // Lógica da Cláusula de Quitação Condicional
-            let clausulaQuitacao = '';
-            if (data.financeiro.tipoPagamento === 'a_vista') {
-                clausulaQuitacao = 'O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.';
-            } else {
-                clausulaQuitacao = 'A quitação plena, geral e irrevogável, referente ao valor total deste contrato, será outorgada pelo(a) Cedente ao(à) Cessionário(a) através de um recibo de quitação final, a ser emitido somente após a devida compensação da última parcela aqui prevista.';
-            }
-            populatedText = populatedText.replace('{{clausula_quitacao}}', clausulaQuitacao);
-
-            populatedText = populatedText.replace('{{contrato_foro}}', data.final.foro);
-            populatedText = populatedText.replace('{{contrato_data}}', data.final.data);
-
-            populatedText = populatedText.replace('{{testemunha1_nome}}', data.testemunhas.t1_nome);
-            populatedText = populatedText.replace('{{testemunha1_cpf}}', data.testemunhas.t1_cpf);
-            populatedText = populatedText.replace('{{testemunha2_nome}}', data.testemunhas.t2_nome);
-            populatedText = populatedText.replace('{{testemunha2_cpf}}', data.testemunhas.t2_cpf);
 
             const previewWindow = window.open('', '_blank');
             const previewContent = `
@@ -456,7 +407,7 @@
                             box-shadow: 0 0 10px rgba(0,0,0,0.1); 
                         }
                         .document-body .page-1 {
-                            min-height: 247mm; /* Altura ajustada para ABNT */
+                            min-height: 247mm;
                             padding: 3cm 2cm 2cm 3cm;
                             text-align: justify;
                         }
