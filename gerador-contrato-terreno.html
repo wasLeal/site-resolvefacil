@@ -232,6 +232,7 @@
             });
         });
         
+        // Funções auxiliares
         function parseCurrency(valueString) {
             if (!valueString || typeof valueString !== 'string') return 0;
             const cleanString = valueString.replace(/\./g, '').replace(',', '.');
@@ -242,6 +243,16 @@
             return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        function addFinalPeriod(text) {
+            if (!text || typeof text !== 'string') return '';
+            const trimmedText = text.trim();
+            if (trimmedText.endsWith('.') || trimmedText.endsWith(',') || trimmedText.endsWith(';') || trimmedText.endsWith(':')) {
+                return trimmedText;
+            }
+            return trimmedText + '.';
+        }
+
+        // Lógica principal do formulário
         const contractForm = document.getElementById('contract-form');
         contractForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -257,7 +268,7 @@
                     cpf: document.getElementById('cedente1-cpf').value,
                     isCasado: cedente1IsCasado,
                     estado_civil: cedente1IsCasado ? "casado(a)" : "solteiro(a)",
-                    endereco: document.getElementById('cedente-endereco').value
+                    endereco: addFinalPeriod(document.getElementById('cedente-endereco').value)
                 },
                 cedente2: {
                     nome: document.getElementById('cedente2-nome').value.toUpperCase(),
@@ -273,11 +284,11 @@
                     profissao: document.getElementById('cessionario-profissao').value,
                     rg: document.getElementById('cessionario-rg').value,
                     cpf: document.getElementById('cessionario-cpf').value,
-                    endereco: document.getElementById('cessionario-endereco').value
+                    endereco: addFinalPeriod(document.getElementById('cessionario-endereco').value)
                 },
                 imovel: {
                     descricao: document.getElementById('imovel-descricao').value,
-                    medidas: document.getElementById('imovel-medidas').value
+                    medidas: addFinalPeriod(document.getElementById('imovel-medidas').value)
                 },
                 financeiro: {
                     valorTotal: formatCurrency(parseCurrency(document.getElementById('financeiro-valor-total').value)),
@@ -294,7 +305,7 @@
                 },
                 final: {
                     foro: document.getElementById('contrato-foro').value,
-                    data: document.getElementById('contrato-data').value,
+                    data: addFinalPeriod(document.getElementById('contrato-data').value),
                 },
                 testemunhas: {
                     t1_nome: document.getElementById('testemunha1-nome').value.toUpperCase(),
@@ -311,23 +322,23 @@
                         <h3 style="text-align: center; margin-top: 5px; font-weight: bold; font-size: 13pt;">De cessão e transferência de direito à indenização</h3>
                         <p style="text-align: center;">Que fazem entre si: {{cedentes_nomes}} (Cedentes) e {{cessionario_nome}} (Cessionário), pela forma seguinte:</p>
                         <br>
-                        <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}.</p>
+                        <p>PELO presente instrumento particular e na melhor forma de direito, {{cedente1_qualificacao}}</p>
                         <p>{{cedente2_qualificacao}}</p>
                         <p>Sendo proprietário(os) legítimo(os) e possuidor(a-es) do: {{imovel_descricao}}, {{imovel_medidas}}</p>
-                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}.</p>
+                        <p>Cede e transfere o terreno acima e os direitos que lhe cabe, em concordância posto no artigo 547, do código Civil Brasileiro a {{cessionario_qualificacao}}</p>
                         <br>
                         <p>Têm entre si, contrato mediante as cláusulas e condições seguintes:</p>
                         <p><strong>PRIMEIRA</strong> - {{clausula_pagamento}}</p>
                         <p><strong>SEGUNDA</strong> - O cessionário toma posse, desde já, do terreno acima descriminado e compromissado, sem deixar motivos para questionamentos futuros.</p>
                         <p><strong>TERCEIRA</strong> - O cedente se outorga a quaisquer instrumentos, necessários a complementação desta cessão e transferência, em nome do cessionário, ou no de terceiros que ele queira indicar, assim que solicitado, também se comprometendo para tanto se apresentar, e testemunhar esta negociação quando for solicitado.</p>
-                        <p><strong>QUARTA</strong> – O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.</p>
+                        <p><strong>QUARTA</strong> – {{clausula_quitacao}}</p>
                         <p><strong>QUINTA</strong> – Fica eleito o foro desta cidade de {{contrato_foro}}, para qualquer ação resultante deste contrato.</p>
                         <p><strong>SEXTA</strong> – Será de exclusiva responsabilidade do(a) Cessionário(a) solicitar e obter os documentos e autorizações para aprovação do empreendimento relativos à implantação do empreendimento habitacional no Imóvel, aprovação de projetos da Prefeitura Municipal e dos demais Órgãos e autoridades responsáveis pela vigilância e preservação do meio ambiente. A outorga da presente opção de compra e venda não implica ao Cedente, agora e no futuro, em quaisquer obrigações, vinculações ou ônus com os órgãos públicos envolvidos no plano habitacional já mencionado, sendo por conta e risco do(a) PROMITENTE COMPRADOR(A) as despesas e investimentos necessários.</p>
                         <p><strong>Parágrafo Único:</strong> As despesas com taxas, emolumentos, laudos e quaisquer outros documentos necessárias à implantação do empreendimento, caberão exclusivamente a(o) Cessionário(a), sem qualquer participação do(a) Cedente.</p>
                         <p><strong>SÉTIMA</strong> – E como estivessem, assim, ajustados e contratados, mandaram digitar o presente instrumento particular em duas (02), vias de igual teor, que depois de lidas e achadas conforme, assinaram com as testemunhas a tudo presente.</p>
                     </div>
                     <div class="page-2">
-                        <p>{{contrato_data}}.</p>
+                        <p>{{contrato_data}}</p>
                         <div class="signatures">
                             <div class="signature-row">
                                 <div class="signature-block">
@@ -405,6 +416,15 @@
             }
             populatedText = populatedText.replace('{{clausula_pagamento}}', clausulaPagamento);
             
+            // Lógica da Cláusula de Quitação Condicional
+            let clausulaQuitacao = '';
+            if (data.financeiro.tipoPagamento === 'a_vista') {
+                clausulaQuitacao = 'O cedente, ainda por este instrumento, dá ao cessionário, pleno, geral e irrevogável quitação de pago e satisfeito, o valor a vista, para jamais reclamar outro pagamento.';
+            } else {
+                clausulaQuitacao = 'A quitação plena, geral e irrevogável, referente ao valor total deste contrato, será outorgada pelo(a) Cedente ao(à) Cessionário(a) através de um recibo de quitação final, a ser emitido somente após a devida compensação da última parcela aqui prevista.';
+            }
+            populatedText = populatedText.replace('{{clausula_quitacao}}', clausulaQuitacao);
+
             populatedText = populatedText.replace('{{contrato_foro}}', data.final.foro);
             populatedText = populatedText.replace('{{contrato_data}}', data.final.data);
 
@@ -421,7 +441,7 @@
                     <style>
                         @page {
                             size: A4;
-                            margin: 3cm 2cm 2cm 3cm; /* Margens ABNT: Superior, Direita, Inferior, Esquerda */
+                            margin: 3cm 2cm 2cm 3cm;
                         }
                         body { 
                             font-family: 'Times New Roman', Times, serif; 
@@ -436,6 +456,7 @@
                             box-shadow: 0 0 10px rgba(0,0,0,0.1); 
                         }
                         .document-body .page-1 {
+                            min-height: 247mm; /* Altura ajustada para ABNT */
                             padding: 3cm 2cm 2cm 3cm;
                             text-align: justify;
                         }
