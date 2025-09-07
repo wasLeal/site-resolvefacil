@@ -1,9 +1,46 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL COM TEXTO DO E-MAIL OTIMIZADO)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL - MÚLTIPLOS PRODUTOS)
+
+// --- NOSSO CATÁLOGO DE ENTREGA ---
+const catalogoEntrega = {
+    "Acesso ao Gerador de Currículo Profissional": {
+        link: "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html",
+        assunto: "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil",
+        htmlContent: (link) => `
+            <p>Olá! Seu pagamento foi aprovado com sucesso.</p>
+            <p>Clique no botão abaixo para acessar seu Gerador de Currículo Profissional:</p>
+            <p style="text-align: center; margin: 20px 0;">
+                <a href="${link}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Produto Agora</a>
+            </p>
+            <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, por favor, copie e cole o seguinte endereço no seu navegador:</p>
+            <p style="font-size: 0.9em; color: #333; word-break: break-all;">${link}</p>
+            <hr style="margin: 20px 0;">
+            <p><b>Importante:</b> Seu acesso é válido por <strong>24 meses</strong> e poderá ser usado sempre que precisar através deste mesmo link.</p>
+            <p>Obrigado pela sua compra!</p>
+        `
+    },
+    "Acesso ao Gerador de Contrato de Terreno": {
+        link: "https://resolvefacil-curriculos.netlify.app/gerador-contrato-terreno.html",
+        assunto: "Seu Acesso ao Gerador de Contrato de Terreno | ResolveFácil",
+        htmlContent: (link) => `
+            <p>Olá! Seu pagamento foi aprovado com sucesso.</p>
+            <p>Clique no botão abaixo para acessar seu Gerador de Contrato de Terreno:</p>
+            <p style="text-align: center; margin: 20px 0;">
+                <a href="${link}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Ferramenta Agora</a>
+            </p>
+            <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, por favor, copie e cole o seguinte endereço no seu navegador:</p>
+            <p style="font-size: 0.9em; color: #333; word-break: break-all;">${link}</p>
+            <hr style="margin: 20px 0;">
+            <p><b>Importante:</b> Seu acesso à ferramenta é válido por <strong>12 meses</strong>.</p>
+            <p>Obrigado pela sua compra!</p>
+        `
+    }
+    // Para adicionar novos produtos, basta adicionar um novo bloco aqui.
+};
+
 
 exports.handler = async function(event, context) {
     console.log("--- GUARDIÃO ASAAS INICIADO (PRODUÇÃO) ---");
     try {
-        // Buscamos pagamentos recentes, sem o filtro defeituoso da Asaas.
         const dezMinutosAtras = new Date(Date.now() - 10 * 60 * 1000).toISOString();
         const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${dezMinutosAtras}`;
         
@@ -26,6 +63,15 @@ exports.handler = async function(event, context) {
         for (const pagamento of pagamentosAprovados) {
             const paymentId = pagamento.id;
             const customerId = pagamento.customer;
+            const productDescription = pagamento.description;
+
+            // Busca o produto no catálogo de entrega
+            const produtoParaEntregar = catalogoEntrega[productDescription];
+
+            if (!produtoParaEntregar) {
+                console.warn(`PAG-${paymentId}: Produto com descrição "${productDescription}" não encontrado no catálogo de entrega. Pulando.`);
+                continue;
+            }
 
             const customerResponse = await fetch(`https://www.asaas.com/api/v3/customers/${customerId}`, {
                 headers: { 'access_token': process.env.ASAAS_API_KEY }
@@ -44,33 +90,16 @@ exports.handler = async function(event, context) {
                 continue;
             }
 
-            console.log(`PAG-${paymentId}: Enviando e-mail para ${customerEmail}`);
-            
-            // ========== INÍCIO DA ALTERAÇÃO FINAL NO TEXTO DO E-MAIL ==========
-            const linkDoProduto = "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html";
-            
-            const htmlContent = `
-                <p>Olá! Seu pagamento foi aprovado com sucesso.</p>
-                <p>Clique no botão abaixo para acessar seu Gerador de Currículo Profissional:</p>
-                <p style="text-align: center; margin: 20px 0;">
-                    <a href="${linkDoProduto}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Produto Agora</a>
-                </p>
-                <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, por favor, copie e cole o seguinte endereço no seu navegador:</p>
-                <p style="font-size: 0.9em; color: #333; word-break: break-all;">${linkDoProduto}</p>
-                <hr style="margin: 20px 0;">
-                <p><b>Importante:</b> Seu acesso é válido por <strong>24 meses</strong> e poderá ser usado sempre que precisar através deste mesmo link.</p>
-                <p>Obrigado pela sua compra!</p>
-            `;
-            // ========== FIM DA ALTERAÇÃO ==========
+            console.log(`PAG-${paymentId}: Enviando e-mail de "${produtoParaEntregar.assunto}" para ${customerEmail}`);
             
             const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
                 headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" }, // Lembre-se de configurar seu e-mail profissional
+                    sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" },
                     to: [{ email: customerEmail }],
-                    subject: "Seu Acesso ao Gerador de Currículo Profissional | ResolveFácil",
-                    htmlContent: htmlContent
+                    subject: produtoParaEntregar.assunto,
+                    htmlContent: produtoParaEntregar.htmlContent(produtoParaEntregar.link)
                 })
             });
 

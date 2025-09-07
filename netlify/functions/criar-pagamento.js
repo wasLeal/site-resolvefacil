@@ -1,9 +1,22 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão de DIAGNÓSTICO FORÇADO)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Múltiplos Produtos)
 
 const allowedOrigins = [
     'https://www.resolvefacil.online',
     'https://resolvefacil.online'
 ];
+
+// --- NOSSO CATÁLOGO DE PRODUTOS ---
+const catalogoProdutos = {
+    'curriculo_pago': {
+        descricao: "Acesso ao Gerador de Currículo Profissional",
+        valor: 5.99
+    },
+    'contrato_terreno': {
+        descricao: "Acesso ao Gerador de Contrato de Terreno",
+        valor: 16.99
+    }
+    // Para adicionar novos produtos no futuro, basta adicionar um novo bloco aqui.
+};
 
 exports.handler = async function(event) {
     const origin = event.headers.origin;
@@ -24,24 +37,27 @@ exports.handler = async function(event) {
     }
 
     try {
-        // ============ INÍCIO DO LOG DE DIAGNÓSTICO ============
-        console.log("-----------------------------------------");
-        console.log("--- DIAGNÓSTICO DE DADOS RECEBIDOS ---");
-        console.log("HORÁRIO DO TESTE:", new Date().toISOString());
-        console.log("CONTEÚDO BRUTO RECEBIDO (event.body):", event.body);
-        console.log("-----------------------------------------");
-        // ============ FIM DO LOG DE DIAGNÓSTICO ============
+        const { productId, name, email, cpf } = JSON.parse(event.body);
 
-        const { name, email, cpf } = JSON.parse(event.body);
-        if (!name || !email || !cpf) {
-            return { statusCode: 400, headers: headers, body: 'Nome, e-mail e CPF são obrigatórios.' };
+        // Validação dos dados recebidos
+        if (!productId || !name || !email || !cpf) {
+            return { statusCode: 400, headers: headers, body: 'Dados incompletos (ID do produto, nome, e-mail e CPF são obrigatórios).' };
+        }
+
+        // Busca o produto no nosso catálogo
+        const produto = catalogoProdutos[productId];
+
+        // Se o produto não for encontrado no catálogo, retorna um erro
+        if (!produto) {
+            console.error("Tentativa de compra com productId inválido:", productId);
+            return { statusCode: 404, headers: headers, body: 'Produto não encontrado.' };
         }
 
         const dadosDaCobranca = {
             billingType: "PIX",
-            value: 5.99,
+            value: produto.valor, // Pega o valor do catálogo
             dueDate: new Date().toISOString().split('T')[0],
-            description: "Acesso ao Gerador de Currículo Profissional",
+            description: produto.descricao, // Pega a descrição do catálogo
             customer: {
                 name: name,
                 email: email,
