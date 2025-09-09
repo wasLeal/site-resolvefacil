@@ -33,8 +33,24 @@ const catalogoEntrega = {
             <p><b>Importante:</b> Seu acesso à ferramenta é válido por <strong>12 meses</strong>.</p>
             <p>Obrigado pela sua compra!</p>
         `
+    },
+    // NOVO PRODUTO ADICIONADO ABAIXO
+    "Acesso ao Gerador de Contrato de Aluguel": {
+        link: "https://resolvefacil-curriculos.netlify.app/gerador-contrato-aluguel.html",
+        assunto: "Seu Acesso ao Gerador de Contrato de Aluguel | ResolveFácil",
+        htmlContent: (link) => `
+            <p>Olá! Seu pagamento foi aprovado com sucesso.</p>
+            <p>Clique no botão abaixo para acessar seu Gerador de Contrato de Aluguel:</p>
+            <p style="text-align: center; margin: 20px 0;">
+                <a href="${link}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Ferramenta Agora</a>
+            </p>
+            <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, por favor, copie e cole o seguinte endereço no seu navegador:</p>
+            <p style="font-size: 0.9em; color: #333; word-break: break-all;">${link}</p>
+            <hr style="margin: 20px 0;">
+            <p><b>Importante:</b> Seu acesso à ferramenta é válido por <strong>12 meses</strong>.</p>
+            <p>Obrigado pela sua compra!</p>
+        `
     }
-    // Para adicionar novos produtos, basta adicionar um novo bloco aqui.
 };
 
 

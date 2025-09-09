@@ -14,8 +14,12 @@ const catalogoProdutos = {
     'contrato_terreno': {
         descricao: "Acesso ao Gerador de Contrato de Terreno",
         valor: 16.99
+    },
+    // NOVO PRODUTO ADICIONADO ABAIXO
+    'contrato_aluguel': {
+        descricao: "Acesso ao Gerador de Contrato de Aluguel",
+        valor: 16.99
     }
-    // Para adicionar novos produtos no futuro, basta adicionar um novo bloco aqui.
 };
 
 exports.handler = async function(event) {
