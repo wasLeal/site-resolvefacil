@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Contrato de Aluguel - ResolveFácil</title>
+    <meta name="description" content="Crie seu contrato de locação de imóvel residencial de forma rápida e segura.">
+    <link rel="icon" href="favicon.png" type="image/png">
+    
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-servicos: #f2f2ed;
+            --body-text-servicos: #3e5a6a;
+            --card-bg: #ffffff;
+            --input-border: #cccccc;
+            --input-focus-border: #003459;
+            --danger-color: #d9534f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg-servicos); color: var(--body-text-servicos); min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
+        #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        #menu-container nav a:hover { color: var(--highlight); }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
+        .mobile-nav a:hover { color: var(--highlight); }
+        main { flex: 1; padding: 20px; }
+        .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+        .generator-header { text-align: center; margin-bottom: 30px; }
+        .generator-header h1 { font-size: clamp(1.8em, 5vw, 2.5em); color: var(--primary-bg); margin-bottom: 10px; }
+        .generator-header p { font-size: 1.1em; color: var(--secondary-bg); }
+        .form-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .form-section:last-of-type { border-bottom: none; }
+        .form-section h2 { font-size: 1.5em; color: var(--primary-bg); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-section h2 i { color: var(--highlight); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 1em; transition: border-color 0.3s; }
+        .form-group input:focus { outline: none; border-color: var(--input-focus-border); }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--input-border); border-radius: 6px; }
+        .hidden { display: none; }
+        .generator-footer { text-align: center; margin-top: 30px; }
+        .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .generate-btn:hover { background-color: var(--button-hover); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        footer { background-color: var(--secondary-bg); color: var(--text-color); text-align: center; padding: 20px; font-size: 0.9em; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        footer a { color: var(--text-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
+        footer a:hover { color: var(--highlight); }
+        @media (max-width: 768px) { .generator-container { padding: 20px; } #menu-container nav ul { display: none; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
+        @media (min-width: 769px) { #menu-container nav ul { display: flex; } .hamburger { display: none; } .mobile-nav { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="https://www.resolvefacil.online" class="logo-area">
+                <img src="favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            <div id="menu-container"></div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="mobile-nav" id="mobile-nav"></div>
+    </header>
+
+    <main>
+        <div class="generator-container">
+            <div class="generator-header">
+                <h1>Gerador de Contrato de Aluguel Residencial</h1>
+                <p>Preencha os campos abaixo para gerar seu documento personalizado.</p>
+            </div>
+            
+            <form id="rental-contract-form">
+                
+                <section class="form-section">
+                    <h2><i class="fas fa-user-tie"></i>Dados do Locador (Dono do Imóvel)</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="locador-nome" required></div>
+                        <div class="form-group"><label>Nacionalidade</label><input type="text" id="locador-nacionalidade" value="Brasileiro(a)" required></div>
+                        <div class="form-group"><label>Estado Civil</label><input type="text" id="locador-estado-civil" required></div>
+                        <div class="form-group"><label>Profissão</label><input type="text" id="locador-profissao" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="locador-rg" required></div>
+                        <div class="form-group"><label>CPF</label><input type="text" id="locador-cpf" required></div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i>Dados do Locatário (Inquilino)</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="locatario-nome" required></div>
+                        <div class="form-group"><label>Nacionalidade</label><input type="text" id="locatario-nacionalidade" value="Brasileiro(a)" required></div>
+                        <div class="form-group"><label>Estado Civil</label><input type="text" id="locatario-estado-civil" required></div>
+                        <div class="form-group"><label>Profissão</label><input type="text" id="locatario-profissao" required></div>
+                        <div class="form-group"><label>RG</label><input type="text" id="locatario-rg" required></div>
+                        <div class="form-group"><label>CPF</label><input type="text" id="locatario-cpf" required></div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-home"></i>Dados do Imóvel</h2>
+                    <div class="form-group"><label>Endereço Completo do Imóvel</label><input type="text" id="imovel-endereco" placeholder="Rua, Número, Bairro, CEP, Cidade, Estado" required></div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-calendar-alt"></i>Detalhes da Locação</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Prazo do Contrato (em meses)</label><input type="number" id="locacao-prazo" min="1" required></div>
+                        <div class="form-group"><label>Data de Início</label><input type="date" id="locacao-data-inicio" required></div>
+                        <div class="form-group"><label>Data de Término</label><input type="date" id="locacao-data-termino" required></div>
+                        <div class="form-group"><label>Valor do Aluguel (R$)</label><input type="text" id="locacao-valor-numerico" placeholder="Ex: 1500,00" required></div>
+                        <div class="form-group"><label>Valor do Aluguel (por extenso)</label><input type="text" id="locacao-valor-extenso" required></div>
+                        <div class="form-group"><label>Dia de Vencimento do Aluguel</label><input type="number" id="locacao-dia-vencimento" min="1" max="31" required></div>
+                    </div>
+                </section>
+                
+                <section class="form-section">
+                    <h2><i class="fas fa-users"></i>Fiadores</h2>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="has-fiador">
+                            <label for="has-fiador">Haverá Fiador neste contrato?</label>
+                        </div>
+                    </div>
+                    <div id="fiador-fields" class="hidden">
+                        <h3 style="margin-top:20px; margin-bottom: 20px; color: #3e5a6a;">Dados do 1º Fiador</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nome Completo</label><input type="text" id="fiador1-nome"></div>
+                            <div class="form-group"><label>Nacionalidade</label><input type="text" id="fiador1-nacionalidade" value="Brasileiro(a)"></div>
+                            <div class="form-group"><label>Estado Civil</label><input type="text" id="fiador1-estado-civil"></div>
+                            <div class="form-group"><label>Profissão</label><input type="text" id="fiador1-profissao"></div>
+                            <div class="form-group"><label>RG</label><input type="text" id="fiador1-rg"></div>
+                            <div class="form-group"><label>CPF</label><input type="text" id="fiador1-cpf"></div>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;"><label>Endereço Completo do Fiador</label><input type="text" id="fiador1-endereco" placeholder="Rua, Número, Bairro, CEP, Cidade, Estado"></div>
+                        
+                        <h3 style="margin-top:30px; margin-bottom: 20px; color: #3e5a6a;">Dados do Cônjuge do Fiador (se houver)</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nome Completo do Cônjuge</label><input type="text" id="fiador2-nome"></div>
+                            <div class="form-group"><label>Nacionalidade</label><input type="text" id="fiador2-nacionalidade" value="Brasileiro(a)"></div>
+                            <div class="form-group"><label>Estado Civil</label><input type="text" id="fiador2-estado-civil"></div>
+                            <div class="form-group"><label>Profissão</label><input type="text" id="fiador2-profissao"></div>
+                            <div class="form-group"><label>RG</label><input type="text" id="fiador2-rg"></div>
+                            <div class="form-group"><label>CPF</label><input type="text" id="fiador2-cpf"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-file-signature"></i>Dados Finais do Contrato</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Cidade do Foro</label><input type="text" id="contrato-foro" placeholder="Cidade onde o contrato será regido" required></div>
+                        <div class="form-group"><label>Local e Data de Assinatura</label><input type="text" id="contrato-local-data" placeholder="Ex: Manaus, 08 de Setembro de 2025" required></div>
+                    </div>
+                    <div class="form-grid" style="margin-top:20px;">
+                        <div class="form-group"><label>Nome da 1ª Testemunha</label><input type="text" id="testemunha1-nome" required></div>
+                        <div class="form-group"><label>CPF da 1ª Testemunha</label><input type="text" id="testemunha1-cpf" required></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome da 2ª Testemunha</label><input type="text" id="testemunha2-nome" required></div>
+                        <div class="form-group"><label>CPF da 2ª Testemunha</label><input type="text" id="testemunha2-cpf" required></div>
+                    </div>
+                </section>
+
+                <div class="generator-footer">
+                    <button id="generate-btn" type="submit" class="generate-btn">Gerar Contrato</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer id="footer-container">
+    </footer>
+
+    <script src="menu.js"></script>
+    <script src="chatbot.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contractForm = document.getElementById('rental-contract-form');
+            if (contractForm) {
+                const hasFiadorCheckbox = document.getElementById('has-fiador');
+                const fiadorFields = document.getElementById('fiador-fields');
+
+                hasFiadorCheckbox.addEventListener('change', () => {
+                    fiadorFields.classList.toggle('hidden', !hasFiadorCheckbox.checked);
+                    const inputs = fiadorFields.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        if (!input.id.includes('fiador2')) {
+                            input.required = hasFiadorCheckbox.checked;
+                        }
+                    });
+                });
+
+                contractForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    
+                    const formatDate = (dateString) => {
+                        if (!dateString) return '';
+                        const [year, month, day] = dateString.split('-');
+                        return `${day}/${month}/${year}`;
+                    };
+
+                    const data = {
+                        locador: {
+                            nome: document.getElementById('locador-nome').value.toUpperCase(),
+                            nacionalidade: document.getElementById('locador-nacionalidade').value,
+                            estadoCivil: document.getElementById('locador-estado-civil').value,
+                            profissao: document.getElementById('locador-profissao').value,
+                            rg: document.getElementById('locador-rg').value,
+                            cpf: document.getElementById('locador-cpf').value,
+                        },
+                        locatario: {
+                            nome: document.getElementById('locatario-nome').value.toUpperCase(),
+                            nacionalidade: document.getElementById('locatario-nacionalidade').value,
+                            estadoCivil: document.getElementById('locatario-estado-civil').value,
+                            profissao: document.getElementById('locatario-profissao').value,
+                            rg: document.getElementById('locatario-rg').value,
+                            cpf: document.getElementById('locatario-cpf').value,
+                        },
+                        imovel: {
+                            endereco: document.getElementById('imovel-endereco').value,
+                        },
+                        locacao: {
+                            prazo: document.getElementById('locacao-prazo').value,
+                            inicio: formatDate(document.getElementById('locacao-data-inicio').value),
+                            termino: formatDate(document.getElementById('locacao-data-termino').value),
+                            valorNumerico: document.getElementById('locacao-valor-numerico').value,
+                            valorExtenso: document.getElementById('locacao-valor-extenso').value,
+                            diaVencimento: document.getElementById('locacao-dia-vencimento').value,
+                        },
+                        hasFiador: hasFiadorCheckbox.checked,
+                        fiador1: {
+                            nome: document.getElementById('fiador1-nome').value.toUpperCase(),
+                            nacionalidade: document.getElementById('fiador1-nacionalidade').value,
+                            estadoCivil: document.getElementById('fiador1-estado-civil').value,
+                            profissao: document.getElementById('fiador1-profissao').value,
+                            rg: document.getElementById('fiador1-rg').value,
+                            cpf: document.getElementById('fiador1-cpf').value,
+                            endereco: document.getElementById('fiador1-endereco').value,
+                        },
+                        fiador2: {
+                            nome: document.getElementById('fiador2-nome').value.toUpperCase(),
+                            nacionalidade: document.getElementById('fiador2-nacionalidade').value,
+                            estadoCivil: document.getElementById('fiador2-estado-civil').value,
+                            profissao: document.getElementById('fiador2-profissao').value,
+                            rg: document.getElementById('fiador2-rg').value,
+                            cpf: document.getElementById('fiador2-cpf').value,
+                        },
+                        final: {
+                            foro: document.getElementById('contrato-foro').value,
+                            localData: document.getElementById('contrato-local-data').value,
+                        },
+                        testemunhas: {
+                            t1_nome: document.getElementById('testemunha1-nome').value.toUpperCase(),
+                            t1_cpf: document.getElementById('testemunha1-cpf').value,
+                            t2_nome: document.getElementById('testemunha2-nome').value.toUpperCase(),
+                            t2_cpf: document.getElementById('testemunha2-cpf').value
+                        }
+                    };
+
+                    const generateContractBody = (data) => {
+                        let locadorHtml = `<strong>LOCADOR:</strong> ${data.locador.nome}, ${data.locador.nacionalidade}, ${data.locador.estadoCivil}, ${data.locador.profissao}, portador(a) da cédula de identidade R.G. nº ${data.locador.rg} e CPF/MF nº ${data.locador.cpf}.`;
+                        let locatarioHtml = `<strong>LOCATÁRIO:</strong> ${data.locatario.nome}, ${data.locatario.nacionalidade}, ${data.locatario.estadoCivil}, ${data.locatario.profissao}, portador(a) da cédula de identidade R.G. nº ${data.locatario.rg}, e CPF/MF nº ${data.locatario.cpf}.`;
+                        
+                        let fiadoresHtml = '';
+                        let fiadoresSignatures = '';
+                        if (data.hasFiador) {
+                            fiadoresHtml += `<p><strong>FIADORES:</strong> ${data.fiador1.nome}, ${data.fiador1.nacionalidade}, ${data.fiador1.estadoCivil}, ${data.fiador1.profissao}, portador(a) da cédula de identidade R.G. nº ${data.fiador1.rg}, e CPF/MF nº ${data.fiador1.cpf}, residente e domiciliado(a) à ${data.fiador1.endereco}`;
+                            if (data.fiador2.nome) {
+                                fiadoresHtml += `, e seu cônjuge, ${data.fiador2.nome}, ${data.fiador2.nacionalidade}, ${data.fiador2.estadoCivil}, ${data.fiador2.profissao}, portador(a) da cédula de identidade R.G. nº ${data.fiador2.rg}, e CPF/MF nº ${data.fiador2.cpf}.</p>`;
+                                fiadoresSignatures = `
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.fiador1.nome}</p>
+                                        <p><strong>FIADOR</strong></p>
+                                    </div>
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.fiador2.nome}</p>
+                                        <p><strong>CÔNJUGE FIADOR</strong></p>
+                                    </div>
+                                `;
+                            } else {
+                                fiadoresHtml += `.</p>`;
+                                fiadoresSignatures = `
+                                    <div class="signature-block">
+                                        <p>_______________________________________</p>
+                                        <p>${data.fiador1.nome}</p>
+                                        <p><strong>FIADOR</strong></p>
+                                    </div>
+                                    <div class="signature-block"></div>
+                                `;
+                            }
+                        }
+                        
+                        const signatureClass = data.hasFiador ? 'signatures with-fiador' : 'signatures';
+
+                        return `
+                            <div class="document-body">
+                                <h2 style="text-align: center; margin-bottom: 2em;">CONTRATO DE LOCAÇÃO DE IMÓVEL RESIDENCIAL</h2>
+                                <p>${locadorHtml}</p>
+                                <p>${locatarioHtml}</p>
+                                ${fiadoresHtml}
+                                
+                                <p><strong>CLÁUSULA PRIMEIRA:</strong> O objeto deste contrato de locação é o imóvel residencial, situado à ${data.imovel.endereco}.</p>
+                                <p><strong>CLÁUSULA SEGUNDA:</strong> O prazo da locação é de ${data.locacao.prazo} meses, iniciando-se em ${data.locacao.inicio} com término em ${data.locacao.termino}, independentemente de aviso, notificação ou interpelação judicial ou mesmo extrajudicial.</p>
+                                <p><strong>CLÁUSULA TERCEIRA:</strong> O aluguel mensal, deverá ser pago até o dia ${data.locacao.diaVencimento} do mês subsequente ao vencido, no local indicado pelo LOCADOR, é de R$ ${data.locacao.valorNumerico} (${data.locacao.valorExtenso}) mensais, reajustados anualmente, de conformidade com a variação do IGP-M apurada no ano anterior, e na sua falta, por outro índice criado pelo Governo Federal e, ainda, em sua substituição, pela Fundação Getúlio Vargas, reajustamento este sempre incidente e calculado sobre o último aluguel pago no último mês do ano anterior.</p>
+                                <p><strong>CLÁUSULA QUARTA:</strong> O LOCATÁRIO será responsável por todos os tributos incidentes sobre o imóvel bem como despesas ordinárias de condomínio, e quaisquer outras despesas que recaírem sobre o imóvel, arcando também com as despesas provenientes de sua utilização seja elas, ligação e consumo de luz, água, (rede de gás e Internet) se houver, que serão pagas diretamente às empresas concessionárias dos referidos serviços.</p>
+                                <p><strong>CLÁUSULA QUINTA:</strong> Em caso de mora no pagamento do aluguel, será aplicada multa de 2% (dois por cento) sobre o valor devido e juros mensais de 1% (um por cento) do montante devido.</p>
+                                <p><strong>CLÁUSULA SEXTA:</strong> Fica ao LOCATÁRIO, a responsabilidade em zelar pela conservação, limpeza do imóvel, efetuando as reformas necessárias para sua manutenção sendo que os gastos e pagamentos decorrentes da mesma, correrão por conta do mesmo. O LOCATÁRIO está obrigado a devolver o imóvel em perfeitas condições de limpeza, conservação e pintura, quando finda ou rescindida esta avença, conforme constante no termo de vistoria em anexo. O LOCATÁRIO não poderá realizar obras que alterem ou modifiquem a estrutura do imóvel locado, sem prévia autorização por escrito do LOCADOR. Caso este consinta na realização das obras, estas ficarão desde logo, incorporadas ao imóvel, sem que assista ao LOCATÁRIO qualquer indenização pelas obras ou retenção por benfeitorias. As benfeitorias removíveis poderão ser retiradas, desde que não desfigurem o imóvel locado.</p>
+                                <p><strong>PARÁGRAFO ÚNICO:</strong> O LOCATÁRIO declara receber o imóvel em perfeito estado de conservação e perfeito funcionamento devendo observar o que consta no termo de vistoria.</p>
+                                <p><strong>CLÁUSULA SÉTIMA:</strong> O LOCATÁRIO declara, que o imóvel ora locado, destina-se única e exclusivamente para o seu uso residencial e de sua família.</p>
+                                <p><strong>PARÁGRAFO ÚNICO:</strong> O LOCATÁRIO, obriga por si e sua família, a cumprir e a fazer cumprir integralmente as disposições legais sobre o Condomínio, a sua Convenção e o seu Regulamento Interno, se houver.</p>
+                                <p><strong>CLÁUSULA OITAVA:</strong> O LOCATÁRIO não poderá sublocar, transferir ou ceder o imóvel, sendo nulo de pleno direito qualquer ato praticado com este fim sem o consentimento prévio e por escrito do LOCADOR.</p>
+                                <p><strong>CLÁUSULA NONA:</strong> Em caso de sinistro parcial ou total do imóvel locado, que o torne inabitável, o presente contrato estará rescindido, independentemente de aviso ou interpelação judicial ou extrajudicial; no caso de incêndio parcial, obrigando a obras de reconstrução, o presente contrato terá suspensa a sua vigência e reduzida a renda do imóvel durante o período da reconstrução à metade do que na época for o aluguel, e sendo após a reconstrução devolvido ao LOCATÁRIO pelo prazo restante do contrato, que ficará prorrogado pelo mesmo tempo de duração das obras de reconstrução.</p>
+                                <p><strong>CLÁUSULA DÉCIMA:</strong> Em caso de desapropriação total ou parcial do imóvel locado, ficará rescindido de pleno direito o presente contrato de locação, independente de quaisquer indenizações de ambas as partes ou contratantes.</p>
+                                <p><strong>CLÁUSULA DÉCIMA PRIMEIRA:</strong> Falecendo o FIADOR, o LOCATÁRIO, em 30 (trinta) dias, dará substituto idôneo que possa garantir o valor locativo e encargos do referido imóvel, ou prestar seguro fiança de empresa idônea.</p>
+                                <p><strong>CLÁUSULA DÉCIMA SEGUNDA:</strong> No caso de alienação do imóvel, obriga-se o LOCADOR, dar preferência ao LOCATÁRIO, e se o mesmo não utilizar-se dessa prerrogativa, o LOCADOR deverá constar da respectiva escritura pública, a existência do presente contrato, para que o adquirente o respeite nos termos da legislação vigente.</p>
+                                <p><strong>CLÁUSULA DÉCIMA TERCEIRA:</strong> O FIADOR e principal pagador do LOCATÁRIO, responde solidariamente por todos os pagamentos descritos neste contrato bem como, não só até o final de seu prazo, como mesmo depois, até a efetiva entrega das chaves ao LOCADOR e termo de vistoria do imóvel.</p>
+                                <p><strong>CLÁUSULA DÉCIMA QUARTA:</strong> É facultado ao LOCADOR vistoriar, por si ou seus procuradores, sempre que achar conveniente, para a certeza do cumprimento das obrigações assumidas neste contrato.</p>
+                                <p><strong>CLÁUSULA DÉCIMA QUINTA:</strong> A infração de qualquer das cláusulas do presente contrato, sujeita a parte infratora à multa de duas vezes o valor do aluguel, tomando-se por base, o último aluguel vencido.</p>
+                                <p><strong>CLÁUSULA DÉCima SEXTA:</strong> As partes contratantes obrigam-se por si, herdeiros e/ou sucessores, elegendo o Foro da Cidade de ${data.final.foro}, para a propositura de qualquer ação.</p>
+                                <p>E, por assim estarem justos e contratados, mandaram extrair o presente instrumento em três (03) vias, para um só efeito, assinando-as, juntamente com as testemunhas, a tudo presentes.</p>
+                                
+                                <div class="${signatureClass}">
+                                    <p style="text-align: center;">${data.final.localData}</p>
+                                    <div class="signature-row">
+                                        <div class="signature-block">
+                                            <p>_______________________________________</p>
+                                            <p>${data.locador.nome}</p>
+                                            <p><strong>LOCADOR</strong></p>
+                                        </div>
+                                        <div class="signature-block">
+                                            <p>_______________________________________</p>
+                                            <p>${data.locatario.nome}</p>
+                                            <p><strong>LOCATÁRIO</strong></p>
+                                        </div>
+                                    </div>
+                                    ${data.hasFiador ? `<div class="signature-row">${fiadoresSignatures}</div>` : ''}
+                                    <div class="witness-section">
+                                        <p><strong>TESTEMUNHAS:</strong></p>
+                                    </div>
+                                    <div class="signature-row">
+                                        <div class="signature-block">
+                                            <p>_______________________________________</p>
+                                            <p>${data.testemunhas.t1_nome}</p>
+                                            <p>CPF: ${data.testemunhas.t1_cpf}</p>
+                                        </div>
+                                        <div class="signature-block">
+                                            <p>_______________________________________</p>
+                                            <p>${data.testemunhas.t2_nome}</p>
+                                            <p>CPF: ${data.testemunhas.t2_cpf}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    };
+
+                    const contractBody = generateContractBody(data);
+                    const previewWindow = window.open('', '_blank');
+                    const previewContent = `
+                        <html>
+                        <head>
+                            <title>Pré-visualização do Contrato de Aluguel</title>
+                            <style>
+                                @page {
+                                    size: A4;
+                                    margin: 3cm 2cm 2cm 3cm;
+                                }
+                                body { 
+                                    font-family: 'Times New Roman', Times, serif; 
+                                    font-size: 12pt;
+                                    margin: 0; 
+                                    background-color: #f0f0f0; 
+                                }
+                                .page-container { 
+                                    width: 210mm;
+                                    margin: 20px auto; 
+                                    background: white; 
+                                    box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+                                }
+                                .document-body {
+                                    padding: 3cm 2cm 2cm 3cm;
+                                    min-height: 247mm;
+                                    text-align: justify;
+                                }
+                                .document-body p { 
+                                    line-height: 1.5;
+                                    margin-top: 0;
+                                    margin-bottom: 1em;
+                                }
+                                .signatures {
+                                    margin-top: 2cm;
+                                    text-align: center;
+                                }
+                                .signature-row {
+                                    display: flex;
+                                    justify-content: space-around;
+                                    align-items: flex-start;
+                                    margin-top: 2cm;
+                                    text-align: center;
+                                }
+                                .signature-block {
+                                    width: 45%;
+                                }
+                                .signature-block p {
+                                    line-height: 1.2;
+                                    margin: 0;
+                                }
+                                .witness-section {
+                                    margin-top: 2cm;
+                                    margin-bottom: 0.5cm;
+                                }
+                                .signatures.with-fiador .signature-row {
+                                    margin-top: 1.2cm;
+                                }
+                                .signatures.with-fiador .witness-section {
+                                    margin-top: 1.5cm;
+                                }
+                                .print-controls { 
+                                    position: fixed; 
+                                    top: 20px; 
+                                    right: 20px; 
+                                    z-index: 100; 
+                                }
+                                .print-btn { 
+                                    padding: 10px 20px; 
+                                    background-color: #003459; 
+                                    color: white; 
+                                    border: none; 
+                                    border-radius: 5px; 
+                                    cursor: pointer; 
+                                    font-weight: bold; 
+                                }
+                                @media print {
+                                    body { background-color: white; }
+                                    .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
+                                    .document-body { padding: 0; }
+                                    .print-controls { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="print-controls">
+                                <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
+                            </div>
+                            <div class="page-container">${contractBody}</div>
+                        </body>
+                        </html>
+                    `;
+                    previewWindow.document.write(previewContent);
+                    previewWindow.document.close();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
