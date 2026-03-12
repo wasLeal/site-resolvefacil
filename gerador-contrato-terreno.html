@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Contrato Terreno - ResolveFácil</title>
     <meta name="description" content="Crie seu contrato particular de cessão de direitos de forma rápida e segura.">
-    <link rel="icon" href="favicon.png" type="image/png">
+    
+    <!-- Favicon com link absoluto para o seu site oficial -->
+    <link rel="icon" href="https://www.resolvefacil.online/favicon.png" type="image/png">
     
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
     
@@ -26,27 +28,36 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg-servicos); color: var(--body-text-servicos); min-height: 100vh; display: flex; flex-direction: column; }
+        
         header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
         .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        
+        /* Ajuste da Logo para o site principal */
         .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
         .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
         .logo-area span { font-size: 1.4em; font-weight: bold; }
+        
+        /* Menu via menu.js */
         #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
         #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
         #menu-container nav a:hover { color: var(--highlight); }
+        
         .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
         .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        
         .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
         .mobile-nav.show { display: flex; transform: translateX(0); }
         .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
-        .mobile-nav a:hover { color: var(--highlight); }
+        
         main { flex: 1; padding: 20px; }
         .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
         .generator-header { text-align: center; margin-bottom: 30px; }
         .generator-header h1 { font-size: clamp(1.8em, 5vw, 2.5em); color: var(--primary-bg); margin-bottom: 10px; }
         .generator-header p { font-size: 1.1em; color: var(--secondary-bg); }
         .form-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .form-section:last-of-type { border-bottom: none; }
         .form-section h2 { font-size: 1.5em; color: var(--primary-bg); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .form-section h2 i { color: var(--highlight); }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
@@ -60,39 +71,33 @@
         .generator-footer { text-align: center; margin-top: 30px; }
         .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
         .generate-btn:hover { background-color: var(--button-hover); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
         .security-seals-section { background-color: var(--body-bg-servicos); padding: 40px 20px 0; text-align: center; }
         .security-seals-container { display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap; }
         .security-seals-container img { height: 50px; width: auto; object-fit: contain; }
-        .social-icons { background-color: var(--body-bg-servicos); text-align: center; padding: 30px 20px; }
-        .social-icons-wrapper { display: flex; justify-content: center; gap: 25px; }
-        .social-icons a { text-decoration: none; display: inline-block; transition: transform 0.3s; color: var(--body-text-servicos); }
-        .social-icons a:hover { transform: scale(1.2); }
-        .social-icons .fab { font-size: 2.5em; }
-        .social-icons .fa-instagram:hover { color: #C13584; }
-        .social-icons .fa-facebook:hover { color: #1877F2; }
-        .social-icons .fa-whatsapp:hover { color: var(--whatsapp-button); }
-        footer { background-color: var(--secondary-bg); color: var(--text-color); text-align: center; padding: 20px; font-size: 0.9em; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        footer a { color: var(--text-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
-        footer a:hover { color: var(--highlight); }
+        
         @media (max-width: 768px) { .generator-container { padding: 20px; } #menu-container nav ul { display: none; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
-        @media (min-width: 769px) { #menu-container nav ul { display: flex; } .hamburger { display: none; } .mobile-nav { display: none !important; } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="nav-container">
-            <a href="https://www.resolvefacil.online" class="logo-area">
-                <img src="favicon.png" alt="Logotipo ResolveFácil">
+            <!-- Link absoluto para a casa oficial -->
+            <a href="https://www.resolvefacil.online/index.html" class="logo-area">
+                <img src="https://www.resolvefacil.online/favicon.png" alt="Logotipo ResolveFácil">
                 <span>ResolveFácil</span>
             </a>
+            
+            <!-- Âncora para o menu dinâmico -->
             <div id="menu-container"></div>
+            
             <div class="hamburger" id="hamburger">
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="mobile-nav" id="mobile-nav"></div>
     </header>
+    <div class="mobile-nav" id="mobile-nav"></div>
 
     <main>
         <div class="generator-container">
@@ -102,6 +107,7 @@
             </div>
             
             <form id="contract-form">
+                <!-- Seção Vendedor (Variação Casado/Solteiro) -->
                 <section class="form-section">
                     <h2><i class="fas fa-users"></i>Dados do(s) Vendedor(es) / Cedente(s)</h2>
                     <div class="form-grid">
@@ -125,6 +131,7 @@
                     <div class="form-group" style="margin-top: 20px;"><label for="cedente-endereco">Endereço Completo dos Vendedores</label><input type="text" id="cedente-endereco" placeholder="Rua, Número, Bairro, Cidade - Estado" required></div>
                 </section>
 
+                <!-- Seção Comprador -->
                 <section class="form-section">
                     <h2><i class="fas fa-user"></i>Dados do Comprador / Cessionário</h2>
                     <div class="form-grid">
@@ -138,12 +145,14 @@
                     <div class="form-group" style="margin-top: 20px;"><label for="cessionario-endereco">Endereço Completo do Comprador</label><input type="text" id="cessionario-endereco" placeholder="Rua, Número, Bairro, Cidade - Estado" required></div>
                 </section>
 
+                <!-- Seção Terreno -->
                 <section class="form-section">
                     <h2><i class="fas fa-map-marked-alt"></i>Dados do Terreno</h2>
                     <div class="form-group"><label for="imovel-descricao">Descrição Completa do Terreno</label><textarea id="imovel-descricao" rows="3" placeholder="Ex: Terreno localizado no Bairro de Santa Etelvina, na Rua: Parintins nº 12, Prox. ao igarapé do passarinho." required></textarea></div>
                     <div class="form-group"><label>Medidas do Terreno</label><input type="text" id="imovel-medidas" placeholder="Ex: 10m de frente por 60m de fundos." required></div>
                 </section>
 
+                <!-- Seção Financeira -->
                 <section class="form-section">
                     <h2><i class="fas fa-dollar-sign"></i>Dados Financeiros</h2>
                     <div class="form-grid">
@@ -193,32 +202,26 @@
             </form>
         </div>
 
+        <!-- Selos de Segurança com links absolutos -->
         <section class="security-seals-section">
             <div class="security-seals-container">
-                <img src="imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
-                <img src="imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
-                <img src="imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
+                <img src="https://www.resolvefacil.online/imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
+                <img src="https://www.resolvefacil.online/imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
+                <img src="https://www.resolvefacil.online/imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
             </div>
         </section>
-        <div class="social-icons">
-            <div class="social-icons-wrapper">
-                <a href="https://www.instagram.com/resolvefacil.online" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.facebook.com/profile.php?id=61578208932996" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="https://wa.me/5592996029888?text=Ol%C3%A1%2C%20estou%20vindo%20atrav%C3%A9s%20do%20Site!%20Gostaria%20de%20um%20atendimento." aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            </div>
-        </div>
     </main>
 
-    <footer id="footer-container">
-    </footer>
+    <!-- Âncora para o rodapé dinâmico -->
+    <div id="footer-container"></div>
 
     <script src="menu.js"></script>
+    <script src="footer.js"></script>
     <script src="chatbot.js" defer></script>
 
     <script>
         const contractForm = document.getElementById('contract-form');
         if (contractForm) {
-            // Lógica para campos condicionais
             const isMarriedCheckbox = document.getElementById('isMarried');
             const spouseFields = document.getElementById('spouse-fields');
             const paymentTypeRadios = document.querySelectorAll('input[name="paymentType"]');
@@ -391,87 +394,24 @@
                     <head>
                         <title>Pré-visualização do Contrato</title>
                         <style>
-                            @page {
-                                size: A4;
-                                margin: 3cm 2cm 2cm 3cm;
-                            }
-                            body { 
-                                font-family: 'Times New Roman', Times, serif; 
-                                font-size: 12pt;
-                                margin: 0; 
-                                background-color: #f0f0f0; 
-                            }
-                            .page-container { 
-                                width: 210mm;
-                                margin: 20px auto; 
-                                background: white; 
-                                box-shadow: 0 0 10px rgba(0,0,0,0.1); 
-                            }
-                            .document-body .page-1 {
-                                min-height: 247mm;
-                                padding: 3cm 2cm 2cm 3cm;
-                                text-align: justify;
-                            }
-                            .document-body .page-2 {
-                                page-break-before: always;
-                                text-align: center;
-                                padding: 3cm 2cm 2cm 3cm;
-                            }
-                            .document-body p { 
-                                line-height: 1.5;
-                                margin-top: 0;
-                                margin-bottom: 1em;
-                            }
-                            .signatures {
-                                margin-top: 2cm;
-                            }
-                            .signature-row {
-                                display: flex;
-                                justify-content: space-around;
-                                align-items: flex-start;
-                                margin-top: 2cm;
-                                text-align: center;
-                            }
-                            .signature-block {
-                                width: 45%;
-                            }
-                            .signature-block p {
-                                line-height: 1.2;
-                                margin: 0;
-                            }
-                            .witness-section {
-                                margin-top: 3cm;
-                                margin-bottom: 0.5cm;
-                            }
-                            .print-controls { 
-                                position: fixed; 
-                                top: 20px; 
-                                right: 20px; 
-                                z-index: 100; 
-                            }
-                            .print-btn { 
-                                padding: 10px 20px; 
-                                background-color: #003459; 
-                                color: white; 
-                                border: none; 
-                                border-radius: 5px; 
-                                cursor: pointer; 
-                                font-weight: bold; 
-                            }
-                            @media print {
-                                body { background-color: white; }
-                                .page-container { margin: 0; padding: 0; box-shadow: none; border: none; }
-                                .document-body .page-1, .document-body .page-2 {
-                                    padding: 0;
-                                }
-                                .print-controls { display: none; }
-                            }
+                            @page { size: A4; margin: 3cm 2cm 2cm 3cm; }
+                            body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin: 0; background-color: #f0f0f0; }
+                            .page-container { width: 210mm; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                            .document-body .page-1 { min-height: 247mm; padding: 3cm 2cm 2cm 3cm; text-align: justify; }
+                            .document-body .page-2 { page-break-before: always; text-align: center; padding: 3cm 2cm 2cm 3cm; }
+                            .document-body p { line-height: 1.5; margin-top: 0; margin-bottom: 1em; }
+                            .signatures { margin-top: 2cm; }
+                            .signature-row { display: flex; justify-content: space-around; align-items: flex-start; margin-top: 2cm; text-align: center; }
+                            .signature-block { width: 45%; }
+                            .signature-block p { line-height: 1.2; margin: 0; }
+                            .witness-section { margin-top: 3cm; margin-bottom: 0.5cm; }
+                            .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; }
+                            .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                            @media print { body { background-color: white; } .page-container { margin: 0; padding: 0; box-shadow: none; border: none; } .document-body .page-1, .document-body .page-2 { padding: 0; } .print-controls { display: none; } }
                         </style>
                     </head>
                     <body>
-                        <div class="print-controls">
-                            <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
-                        </div>
+                        <div class="print-controls"><button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button></div>
                         <div class="page-container">${contractBody}</div>
                     </body>
                     </html>
@@ -481,6 +421,5 @@
             });
         }
     </script>
-
 </body>
 </html>

@@ -1,24 +1,22 @@
 // ==================================================================
-// ARQUIVO MESTRE DO MENU - EDITE APENAS AQUI
-// ==================================================================
-
-// 1. LISTA ÚNICA DE LINKS DO SITE
-const navLinks = [
-    { href: 'https://www.resolvefacil.online', text: 'Início' },
-    { href: 'https://www.resolvefacil.online/quemsomos.html', text: 'Quem Somos' },
-    { href: 'https://www.resolvefacil.online/servicos.html', text: 'Serviços' },
-    { href: 'https://www.resolvefacil.online/design-servicos.html', text: 'Design' },
-    { href: 'https://www.resolvefacil.online/loja.html', text: 'Loja' },
-    { href: 'https://www.resolvefacil.online/faq.html', text: 'FAQ' },
-    { href: 'https://www.resolvefacil.online/blog.html', text: 'Blog' }
-];
-
-// ==================================================================
-// O CÓDIGO ABAIXO USA A LISTA ACIMA PARA CONSTRUIR OS MENUS
-// Não precisa mais mexer aqui.
+// MENU DO PROJETO SECUNDÁRIO (GERADORES)
+// Todos os links apontam de volta para o site oficial!
 // ==================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Domínio principal
+    const mainSite = 'https://www.resolvefacil.online/';
+
+    // Lista de Links apontando para a casa oficial
+    const navLinks = [
+        { href: mainSite + 'index.html', text: 'Início' },
+        { href: mainSite + 'quemsomos.html', text: 'Quem Somos' },
+        { href: mainSite + 'servicos.html', text: 'Serviços' },
+        { href: mainSite + 'loja.html', text: 'Loja' },
+        { href: mainSite + 'faq.html', text: 'FAQ' },
+        { href: mainSite + 'blog.html', text: 'Blog' }
+    ];
+
     // --- Constrói o Menu Desktop ---
     const menuContainer = document.getElementById('menu-container');
     if (menuContainer) {
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Constrói o Menu Mobile ---
     const mobileNavContainer = document.getElementById('mobile-nav');
     if (mobileNavContainer) {
-        // Limpa o conteúdo existente para evitar duplicatas
         mobileNavContainer.innerHTML = '';
         navLinks.forEach(link => {
             const mobileLink = document.createElement('a');
@@ -50,14 +47,5 @@ document.addEventListener('DOMContentLoaded', () => {
             hamburger.classList.toggle('open');
             mobileNavContainer.classList.toggle('show');
         });
-    }
-
-    // --- ADIÇÃO: Constrói o Rodapé ---
-    const footerContainer = document.getElementById('footer-container');
-    if (footerContainer) {
-        footerContainer.innerHTML = `
-            © 2025 ResolveFácil • Atendimento humanizado • Todos os direitos reservados
-            <a href="https://www.resolvefacil.online/politica-de-privacidade.html">Política de Privacidade</a>
-        `;
     }
 });
