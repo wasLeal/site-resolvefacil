@@ -1,0 +1,7 @@
+# Diz à Netlify que suas funções estão na pasta "netlify/functions/"
+[functions]
+  directory = "netlify/functions/"
+
+# O agendador está DESATIVADO (comentado com #), pois usaremos o Cron-Job.org.
+[functions.verificar-pagamentos]
+  # schedule = "*/5 * * * *"

@@ -1,0 +1,10 @@
+{
+  "name": "funcoes-resolvefacil",
+  "version": "2.0.0",
+  "description": "Dependências para as funções Netlify do projeto",
+  "main": "enviar-curriculo.js",
+  "dependencies": {
+    "chrome-aws-lambda": "^10.1.0",
+    "puppeteer-core": "^10.1.0"
+  }
+}

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículo Profissional - ResolveFácil</title>
+    <meta name="description" content="Crie seu currículo profissional com foto, links e um design moderno.">
+    
+    <!-- ATUALIZAÇÃO 1: Favicon com link absoluto -->
+    <link rel="icon" href="https://www.resolvefacil.online/favicon.png" type="image/png">
+    
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --button-hover: #ff4400;
+            --whatsapp-button: #25d366;
+            --body-bg-servicos: #f2f2ed;
+            --body-text-servicos: #3e5a6a;
+            --card-bg: #ffffff;
+            --input-border: #cccccc;
+            --input-focus-border: #003459;
+            --danger-color: #d9534f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg-servicos); color: var(--body-text-servicos); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        
+        #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
+        #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        #menu-container nav a:hover { color: var(--highlight); }
+        
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
+        
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
+        
+        main { flex: 1; padding: 20px; }
+        .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+        .generator-header { text-align: center; margin-bottom: 30px; }
+        .generator-header h1 { font-size: clamp(1.8em, 5vw, 2.5em); color: var(--primary-bg); margin-bottom: 10px; }
+        .generator-header p { font-size: 1.1em; color: var(--secondary-bg); }
+        
+        .form-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .form-section:last-of-type { border-bottom: none; }
+        .form-section h2 { font-size: 1.5em; color: var(--primary-bg); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-section h2 i { color: var(--highlight); }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 1em; transition: border-color 0.3s; }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        
+        /* Estilo original do upload de foto */
+        #photo-upload-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 190px; text-align: center; border: 2px dashed var(--input-border); border-radius: 8px; padding: 20px; cursor: pointer; transition: border-color 0.3s, background-color 0.3s; }
+        #photo-upload-wrapper:hover { border-color: var(--highlight); background-color: #fefafa; }
+        #photo-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--body-text-servicos); }
+        #photo-upload-placeholder i { font-size: 2.5em; color: var(--secondary-bg); }
+        #photo-preview { max-width: 150px; max-height: 150px; border-radius: 50%; display: none; object-fit: cover; }
+        #photo { display: none; }
+
+        .dynamic-item { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 15px; position: relative; }
+        .remove-item-btn { position: absolute; top: 10px; right: 10px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .add-item-btn { background-color: var(--secondary-bg); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; }
+        
+        .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        
+        .security-seals-section { background-color: var(--body-bg-servicos); padding: 40px 20px 0; text-align: center; }
+        .security-seals-container { display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap; }
+        .security-seals-container img { height: 50px; width: auto; object-fit: contain; }
+        
+        @media (max-width: 768px) { .generator-container { padding: 20px; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <!-- ATUALIZAÇÃO 2: Logo e link apontando para o site oficial -->
+            <a href="https://www.resolvefacil.online/index.html" class="logo-area">
+                <img src="https://www.resolvefacil.online/favicon.png" alt="Logotipo ResolveFácil">
+                <span>ResolveFácil</span>
+            </a>
+            <div id="menu-container"></div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </header>
+    <div class="mobile-nav" id="mobile-nav"></div>
+
+    <main>
+        <div class="generator-container">
+            <div class="generator-header">
+                <h1>Gerador de Currículo Profissional</h1>
+                <p>Obrigado por sua compra! Preencha os campos abaixo para criar seu currículo com foto e design moderno.</p>
+            </div>
+            
+            <form id="cv-form">
+                <!-- SEÇÃO PRESERVADA: Dados Pessoais e FOTO -->
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i>Dados Pessoais</h2>
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="photo">Foto Profissional</label>
+                        <label for="photo" id="photo-upload-wrapper">
+                            <div id="photo-upload-placeholder">
+                                <i class="fas fa-camera"></i>
+                                <span>Clique para selecionar uma foto</span>
+                            </div>
+                            <img id="photo-preview" alt="Pré-visualização da foto">
+                        </label>
+                        <input type="file" id="photo" accept="image/*">
+                    </div>
+                </section>
+
+                <!-- SEÇÃO PRESERVADA: Contato Completo -->
+                <section class="form-section">
+                    <h2><i class="fas fa-phone"></i>Contato</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" required></div>
+                        <div class="form-group"><label for="phone">Telefone</label><input type="tel" id="phone" required></div>
+                        <div class="form-group"><label for="address">Endereço (Ex: Cidade, Estado)</label><input type="text" id="address"></div>
+                        <div class="form-group"><label for="linkedin">Perfil LinkedIn</label><input type="url" id="linkedin" placeholder="https://linkedin.com/in/seu-perfil"></div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-bullseye"></i>Resumo Profissional</h2>
+                    <div class="form-group">
+                        <label for="summary">Fale um pouco sobre sua carreira e objetivos.</label>
+                        <textarea id="summary"></textarea>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-briefcase"></i>Experiência Profissional</h2>
+                    <div id="experience-list"></div>
+                    <button type="button" class="add-item-btn" id="add-experience-btn"><i class="fas fa-plus"></i> Adicionar Experiência</button>
+                </section>
+
+                <!-- SEÇÃO PRESERVADA: Experiência Social / Voluntária -->
+                <section class="form-section">
+                    <h2><i class="fas fa-hands-helping"></i> Experiência Social / Voluntária (Opcional)</h2>
+                    <div id="volunteer-list"></div>
+                    <button type="button" class="add-item-btn" id="add-volunteer-btn"><i class="fas fa-plus"></i> Adicionar Experiência Social</button>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-graduation-cap"></i>Formação Acadêmica</h2>
+                    <div id="education-list"></div>
+                    <button type="button" class="add-item-btn" id="add-education-btn"><i class="fas fa-plus"></i> Adicionar Formação</button>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="fas fa-cogs"></i>Habilidades e Competências</h2>
+                     <div class="form-group">
+                        <label for="skills">Liste suas principais habilidades (separadas por vírgula).</label>
+                        <input type="text" id="skills" placeholder="Ex: Excel, PowerPoint, Word..." autocomplete="off">
+                    </div>
+                </section>
+
+                <!-- SEÇÃO PRESERVADA: Idiomas -->
+                <section class="form-section">
+                    <h2><i class="fas fa-language"></i>Idiomas</h2>
+                    <div id="language-list"></div>
+                    <button type="button" class="add-item-btn" id="add-language-btn"><i class="fas fa-plus"></i> Adicionar Idioma</button>
+                </section>
+            </form>
+
+            <div class="generator-footer" style="text-align: center; margin-top: 30px;">
+                <button class="generate-btn" id="generate-btn" type="button">
+                    <i class="fas fa-eye"></i> Visualizar Currículo
+                </button>
+            </div>
+        </div>
+
+        <section class="security-seals-section">
+            <div class="security-seals-container">
+                <!-- ATUALIZAÇÃO 3: Selos com links absolutos -->
+                <img src="https://www.resolvefacil.online/imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
+                <img src="https://www.resolvefacil.online/imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
+                <img src="https://www.resolvefacil.online/imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
+            </div>
+        </section>
+    </main>
+
+    <!-- ÂNCORA ONDE O RODAPÉ SERÁ INJETADO -->
+    <div id="footer-container"></div>
+
+    <!-- SCRIPTS NA ORDEM CORRETA -->
+    <script src="menu.js"></script>
+    <script src="footer.js"></script>
+    <script src="chatbot.js" defer></script>
+    
+    <script>
+        // TODA A SUA LÓGICA DE PDF (SIDEBAR), FOTO E FORMULÁRIO PRESERVADA
+        document.addEventListener('DOMContentLoaded', () => {
+            let photoDataUrl = null;
+
+            const form = document.getElementById('cv-form');
+            const generateBtn = document.getElementById('generate-btn');
+            
+            const photoInput = document.getElementById('photo');
+            const photoPreview = document.getElementById('photo-preview');
+            const photoPlaceholder = document.getElementById('photo-upload-placeholder');
+            
+            // Gerência da Foto
+            photoInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        photoDataUrl = e.target.result;
+                        photoPreview.src = photoDataUrl;
+                        photoPreview.style.display = 'block';
+                        photoPlaceholder.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            function showResumeInNewTab() {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                const data = collectFormData();
+                const newWindow = window.open();
+                if(!newWindow) {
+                    alert('Seu navegador bloqueou a abertura de uma nova aba. Por favor, permita pop-ups para este site.');
+                    return;
+                }
+                const fullHtml = generateResumeHtml(data);
+                newWindow.document.write(fullHtml);
+                newWindow.document.close();
+            }
+
+            generateBtn.addEventListener('click', showResumeInNewTab);
+
+            // SEU LAYOUT DE PDF PROFISSIONAL COM SIDEBAR PRESERVADO
+            function generateResumeHtml(data) {
+                const styles = {
+                    body: "font-family: 'Helvetica', Arial, sans-serif; color: #333; background: white; margin: 0;",
+                    professionalPage: "width: 210mm; min-height: 297mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex;",
+                    sidebar: "width: 70mm; background-color: #003459; color: white; padding: 15mm; box-sizing: border-box;",
+                    mainContent: "width: 140mm; padding: 15mm; background: white; box-sizing: border-box;",
+                    profilePhoto: "width: 40mm; height: 40mm; border-radius: 50%; object-fit: cover; margin: 0 auto 8mm; display: block; border: 3px solid white;",
+                    sidebarSectionTitle: "font-size: 13pt; font-weight: bold; color: #ff6600; margin-top: 8mm; margin-bottom: 4mm; border-bottom: 1px solid #ff6600; padding-bottom: 2mm;",
+                    mainContentName: "font-size: 28pt; font-weight: bold; color: #003459; margin-bottom: 2mm;",
+                    sectionTitle: 'font-size: 14pt; font-weight: bold; color: #003459; border-bottom: 2px solid #003459; padding-bottom: 1mm; margin-top: 8mm; margin-bottom: 4mm;'
+                };
+
+                const resumeBodyHtml = `
+                    <div style="${styles.professionalPage}">
+                        <div style="${styles.sidebar}">
+                            ${data.photo ? `<img src="${data.photo}" style="${styles.profilePhoto}" alt="Foto">` : ''}
+                            <div style="${styles.sidebarSectionTitle}">Contato</div>
+                            <div style="font-size: 9pt; margin-bottom: 3mm;">${data.phone}</div>
+                            <div style="font-size: 9pt; margin-bottom: 3mm;">${data.email}</div>
+                            ${data.address ? `<div style="font-size: 9pt; margin-bottom: 3mm;">${data.address}</div>` : ''}
+                            ${data.linkedin ? `<div style="font-size: 9pt; margin-bottom: 3mm; word-break: break-all;">${data.linkedin}</div>` : ''}
+                            
+                            <div style="${styles.sidebarSectionTitle}">Habilidades</div>
+                            ${data.skills.map(skill => `<div style="font-size: 10pt; margin-bottom: 2mm;">• ${skill}</div>`).join('')}
+                            
+                            ${data.languages.length > 0 ? `
+                                <div style="${styles.sidebarSectionTitle}">Idiomas</div>
+                                ${data.languages.map(lang => `<div style="font-size: 10pt; margin-bottom: 1mm;"><strong>${lang.name}:</strong> ${lang.level}</div>`).join('')}
+                            ` : ''}
+                        </div>
+                        <div style="${styles.mainContent}">
+                            <div style="${styles.mainContentName}">${data.name}</div>
+                            <div style="${styles.sectionTitle}">Resumo Profissional</div>
+                            <div style="font-size: 11pt; line-height: 1.5;">${data.summary.replace(/\n/g, '<br>')}</div>
+                            
+                            <div style="${styles.sectionTitle}">Experiência Profissional</div>
+                            ${data.experiences.map(exp => `
+                                <div style="margin-bottom: 5mm;">
+                                    <div style="font-weight: bold; font-size: 12pt;">${exp.jobTitle}</div>
+                                    <div style="font-size: 10pt; color: #666;">${exp.company} | ${exp.period}</div>
+                                    <div style="font-size: 11pt; margin-top: 1mm;">${exp.description}</div>
+                                </div>
+                            `).join('')}
+
+                            ${data.volunteer_experiences.length > 0 ? `
+                                <div style="${styles.sectionTitle}">Experiência Social / Voluntária</div>
+                                ${data.volunteer_experiences.map(vol => `
+                                    <div style="margin-bottom: 5mm;">
+                                        <div style="font-weight: bold; font-size: 12pt;">${vol.role}</div>
+                                        <div style="font-size: 10pt; color: #666;">${vol.institution} | ${vol.period}</div>
+                                        <div style="font-size: 11pt; margin-top: 1mm;">${vol.description}</div>
+                                    </div>
+                                `).join('')}
+                            ` : ''}
+
+                            <div style="${styles.sectionTitle}">Formação Acadêmica</div>
+                            ${data.educations.map(edu => `
+                                <div style="margin-bottom: 4mm;">
+                                    <div style="font-weight: bold; font-size: 12pt;">${edu.course}</div>
+                                    <div style="font-size: 10pt; color: #666;">${edu.institution} | ${edu.period}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                return `
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head><meta charset="UTF-8"><title>Currículo Profissional - ${data.name}</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <style>
+                        body { margin: 0; background-color: #f0f0f0; }
+                        @media print {
+                            body { background-color: white; }
+                            .print-controls { display: none !important; }
+                        }
+                        .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; text-align: right; }
+                        .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                    </style>
+                    </head>
+                    <body style="${styles.body}">
+                        <div class="print-controls">
+                            <button class="print-btn" onclick="window.print()">Salvar como PDF / Imprimir</button>
+                        </div>
+                        ${resumeBodyHtml}
+                    </body></html>
+                `;
+            }
+
+            function collectFormData() {
+                const data = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    linkedin: document.getElementById('linkedin').value,
+                    summary: document.getElementById('summary').value,
+                    photo: photoDataUrl,
+                    skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+                    experiences: [],
+                    educations: [],
+                    languages: [],
+                    volunteer_experiences: []
+                };
+                document.querySelectorAll('#experience-list .dynamic-item').forEach(item => {
+                    data.experiences.push({
+                        jobTitle: item.querySelector('.exp-job-title').value,
+                        company: item.querySelector('.exp-company').value,
+                        period: item.querySelector('.exp-period').value,
+                        description: item.querySelector('.exp-description').value.replace(/\n/g, '<br>')
+                    });
+                });
+                document.querySelectorAll('#education-list .dynamic-item').forEach(item => {
+                    data.educations.push({
+                        course: item.querySelector('.edu-course').value,
+                        institution: item.querySelector('.edu-institution').value,
+                        period: item.querySelector('.edu-period').value
+                    });
+                });
+                document.querySelectorAll('#language-list .dynamic-item').forEach(item => {
+                    data.languages.push({
+                        name: item.querySelector('.lang-name').value,
+                        level: item.querySelector('.lang-level').value
+                    });
+                });
+                document.querySelectorAll('#volunteer-list .dynamic-item').forEach(item => {
+                    data.volunteer_experiences.push({
+                        role: item.querySelector('.vol-role').value,
+                        institution: item.querySelector('.vol-institution').value,
+                        period: item.querySelector('.vol-period').value,
+                        description: item.querySelector('.vol-description').value.replace(/\n/g, '<br>')
+                    });
+                });
+                return data;
+            }
+            
+            function setupDynamicSection(addBtnId, listId, templateFunction) {
+                const addBtn = document.getElementById(addBtnId);
+                const listContainer = document.getElementById(listId);
+                addBtn.addEventListener('click', () => {
+                    const newItem = document.createElement('div');
+                    newItem.classList.add('dynamic-item');
+                    newItem.innerHTML = templateFunction();
+                    newItem.querySelector('.remove-item-btn').addEventListener('click', () => { newItem.remove(); });
+                    listContainer.appendChild(newItem);
+                });
+            }
+
+            const experienceTemplate = () => `
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Cargo</label><input type="text" class="exp-job-title"></div>
+                    <div class="form-group"><label>Empresa</label><input type="text" class="exp-company"></div>
+                    <div class="form-group"><label>Período</label><input type="text" class="exp-period" placeholder="Ex: Jan 2020 - Dez 2022"></div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;"><label>Descrição das atividades</label><textarea class="exp-description"></textarea></div>
+            `;
+            const educationTemplate = () => `
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Curso/Formação</label><input type="text" class="edu-course"></div>
+                    <div class="form-group"><label>Instituição</label><input type="text" class="edu-institution"></div>
+                    <div class="form-group"><label>Período</label><input type="text" class="edu-period"></div>
+                </div>
+            `;
+            const languageTemplate = () => `
+                 <button type="button" class="remove-item-btn">×</button>
+                 <div class="form-grid">
+                    <div class="form-group"><label>Idioma</label><input type="text" class="lang-name"></div>
+                    <div class="form-group"><label>Nível</label><input type="text" class="lang-level" placeholder="Ex: Avançado"></div>
+                </div>
+            `;
+            const volunteerTemplate = () => `
+                <button type="button" class="remove-item-btn">×</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Função/Cargo</label><input type="text" class="vol-role"></div>
+                    <div class="form-group"><label>Instituição</label><input type="text" class="vol-institution"></div>
+                    <div class="form-group"><label>Período</label><input type="text" class="vol-period"></div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;"><label>Descrição das atividades</label><textarea class="vol-description"></textarea></div>
+            `;
+
+            setupDynamicSection('add-experience-btn', 'experience-list', experienceTemplate);
+            setupDynamicSection('add-education-btn', 'education-list', educationTemplate);
+            setupDynamicSection('add-language-btn', 'language-list', languageTemplate);
+            setupDynamicSection('add-volunteer-btn', 'volunteer-list', volunteerTemplate);
+
+            document.getElementById('add-experience-btn').click();
+            document.getElementById('add-education-btn').click();
+        });
+    </script>
+</body>
+</html>
