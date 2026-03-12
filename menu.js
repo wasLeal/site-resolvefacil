@@ -4,10 +4,10 @@
 // ==================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Domínio principal
+    // Domínio principal oficial para garantir que o cliente volte para a "casa" certa
     const mainSite = 'https://www.resolvefacil.online/';
 
-    // Lista de Links apontando para a casa oficial
+    // 1. LISTA ÚNICA DE LINKS (Apontando para o domínio principal)
     const navLinks = [
         { href: mainSite + 'index.html', text: 'Início' },
         { href: mainSite + 'quemsomos.html', text: 'Quem Somos' },
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { href: mainSite + 'blog.html', text: 'Blog' }
     ];
 
-    // --- Constrói o Menu Desktop ---
+    // --- 2. Constrói o Menu Desktop ---
     const menuContainer = document.getElementById('menu-container');
     if (menuContainer) {
         let desktopNavHTML = '<nav><ul>';
@@ -28,9 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
         menuContainer.innerHTML = desktopNavHTML;
     }
 
-    // --- Constrói o Menu Mobile ---
+    // --- 3. Constrói o Menu Mobile ---
     const mobileNavContainer = document.getElementById('mobile-nav');
     if (mobileNavContainer) {
+        // Limpa o conteúdo existente para evitar duplicatas ao navegar
         mobileNavContainer.innerHTML = '';
         navLinks.forEach(link => {
             const mobileLink = document.createElement('a');
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Ativa o botão Hambúrguer ---
+    // --- 4. Ativa o botão Hambúrguer ---
     const hamburger = document.getElementById('hamburger');
     if (hamburger && mobileNavContainer) {
         hamburger.addEventListener('click', () => {
