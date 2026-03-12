@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Currículo Grátis - ResolveFácil</title>
     <meta name="description" content="Crie um currículo simples e profissional em minutos, de forma totalmente gratuita.">
-    
-    <!-- Link absoluto para o Favicon aparecer em qualquer lugar -->
     <link rel="icon" href="https://www.resolvefacil.online/favicon.png" type="image/png">
     
-    <!-- Mantendo sua pasta local do FontAwesome -->
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
     
     <style>
@@ -34,18 +31,15 @@
         .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
         .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
         .logo-area span { font-size: 1.4em; font-weight: bold; }
-        
-        /* Estilos do Menu Desktop */
         #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
         #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
         #menu-container nav a:hover { color: var(--highlight); }
-        
         .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; transition: all 0.3s ease-in-out; }
         .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s ease-in-out; }
         .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
         .mobile-nav.show { display: flex; transform: translateX(0); }
         .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; transition: color 0.3s; }
-        
+        .mobile-nav a:hover { color: var(--highlight); }
         main { flex: 1; padding: 20px; }
         .generator-container { max-width: 900px; margin: 20px auto; background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
         .generator-header { text-align: center; margin-bottom: 30px; }
@@ -62,16 +56,18 @@
         .form-group textarea { resize: vertical; min-height: 120px; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--input-focus-border); }
         .dynamic-item { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 15px; position: relative; }
-        .remove-item-btn { position: absolute; top: 10px; right: 10px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .remove-item-btn { position: absolute; top: 10px; right: 10px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
         .add-item-btn { background-color: var(--secondary-bg); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; }
+        .add-item-btn:hover { background-color: var(--primary-bg); }
         .generator-footer { text-align: center; margin-top: 30px; }
         .generate-btn { background-color: var(--highlight); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
         .generate-btn:hover { background-color: var(--button-hover); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
         .security-seals-section { background-color: var(--body-bg-servicos); padding: 40px 20px 0; text-align: center; }
         .security-seals-container { display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap; }
         .security-seals-container img { height: 50px; width: auto; object-fit: contain; }
         
+        /* REMOVIDO: Estilos fixos de footer que causavam conflito visual */
+
         @media (max-width: 768px) { .generator-container { padding: 20px; } #menu-container nav ul { display: none; } .hamburger { display: flex; } .mobile-nav { display: flex; } }
         @media (min-width: 769px) { #menu-container nav ul { display: flex; } .hamburger { display: none; } .mobile-nav { display: none !important; } }
     </style>
@@ -80,7 +76,6 @@
 
     <header>
         <div class="nav-container">
-            <!-- LINK ABSOLUTO PARA O SITE PRINCIPAL -->
             <a href="https://www.resolvefacil.online/index.html" class="logo-area">
                 <img src="https://www.resolvefacil.online/favicon.png" alt="Logotipo ResolveFácil">
                 <span>ResolveFácil</span>
@@ -165,7 +160,6 @@
         </div>
         <section class="security-seals-section">
             <div class="security-seals-container">
-                <!-- LINKS ABSOLUTOS PARA AS IMAGENS -->
                 <img src="https://www.resolvefacil.online/imagens/1-Selo-geguranca.png" alt="Selo de Segurança">
                 <img src="https://www.resolvefacil.online/imagens/2-Selo-geguranca.png" alt="Selo de Segurança LGPD">
                 <img src="https://www.resolvefacil.online/imagens/3-Selo-geguranca.png" alt="Selo de Segurança SSL">
@@ -173,15 +167,15 @@
         </section>
     </main>
 
-    <!-- ÂNCORA DO RODAPÉ DINÂMICO -->
+    <!-- ÂNCORA ONDE O RODAPÉ SERÁ INJETADO -->
     <div id="footer-container"></div>
 
-    <!-- SCRIPTS DE INTEGRAÇÃO -->
+    <!-- SCRIPTS NA ORDEM CORRETA -->
     <script src="menu.js"></script>
     <script src="footer.js"></script>
+    <script src="chatbot.js" defer></script>
     
     <script>
-        // TODA A SUA LÓGICA ORIGINAL PRESERVADA ABAIXO
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('cv-form');
             const generateBtn = document.getElementById('generate-btn');
@@ -194,7 +188,7 @@
                 const data = collectFormData();
                 const newWindow = window.open();
                 if(!newWindow) {
-                    alert('Seu navegador bloqueou a abertura de uma nova aba. Por favor, permita pop-ups para este site.');
+                    alert('Habilite os pop-ups para ver o currículo.');
                     return;
                 }
                 const fullHtml = generateResumeHtml(data);
@@ -280,8 +274,22 @@
                                 .page-container { box-shadow: none !important; margin: 0; }
                                 .print-controls { display: none !important; }
                             }
-                            .print-controls { position: fixed; top: 20px; right: 20px; z-index: 100; text-align: right; }
-                            .print-btn { padding: 10px 20px; background-color: #003459; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+                            .print-controls {
+                                position: fixed;
+                                top: 20px;
+                                right: 20px;
+                                z-index: 100;
+                                text-align: right;
+                            }
+                            .print-btn {
+                                padding: 10px 20px;
+                                background-color: #003459;
+                                color: white;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-weight: bold;
+                            }
                         </style>
                     </head>
                     <body style="${styles.body}">
