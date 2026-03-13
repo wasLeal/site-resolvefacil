@@ -1,6 +1,7 @@
 // ==================================================================
 // RODAPÉ DO PROJETO SECUNDÁRIO (GERADORES)
-// 100% padronizado com o site oficial ResolveFácil
+// Com inteligência para ocultar o link na página de Política,
+// alinhamento à esquerda no modo celular e logo com texto lado a lado
 // ==================================================================
 
 function carregarRodape() {
@@ -81,11 +82,23 @@ function carregarRodape() {
                 opacity: 0.85;
                 margin-bottom: 15px;
             }
-            .rf-footer-logo {
+            .rf-footer-brand {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            .rf-footer-brand img {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                margin-bottom: 15px;
+                margin: 0;
+            }
+            .rf-footer-brand h4 {
+                margin: 0;
+                padding: 0;
+                border: none;
+                font-size: 1.4em;
             }
             .rf-footer-links {
                 list-style: none;
@@ -121,7 +134,7 @@ function carregarRodape() {
                 margin-top: 4px;
             }
             
-            /* --- ESTILOS DA SEÇÃO DE REDES SOCIAIS (100% CENTRALIZADA) --- */
+            /* --- ESTILOS DA SEÇÃO DE REDES SOCIAIS (100% CENTRALIZADA SEMPRE) --- */
             .rf-social-center-section {
                 text-align: center;
                 padding: 10px 20px 40px 20px;
@@ -217,19 +230,22 @@ function carregarRodape() {
                 text-decoration: underline;
             }
             
+            /* =========================================================
+               AJUSTES EXCLUSIVOS PARA CELULAR (TUDO À ESQUERDA)
+            ========================================================= */
             @media (max-width: 768px) {
                 .rf-footer-container {
                     grid-template-columns: 1fr;
-                    text-align: center;
+                    text-align: left; /* Tira do centro e joga para esquerda */
                 }
                 .rf-footer-col h4 {
                     display: inline-block;
                 }
                 .rf-contact-list li {
-                    justify-content: center;
+                    justify-content: flex-start; /* Alinha os ícones de Fale Conosco na esquerda */
                 }
-                .rf-footer-logo {
-                    margin: 0 auto 15px auto;
+                .rf-footer-brand {
+                    justify-content: flex-start; /* Garante alinhamento à esquerda da logo com o texto */
                 }
             }
         </style>
@@ -247,8 +263,10 @@ function carregarRodape() {
             <div class="rf-footer-container">
                 
                 <div class="rf-footer-col">
-                    <img src="${sitePrincipal}favicon.png" alt="ResolveFácil Logo" class="rf-footer-logo" onerror="this.style.display='none'">
-                    <h4>ResolveFácil</h4>
+                    <div class="rf-footer-brand">
+                        <img src="${sitePrincipal}favicon.png" alt="ResolveFácil Logo" onerror="this.style.display='none'">
+                        <h4>ResolveFácil</h4>
+                    </div>
                     <p>Descomplique sua vida com agilidade e segurança. Serviços online, documentos e design gráfico diretamente pelo WhatsApp.</p>
                     <p><strong>Atendimento humanizado</strong> que faz a diferença.</p>
                 </div>
@@ -310,9 +328,12 @@ function carregarRodape() {
                 <p class="rf-bottom-text">
                     &copy; ${new Date().getFullYear()} ResolveFácil • Soluções Digitais. Todos os direitos reservados.
                 </p>
+                
+                ${window.location.pathname.toLowerCase().includes('politica-de-privacidade') ? '' : `
                 <p class="rf-bottom-links">
                     <a href="${sitePrincipal}politica-de-privacidade.html">Política de Privacidade</a>
                 </p>
+                `}
             </div>
         </div>
     `;
