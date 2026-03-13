@@ -5,6 +5,7 @@
   "main": "enviar-curriculo.js",
   "dependencies": {
     "chrome-aws-lambda": "^10.1.0",
-    "puppeteer-core": "^10.1.0"
+    "puppeteer-core": "^10.1.0",
+    "firebase-admin": "^11.11.1"
   }
 }

@@ -1,13 +1,30 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão Múltiplos Produtos + Serviços de Pesquisa)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final - Híbrida com Firebase)
+// Esta versão preserva 100% dos produtos antigos e adiciona os novos serviços.
 
 const allowedOrigins = [
     'https://www.resolvefacil.online',
     'https://resolvefacil.online'
 ];
 
-// --- NOSSO CATÁLOGO DE PRODUTOS E SERVIÇOS ---
+// --- INICIALIZAÇÃO DO FIREBASE ---
+const admin = require('firebase-admin');
+
+// Inicializa o Firebase apenas se ainda não houver uma instância e se a chave estiver presente
+if (!admin.apps.length && process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
+        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+        });
+        console.log("Firebase conectado com sucesso via Function!");
+    } catch (error) {
+        console.error("Erro crítico ao inicializar Firebase:", error);
+    }
+}
+
+// --- NOSSO CATÁLOGO DE PRODUTOS (UNIFICADO) ---
 const catalogoProdutos = {
-    // Produtos Digitais (Geradores)
+    // Produtos Antigos (Mantidos Intactos para não parar o site)
     'curriculo_pago': {
         descricao: "Acesso ao Gerador de Currículo Profissional",
         valor: 5.99
@@ -20,7 +37,8 @@ const catalogoProdutos = {
         descricao: "Acesso ao Gerador de Contrato de Aluguel",
         valor: 16.99
     },
-    // NOVOS SERVIÇOS DE PESQUISA ADICIONADOS ABAIXO (Preservando os antigos intactos)
+    
+    // Novos Serviços de Pesquisa (Margem de lucro superior a 50%)
     'pesquisa_completa': {
         descricao: "Relatório de Localização Completa (Pessoa Física)",
         valor: 149.00
@@ -42,7 +60,7 @@ exports.handler = async function(event) {
         'Access-Control-Allow-Headers': 'Content-Type'
     };
 
-    // CORS - Permite que apenas o seu site oficial faça requisições aqui
+    // Configuração de CORS
     if (allowedOrigins.includes(origin)) {
         headers['Access-Control-Allow-Origin'] = origin;
     }
@@ -55,29 +73,27 @@ exports.handler = async function(event) {
     }
 
     try {
-        // ATUALIZAÇÃO CIRÚRGICA: Adicionamos o 'targetData' aqui. 
-        // Se a compra for de currículo/contrato, ele será 'undefined' e não atrapalhará em nada.
+        // Captura os dados enviados pelo site
         const { productId, name, email, cpf, targetData } = JSON.parse(event.body);
 
-        // Validação dos dados recebidos (exatamente igual ao original)
+        // Validação de campos obrigatórios
         if (!productId || !name || !email || !cpf) {
             return { statusCode: 400, headers: headers, body: 'Dados incompletos (ID do produto, nome, e-mail e CPF são obrigatórios).' };
         }
 
-        // Busca o produto/serviço no nosso catálogo
         const produto = catalogoProdutos[productId];
 
-        // Se o produto não for encontrado no catálogo, retorna um erro
         if (!produto) {
             console.error("Tentativa de compra com productId inválido:", productId);
             return { statusCode: 404, headers: headers, body: 'Produto não encontrado.' };
         }
 
+        // 1. GERAÇÃO DA COBRANÇA NA ASAAS
         const dadosDaCobranca = {
             billingType: "PIX",
-            value: produto.valor, // Pega o valor do catálogo
+            value: produto.valor,
             dueDate: new Date().toISOString().split('T')[0],
-            description: produto.descricao, // Pega a descrição do catálogo
+            description: produto.descricao,
             customer: {
                 name: name,
                 email: email,
@@ -95,18 +111,40 @@ exports.handler = async function(event) {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            console.error("ERRO RETORNADO PELA API ASAAS:", error);
+            const errorData = await response.json();
+            console.error("Erro retornado pela Asaas:", errorData);
             throw new Error('Falha ao criar cobrança na Asaas.');
         }
 
         const cobranca = await response.json();
 
-        // ==========================================================
-        // PASSO CIRÚRGICO FUTURO (ETAPA 2 - FIREBASE)
-        // O código do Firebase entrará exatamente aqui na próxima etapa.
-        // ==========================================================
+        // 2. SALVAMENTO NO FIREBASE (APENAS PARA PESQUISAS)
+        // Se o produto for de pesquisa e o Firebase estiver ativo, guardamos a "ficha do alvo"
+        if (productId.startsWith('pesquisa_') && targetData && admin.apps.length) {
+            try {
+                const db = admin.firestore();
+                // Usamos o ID da cobrança da Asaas como nome do documento para facilitar o rastreio
+                await db.collection('pedidos_pesquisa').doc(cobranca.id).set({
+                    cobrancaId: cobranca.id,
+                    servico: produto.descricao,
+                    servicoId: productId,
+                    valor: produto.valor,
+                    cliente: {
+                        nome: name,
+                        email: email,
+                        cpf: cpf
+                    },
+                    alvo: targetData,
+                    status: 'aguardando_pagamento',
+                    dataPedido: new Date().toISOString()
+                });
+                console.log(`Sucesso: Dados da pesquisa ${cobranca.id} salvos no Firebase.`);
+            } catch (fbError) {
+                console.error("Erro ao salvar no Firebase (o Pix foi gerado mas os dados do alvo não foram salvos):", fbError);
+            }
+        }
 
+        // Retorna a URL de checkout para o site redirecionar o cliente
         return {
             statusCode: 200,
             headers: headers,
@@ -114,7 +152,7 @@ exports.handler = async function(event) {
         };
 
     } catch (error) {
-        console.error("ERRO NA EXECUÇÃO DA FUNÇÃO:", error.message);
+        console.error("Erro na execução da função:", error.message);
         return {
             statusCode: 500,
             headers: headers,
