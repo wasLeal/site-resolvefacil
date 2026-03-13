@@ -519,8 +519,8 @@
                 };
 
                 try {
-                    // Chamada para o nosso motor lá no Netlify (Projeto Secundário)
-                    const response = await fetch('https://resolvefacil-curriculos.netlify.app/.netlify/functions/criar-pagamento', {
+                    // MUDANÇA CIRÚRGICA: Usando caminho relativo para evitar erro de CORS
+                    const response = await fetch('/.netlify/functions/criar-pagamento', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
