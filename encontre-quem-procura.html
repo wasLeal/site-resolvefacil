@@ -148,6 +148,11 @@
         .btn-main-text { font-size: 1.2em; font-weight: bold; }
         .btn-sub-text { font-size: 0.8em; font-weight: normal; opacity: 0.9; }
 
+        /* ESTILO DO SELO PIX ABAIXO DO BOTÃO */
+        .pix-seal-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; opacity: 0.8; }
+        .pix-logo-svg { height: 24px; width: auto; fill: #32bcad; }
+        .pix-seal-text { font-size: 0.95em; font-weight: bold; color: #555; letter-spacing: 0.5px; }
+
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -190,7 +195,7 @@
             </div>
         </section>
 
-        <!-- PRÉVIA ATUALIZADA - Dinâmica e Otimizada -->
+        <!-- PRÉVIA ATUALIZADA -->
         <section class="preview-section">
             <div class="preview-box">
                 <h2>Faça uma busca preliminar gratuita</h2>
@@ -205,7 +210,7 @@
                     <h4><i class="fas fa-check-circle"></i> Análise Preliminar Concluída</h4>
                     <p style="font-size: 0.9em; margin-bottom: 15px; color: #666;">Encontramos os seguintes rastros em nossas bases associados a este nome:</p>
                     <ul id="preview-dynamic-list">
-                        <!-- Itens gerados magicamente pelo Javascript entrarão aqui -->
+                        <!-- Itens gerados via JavaScript -->
                     </ul>
                     <a href="#form-ancora" class="unlock-btn" onclick="preencherFormulario()">Desbloquear Dossiê Completo</a>
                 </div>
@@ -260,7 +265,6 @@
 
         <div class="content-container">
             <div class="info-col">
-                
                 <div class="info-card">
                     <h2>Como Funciona?</h2>
                     <p>Diferente das consultas automáticas e superficiais, <strong>nossa equipe cruza diversas bases de dados</strong> para localizar vínculos reais, pistas de paradeiro e informações precisas associadas à pessoa pesquisada.</p>
@@ -269,13 +273,13 @@
 
                 <div class="info-card live-searches">
                     <h3><div class="pulsing-dot" style="display:inline-block; margin-right:5px;"></div> Buscas recentes</h3>
-                    <p style="font-size: 0.9em; color: #777;">Nas últimas 4 horas entregamos:</p>
+                    <!-- AVISO DE HORAS DINÂMICO -->
+                    <p style="font-size: 0.9em; color: #777;" id="recent-hours-text">Nas últimas 4 horas entregamos:</p>
                     <ul id="lista-pesquisas-recentes">
                         <li><strong>Processando dados seguros...</strong></li>
                     </ul>
                 </div>
 
-                <!-- EXEMPLO DE RELATÓRIO ATUALIZADO (Mãe Borrada + Processos Alinhados) -->
                 <div class="info-card">
                     <h3>O que você vai receber?</h3>
                     <p style="font-size: 0.9em; margin-bottom: 15px;">Veja um exemplo do PDF que chegará no seu e-mail de forma sigilosa (referente ao Dossiê Investigativo):</p>
@@ -323,7 +327,6 @@
                         </div>
                         <div class="report-row">
                             <span class="report-label">Apontamentos / Processos</span>
-                            <!-- ATUALIZAÇÃO PROCESSOS UM ABAIXO DO OUTRO -->
                             <span class="report-value" style="color: #d9534f; display: block; line-height: 1.5;">
                                 1 Processo Cível (TJ-SP)<br>
                                 2 Protestos
@@ -338,7 +341,6 @@
 
                 <div class="info-card">
                     <h3>Perguntas Frequentes</h3>
-                    
                     <div class="faq-item">
                         <span class="faq-question">É legal fazer essa consulta?</span>
                         <div class="faq-answer">Sim. Nós utilizamos e organizamos apenas dados que já são públicos ou disponibilizados legalmente por birôs de informação para localização e análise.</div>
@@ -353,17 +355,14 @@
                     </div>
                     <div class="faq-item">
                         <span class="faq-question">O alvo vai saber que foi pesquisado?</span>
-                        <div class="faq-answer">Absolutamente não. O alvo jamais saberá que foi consultado. O relatório é enviado apenas e exclusivamente para o seu e-mail cadastrado.</div>
+                        <div class="faq-answer">Absolutamente não. O alvo jamais saberá que foi consultado. O relatório é enviado apenas para o seu e-mail cadastrado.</div>
                     </div>
                 </div>
-
             </div>
 
             <div class="form-section" id="form-ancora">
                 <h3>Solicitar Investigação</h3>
-                
                 <form id="pesquisa-form" autocomplete="off">
-                    
                     <div class="form-group">
                         <label for="tipoPesquisa">Selecione o Nível da Busca:</label>
                         <select id="tipoPesquisa" required>
@@ -375,29 +374,24 @@
                     </div>
 
                     <div class="form-divider"><span>1. QUEM VAI RECEBER? (SEUS DADOS)</span></div>
-
                     <div class="form-group">
                         <label for="compradorNome">Seu Nome Completo:</label>
                         <input type="text" id="compradorNome" name="compradorNome" placeholder="Seu nome" required autocomplete="name">
                     </div>
-
                     <div class="form-group">
                         <label for="compradorEmail">Seu E-mail <span style="color:red">*</span></label>
                         <input type="email" id="compradorEmail" name="compradorEmail" placeholder="Onde o PDF será enviado" required autocomplete="email">
                     </div>
-
                     <div class="form-group">
                         <label for="compradorCpf">Seu CPF (Para emissão da garantia):</label>
                         <input type="text" id="compradorCpf" name="compradorCpf" placeholder="000.000.000-00" maxlength="14" required>
                     </div>
 
                     <div class="form-divider"><span>2. QUEM VAMOS PROCURAR? (O ALVO)</span></div>
-
                     <div class="form-group">
                         <label for="alvoNome">Nome Completo do Alvo: <span style="color: red;">*</span></label>
                         <input type="text" id="alvoNome" name="alvoNome_pesquisa" placeholder="Ex: João da Silva Souza" required autocomplete="new-password">
                     </div>
-
                     <div class="form-row-aligned">
                         <div class="form-group">
                             <label for="alvoCpf">CPF ou CNPJ: <span class="optional-label">(Opcional)</span></label>
@@ -412,12 +406,10 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="alvoFiliacao">Nome da Mãe: <span class="optional-label">(Opcional)</span></label>
                         <input type="text" id="alvoFiliacao" name="alvoFiliacao_pesquisa" placeholder="Ajuda muito a evitar homônimos" autocomplete="off">
                     </div>
-
                     <div class="form-row-aligned">
                         <div class="form-group">
                             <label for="alvoUf">Estado (UF): <span class="optional-label">(Opcional)</span></label>
@@ -432,7 +424,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="alvoInfoExtra">Mais alguma informação útil? <span class="optional-label">(Opcional)</span></label>
                         <textarea id="alvoInfoExtra" rows="2" placeholder="Antigo local de trabalho, último telefone conhecido, apelido, etc."></textarea>
@@ -442,8 +433,12 @@
                         <span class="btn-main-text"><i class="fas fa-lock"></i> Iniciar Pesquisa Agora</span>
                         <span class="btn-sub-text">(Pagamento 100% seguro via PIX)</span>
                     </button>
-                    <div style="text-align: center; margin-top: 15px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo%E2%80%94pix_powered_by_Banco_Central_%28Brazil%2C_2020%29.svg" alt="Pix" style="height: 20px; opacity: 0.7;">
+                    
+                    <div class="pix-seal-container">
+                        <svg class="pix-logo-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M312.8 256.0l109.8-109.8L312.8 36.4l-109.8 109.8L312.8 256.0zM199.2 256.0L89.4 365.8L199.2 475.6l109.8-109.8L199.2 256.0zM256.0 199.2l-109.8 109.8l-109.8-109.8l109.8-109.8L256.0 199.2zM256.0 312.8l109.8-109.8l109.8 109.8l-109.8 109.8L256.0 312.8z"/>
+                        </svg>
+                        <span class="pix-seal-text">Pix</span>
                     </div>
                 </form>
             </div>
@@ -457,9 +452,7 @@
     <script src="chatbot.js" defer></script>
 
     <script>
-        // --- 1. MÁQUINA DE CURIOSIDADE (PRÉVIA DINÂMICA COM HASH) ---
-        
-        // Função matemática que cria um número fixo baseado no texto digitado
+        // --- 1. MÁQUINA DE CURIOSIDADE (HASH DINÂMICO) ---
         function gerarHashDaString(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -469,8 +462,6 @@
             }
             return Math.abs(hash);
         }
-
-        // Função para gerar número pseudo-aleatório baseado no hash (Semente)
         function numeroAleatorioSeeded(semente) {
             let x = Math.sin(semente) * 10000;
             return x - Math.floor(x);
@@ -478,10 +469,7 @@
 
         document.getElementById('btn-preview').addEventListener('click', () => {
             const nomeInput = document.getElementById('preview-nome').value.trim();
-            if(!nomeInput) {
-                alert('Por favor, digite o nome que deseja pesquisar primeiro.');
-                return;
-            }
+            if(!nomeInput) { alert('Por favor, digite o nome que deseja pesquisar primeiro.'); return; }
 
             const btn = document.getElementById('btn-preview');
             const originalText = btn.innerHTML;
@@ -491,40 +479,20 @@
             setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-
-                // Transforma o nome digitado numa semente matemática
                 let semente = gerarHashDaString(nomeInput.toLowerCase());
-                
-                // Puxa as quantidades genéricas baseadas na semente (O cara dá F5 e continua igual)
-                const qtdEnderecos = Math.floor(numeroAleatorioSeeded(semente++) * 3) + 1; // De 1 a 3
-                const qtdTelefones = Math.floor(numeroAleatorioSeeded(semente++) * 4) + 1; // De 1 a 4
-                const qtdParentes = Math.floor(numeroAleatorioSeeded(semente++) * 6) + 1;  // De 1 a 6
+                const qtdEnderecos = Math.floor(numeroAleatorioSeeded(semente++) * 3) + 1;
+                const qtdTelefones = Math.floor(numeroAleatorioSeeded(semente++) * 4) + 1;
+                const qtdParentes = Math.floor(numeroAleatorioSeeded(semente++) * 6) + 1;
                 const chanceProcesso = numeroAleatorioSeeded(semente++);
-                const chanceEmpresa = numeroAleatorioSeeded(semente++);
 
                 let listaHTML = '';
-                
-                // Itens muito comuns (aparecem para quase todos os nomes)
-                let palavraEnderecos = qtdEnderecos === 1 ? 'endereço registrado' : 'endereços registrados';
-                listaHTML += `<li><i class="fas fa-map-marker-alt"></i> ${qtdEnderecos} ${palavraEnderecos} em histórico</li>`;
-                
-                let palavraTelefones = qtdTelefones === 1 ? 'telefone vinculado' : 'telefones vinculados';
-                listaHTML += `<li><i class="fas fa-phone-alt"></i> ${qtdTelefones} possível(eis) ${palavraTelefones}</li>`;
-                
-                let palavraParentes = qtdParentes === 1 ? 'vínculo familiar detectado' : 'vínculos familiares detectados';
-                listaHTML += `<li><i class="fas fa-users"></i> ${qtdParentes} ${palavraParentes} (Parentesco)</li>`;
-                
-                // Itens raros (Processos em 30% das vezes e Empresa em 15%)
+                listaHTML += `<li><i class="fas fa-map-marker-alt"></i> ${qtdEnderecos} ${qtdEnderecos === 1 ? 'endereço registrado' : 'endereços registrados'} em histórico</li>`;
+                listaHTML += `<li><i class="fas fa-phone-alt"></i> ${qtdTelefones} possível(eis) ${qtdTelefones === 1 ? 'telefone vinculado' : 'telefones vinculados'}</li>`;
+                listaHTML += `<li><i class="fas fa-users"></i> ${qtdParentes} ${qtdParentes === 1 ? 'vínculo familiar detectado' : 'vínculos familiares detectados'} (Parentesco)</li>`;
                 if (chanceProcesso > 0.70) {
                     let qtdProcessos = chanceProcesso > 0.90 ? 2 : 1;
-                    let palavraProcessos = qtdProcessos === 1 ? 'apontamento ou processo' : 'apontamentos ou processos';
-                    listaHTML += `<li><i class="fas fa-balance-scale"></i> ${qtdProcessos} ${palavraProcessos} localizado(s)</li>`;
+                    listaHTML += `<li><i class="fas fa-balance-scale"></i> ${qtdProcessos} ${qtdProcessos === 1 ? 'apontamento ou processo' : 'apontamentos ou processos'} localizado(s)</li>`;
                 }
-
-                if (chanceEmpresa > 0.85) {
-                    listaHTML += `<li><i class="fas fa-building"></i> Identificada possível participação societária (CNPJ)</li>`;
-                }
-
                 document.getElementById('preview-dynamic-list').innerHTML = listaHTML;
                 document.getElementById('preview-result').style.display = 'block';
             }, 1500);
@@ -539,24 +507,16 @@
             }
         }
 
-        // SELEÇÃO VIA CARD DE PREÇO
         function selecionarPlano(idPlano) {
             const select = document.getElementById('tipoPesquisa');
             select.value = idPlano;
-            
             document.getElementById('form-ancora').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
             select.style.transition = 'all 0.3s';
             select.style.borderColor = 'var(--highlight)';
             select.style.boxShadow = '0 0 0 4px rgba(255,102,0,0.2)';
-            
-            setTimeout(() => {
-                select.style.borderColor = '#ccc';
-                select.style.boxShadow = 'none';
-            }, 2000);
+            setTimeout(() => { select.style.borderColor = '#ccc'; select.style.boxShadow = 'none'; }, 2000);
         }
 
-        // MÁSCARAS
         function formatarCpfCnpj(input) {
             let value = input.value.replace(/\D/g, ""); 
             if (value.length <= 11) {
@@ -573,66 +533,48 @@
             }
             input.value = value;
         }
-
         document.getElementById('compradorCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
         document.getElementById('alvoCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
 
-        // API IBGE
         const ufSelect = document.getElementById('alvoUf');
         const cidadeSelect = document.getElementById('alvoCidade');
-
         async function carregarEstados() {
             try {
                 const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
                 const estados = await response.json();
                 estados.forEach(estado => {
                     const opt = document.createElement('option');
-                    opt.value = estado.sigla;
-                    opt.textContent = estado.nome;
-                    ufSelect.appendChild(opt);
+                    opt.value = estado.sigla; opt.textContent = estado.nome; ufSelect.appendChild(opt);
                 });
             } catch (err) { console.error("Erro IBGE:", err); }
         }
-
         ufSelect.addEventListener('change', async () => {
             const sigla = ufSelect.value;
             cidadeSelect.innerHTML = '<option value="">Carregando...</option>';
             cidadeSelect.disabled = true;
-            if (!sigla) {
-                cidadeSelect.innerHTML = '<option value="">Selecione a UF</option>';
-                return;
-            }
+            if (!sigla) { cidadeSelect.innerHTML = '<option value="">Selecione a UF</option>'; return; }
             try {
                 const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${sigla}/municipios?orderBy=nome`);
                 const cidades = await response.json();
                 cidadeSelect.innerHTML = '<option value="">Selecione a cidade</option>';
                 cidades.forEach(cidade => {
-                    const opt = document.createElement('option');
-                    opt.value = cidade.nome;
-                    opt.textContent = cidade.nome;
-                    cidadeSelect.appendChild(opt);
+                    const opt = document.createElement('option'); opt.value = cidade.nome; opt.textContent = cidade.nome; cidadeSelect.appendChild(opt);
                 });
                 cidadeSelect.disabled = false;
             } catch (err) { console.error("Erro IBGE Cidades:", err); }
         });
         carregarEstados();
 
-        // ENVIO DO FORMULÁRIO E INTEGRAÇÃO DE PAGAMENTO
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('pesquisa-form');
             const btnPagar = document.getElementById('btn-pagar');
-
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
-                
                 const originalText = btnPagar.innerHTML;
                 btnPagar.disabled = true;
                 btnPagar.innerHTML = '<span class="btn-main-text"><i class="fas fa-spinner fa-spin"></i> Processando...</span>';
 
-                let localDoAlvo = "";
-                if (ufSelect.value && cidadeSelect.value) {
-                    localDoAlvo = `${cidadeSelect.value} - ${ufSelect.value}`;
-                }
+                let localDoAlvo = (ufSelect.value && cidadeSelect.value) ? `${cidadeSelect.value} - ${ufSelect.value}` : "";
 
                 const payload = {
                     productId: document.getElementById('tipoPesquisa').value,
@@ -655,86 +597,110 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
                     });
-
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.message || 'Falha ao processar.');
-                    }
-                    
-                    if (data.checkout_url) {
-                        window.location.href = data.checkout_url;
-                    } else {
-                        throw new Error('URL de pagamento não recebida.');
-                    }
-
+                    if (!response.ok) throw new Error(data.message || 'Falha ao processar.');
+                    if (data.checkout_url) window.location.href = data.checkout_url;
+                    else throw new Error('URL não recebida.');
                 } catch (error) {
                     console.error('Erro:', error);
-                    alert('Houve um erro: ' + error.message + '\n\nCertifique-se de que o CPF preenchido é válido.');
+                    alert('Houve um erro: ' + error.message);
                     btnPagar.disabled = false;
                     btnPagar.innerHTML = originalText;
                 }
             });
         });
 
-        // PROVA SOCIAL DINÂMICA
+        // --- 5. PROVA SOCIAL DINÂMICA (60 CIDADES - FOCO NORTE) ---
         const basePesquisas = [
             { servico: "Busca de Contato", local: "Manaus / AM" },
-            { servico: "Dossiê Investigativo", local: "Campinas / SP" },
-            { servico: "Rastreio Avançado", local: "Feira de Santana / BA" },
-            { servico: "Dossiê Investigativo", local: "Parintins / AM" },
-            { servico: "Busca de Contato", local: "Cascavel / PR" },
-            { servico: "Rastreio Avançado", local: "Uberlândia / MG" },
-            { servico: "Dossiê Investigativo", local: "Ribeirão Preto / SP" },
-            { servico: "Busca de Contato", local: "Caxias do Sul / RS" },
-            { servico: "Rastreio Avançado", local: "Caruaru / PE" },
+            { servico: "Dossiê Investigativo", local: "Belém / PA" },
+            { servico: "Rastreio Avançado", local: "Porto Velho / RO" },
+            { servico: "Busca de Contato", local: "Boa Vista / RR" },
+            { servico: "Dossiê Investigativo", local: "Rio Branco / AC" },
+            { servico: "Rastreio Avançado", local: "Macapá / AP" },
+            { servico: "Busca de Contato", local: "Palmas / TO" },
             { servico: "Dossiê Investigativo", local: "Santarém / PA" },
-            { servico: "Busca de Contato", local: "Sobral / CE" },
-            { servico: "Rastreio Avançado", local: "Volta Redonda / RJ" },
-            { servico: "Dossiê Investigativo", local: "Joinville / SC" },
-            { servico: "Busca de Contato", local: "Anápolis / GO" },
-            { servico: "Rastreio Avançado", local: "Vitória / ES" },
-            { servico: "Dossiê Investigativo", local: "Belo Horizonte / MG" },
-            { servico: "Busca de Contato", local: "São Paulo / SP" },
-            { servico: "Rastreio Avançado", local: "Curitiba / PR" },
-            { servico: "Dossiê Investigativo", local: "Recife / PE" },
-            { servico: "Busca de Contato", local: "Goiânia / GO" },
-            { servico: "Rastreio Avançado", local: "Brasília / DF" },
-            { servico: "Dossiê Investigativo", local: "Porto Alegre / RS" },
-            { servico: "Busca de Contato", local: "Belém / PA" },
+            { servico: "Rastreio Avançado", local: "Parintins / AM" },
+            { servico: "Busca de Contato", local: "Marabá / PA" },
+            { servico: "Dossiê Investigativo", local: "Ji-Paraná / RO" },
             { servico: "Rastreio Avançado", local: "Itacoatiara / AM" },
+            { servico: "Busca de Contato", local: "Manacapuru / AM" },
+            { servico: "Dossiê Investigativo", local: "Castanhal / PA" },
+            { servico: "Rastreio Avançado", local: "Cruzeiro do Sul / AC" },
+            { servico: "Busca de Contato", local: "Coari / AM" },
+            { servico: "Dossiê Investigativo", local: "Tefé / AM" },
+            { servico: "Rastreio Avançado", local: "Ananindeua / PA" },
+            { servico: "Busca de Contato", local: "Altamira / PA" },
+            { servico: "Dossiê Investigativo", local: "Ariquemes / RO" },
+            { servico: "Rastreio Avançado", local: "Vilhena / RO" },
+            { servico: "Busca de Contato", local: "Cacoal / RO" },
+            { servico: "Dossiê Investigativo", local: "Tabatinga / AM" },
+            { servico: "Rastreio Avançado", local: "Humaitá / AM" },
+            { servico: "Busca de Contato", local: "Abaetetuba / PA" },
+            { servico: "Dossiê Investigativo", local: "Cametá / PA" },
+            { servico: "Rastreio Avançado", local: "Bragança / PA" },
+            { servico: "Busca de Contato", local: "Santana / AP" },
+            { servico: "Dossiê Investigativo", local: "Araguaína / TO" },
+            { servico: "Rastreio Avançado", local: "Gurupi / TO" },
+            { servico: "Busca de Contato", local: "São Paulo / SP" },
+            { servico: "Dossiê Investigativo", local: "Rio de Janeiro / RJ" },
+            { servico: "Rastreio Avançado", local: "Curitiba / PR" },
+            { servico: "Busca de Contato", local: "Belo Horizonte / MG" },
             { servico: "Dossiê Investigativo", local: "Salvador / BA" },
-            { servico: "Busca de Contato", local: "Fortaleza / CE" },
-            { servico: "Rastreio Avançado", local: "Cuiabá / MT" },
-            { servico: "Dossiê Investigativo", local: "Campo Grande / MS" },
-            { servico: "Busca de Contato", local: "Londrina / PR" },
-            { servico: "Rastreio Avançado", local: "Rio de Janeiro / RJ" }
+            { servico: "Rastreio Avançado", local: "Fortaleza / CE" },
+            { servico: "Busca de Contato", local: "Recife / PE" },
+            { servico: "Dossiê Investigativo", local: "Goiânia / GO" },
+            { servico: "Rastreio Avançado", local: "Porto Alegre / RS" },
+            { servico: "Busca de Contato", local: "Brasília / DF" },
+            { servico: "Dossiê Investigativo", local: "Campinas / SP" },
+            { servico: "Rastreio Avançado", local: "Uberlândia / MG" },
+            { servico: "Busca de Contato", local: "Ribeirão Preto / SP" },
+            { servico: "Dossiê Investigativo", local: "Joinville / SC" },
+            { servico: "Rastreio Avançado", local: "Londrina / PR" },
+            { servico: "Busca de Contato", local: "Sorocaba / SP" },
+            { servico: "Dossiê Investigativo", local: "Santos / SP" },
+            { servico: "Rastreio Avançado", local: "Natal / RN" },
+            { servico: "Busca de Contato", local: "João Pessoa / PB" },
+            { servico: "Dossiê Investigativo", local: "Maceió / AL" },
+            { servico: "Rastreio Avançado", local: "Teresina / PI" },
+            { servico: "Busca de Contato", local: "Aracaju / SE" },
+            { servico: "Dossiê Investigativo", local: "São Luís / MA" },
+            { servico: "Rastreio Avançado", local: "Campo Grande / MS" },
+            { servico: "Busca de Contato", local: "Cuiabá / MT" },
+            { servico: "Dossiê Investigativo", local: "Maués / AM" },
+            { servico: "Rastreio Avançado", local: "Eirunepé / AM" },
+            { servico: "Busca de Contato", local: "Paragominas / PA" },
+            { servico: "Dossiê Investigativo", local: "Redenção / PA" },
+            { servico: "Rastreio Avançado", local: "Tucuruí / PA" }
         ];
 
         function renderizarPesquisasRecentes() {
             const dataAtual = new Date();
             let semente = dataAtual.getFullYear() * 10000 + (dataAtual.getMonth() + 1) * 100 + dataAtual.getDate();
             
+            // LÓGICA DO TEMPO ALEATÓRIO (2, 3 ou 4 horas baseado na semente)
+            const horasOpcoes = [2, 3, 4];
+            const horaSorteada = horasOpcoes[semente % 3];
+            const hoursTextElement = document.getElementById('recent-hours-text');
+            if (hoursTextElement) {
+                hoursTextElement.textContent = `Nas últimas ${horaSorteada} horas entregamos:`;
+            }
+
             let embaralhado = [...basePesquisas];
-            
             for (let i = embaralhado.length - 1; i > 0; i--) {
                 semente = (semente * 9301 + 49297) % 233280;
-                let randomico = semente / 233280;
-                let j = Math.floor(randomico * (i + 1));
+                let j = Math.floor((semente / 233280) * (i + 1));
                 [embaralhado[i], embaralhado[j]] = [embaralhado[j], embaralhado[i]];
             }
             
-            const selecionadas = embaralhado.slice(0, 3);
             const listaUl = document.getElementById('lista-pesquisas-recentes');
-            
             if (listaUl) {
                 listaUl.innerHTML = ''; 
-                selecionadas.forEach(item => {
+                embaralhado.slice(0, 3).forEach(item => {
                     listaUl.innerHTML += `<li><strong>${item.servico}</strong> <span>- ${item.local}</span></li>`;
                 });
             }
         }
-        
         renderizarPesquisasRecentes();
     </script>
 </body>
