@@ -42,7 +42,7 @@
         }
 
         /* ==========================================
-           ESTILOS PADRÕES DO MENU (IGUAL A LOJA.HTML)
+           ESTILOS PADRÕES DO MENU
            ========================================== */
         header { 
             background-color: var(--secondary-bg);
@@ -137,9 +137,6 @@
             font-weight: bold;
             font-size: 1.2em;
         }
-        /* ==========================================
-           FIM DOS ESTILOS DO MENU
-           ========================================== */
 
         main {
             flex: 1;
@@ -270,6 +267,19 @@
             box-shadow: 0 0 0 3px rgba(0, 52, 89, 0.1);
         }
 
+        /* ALINHAMENTO DAS CAIXAS DE ESTADO E CIDADE */
+        .form-row-aligned {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .form-row-aligned .form-group {
+            margin-bottom: 0;
+        }
+
         .form-divider {
             margin: 30px 0 20px;
             border-top: 2px dashed #ccc;
@@ -287,15 +297,11 @@
             font-weight: bold;
         }
 
-        .form-row-aligned {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-            align-items: flex-end;
-        }
-        .form-row-aligned .form-group {
-            margin-bottom: 0;
+        .optional-label {
+            font-weight: normal;
+            font-size: 0.85em;
+            color: #777;
+            margin-left: 5px;
         }
 
         .submit-btn {
@@ -325,7 +331,6 @@
             cursor: not-allowed;
         }
 
-        /* --- RESPONSIVIDADE EXATA DA LOJA --- */
         @media (max-width: 900px) {
             .content-container {
                 grid-template-columns: 1fr;
@@ -348,7 +353,6 @@
 </head>
 <body>
 
-    <!-- CABEÇALHO PADRONIZADO E ÍNTEGRO -->
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo-area">
@@ -370,7 +374,7 @@
     <main>
         <section class="service-hero">
             <h1>Encontre Quem Procura</h1>
-            <p>Relatório completo de localização e verificação através de cruzamento de dados públicos e comerciais.</p>
+            <p>Relatório completo de localização e verificação através de cruzamento de dados públicos e comerciais. Descubra endereços, telefones, processos e empresas associadas.</p>
         </section>
 
         <div class="content-container">
@@ -386,7 +390,7 @@
                         <i class="fas fa-search"></i>
                         <div>
                             <strong>1. Solicitação e Pagamento</strong><br>
-                            Você preenche os dados conhecidos da pessoa ou empresa e realiza o pagamento via PIX.
+                            Você preenche os dados conhecidos da pessoa ou empresa e realiza o pagamento seguro.
                         </div>
                     </li>
                     <li>
@@ -451,7 +455,6 @@
 
                     <div class="form-group">
                         <label for="alvoNome">Nome Completo do Pesquisado: <span style="color: red;">*</span></label>
-                        <!-- O atributo autocomplete="new-password" impede o navegador de repetir o nome do comprador aqui -->
                         <input type="text" id="alvoNome" name="alvoNome_pesquisa" placeholder="Ex: João da Silva Souza" required autocomplete="new-password">
                     </div>
 
@@ -497,7 +500,7 @@
     <!-- Âncora do Rodapé Dinâmico -->
     <div id="footer-container"></div>
 
-    <!-- Scripts do site (Puxando da mesma pasta raiz, sem usar ../) -->
+    <!-- Scripts do site -->
     <script src="menu.js"></script>
     <script src="footer.js"></script>
     <script src="chatbot.js" defer></script>
@@ -506,17 +509,15 @@
     <script>
         // --- 1. MÁSCARAS DE CPF E CNPJ AUTOMÁTICAS ---
         function formatarCpfCnpj(input) {
-            let value = input.value.replace(/\D/g, ""); // Remove tudo que não for número
+            let value = input.value.replace(/\D/g, ""); 
             
             if (value.length <= 11) {
-                // Aplica máscara de CPF: 000.000.000-00
                 value = value.replace(/(\.|\-)/g, "");
                 if (value.length > 3) value = value.substring(0,3) + '.' + value.substring(3);
                 if (value.length > 7) value = value.substring(0,7) + '.' + value.substring(7);
                 if (value.length > 11) value = value.substring(0,11) + '-' + value.substring(11);
             } else {
-                // Aplica máscara de CNPJ: 00.000.000/0000-00 se passar de 11 números
-                value = value.substring(0, 14); // Limita a 14 dígitos reais
+                value = value.substring(0, 14); 
                 value = value.replace(/^(\d{2})(\d)/, "$1.$2");
                 value = value.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
                 value = value.replace(/\.(\d{3})(\d)/, ".$1/$2");
@@ -532,7 +533,6 @@
         const ufSelect = document.getElementById('alvoUf');
         const cidadeSelect = document.getElementById('alvoCidade');
 
-        // Função para buscar os estados no momento em que a página carrega
         async function carregarEstados() {
             try {
                 const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
@@ -548,7 +548,6 @@
             }
         }
 
-        // Evento que dispara quando o usuário seleciona um Estado
         ufSelect.addEventListener('change', async () => {
             const sigla = ufSelect.value;
             cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
@@ -576,10 +575,9 @@
             }
         });
 
-        // Chama a função para preencher os estados imediatamente
         carregarEstados();
 
-        // --- 3. LÓGICA DE ENVIO DO FORMULÁRIO (COM CAMINHO SEGURO DO NETLIFY) ---
+        // --- 3. LÓGICA DE ENVIO DO FORMULÁRIO (DIRETO NA MESMA ABA E APENAS PIX) ---
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('pesquisa-form');
             const btnPagar = document.getElementById('btn-pagar');
@@ -589,9 +587,8 @@
                 
                 const originalText = btnPagar.innerHTML;
                 btnPagar.disabled = true;
-                btnPagar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando cobrança...';
+                btnPagar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
 
-                // Captura a seleção de UF e Cidade
                 let localDoAlvo = "";
                 if (ufSelect.value && cidadeSelect.value) {
                     localDoAlvo = `${cidadeSelect.value} - ${ufSelect.value}`;
@@ -612,8 +609,8 @@
                 };
 
                 try {
-                    // CAMINHO RELATIVO: Resolve a barreira de segurança (CORS) que impedia o teste
-                    const response = await fetch('/.netlify/functions/criar-pagamento', {
+                    // Usando o caminho absoluto do Netlify para total estabilidade
+                    const response = await fetch('https://resolvefacil-curriculos.netlify.app/.netlify/functions/criar-pagamento', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
@@ -622,11 +619,11 @@
                     const data = await response.json();
 
                     if (!response.ok) {
-                        // Agora jogamos o erro exato da Asaas pra tela!
                         throw new Error(data.message || 'Falha ao criar o link de pagamento.');
                     }
                     
                     if (data.checkout_url) {
+                        // Redirecionamento clássico, direto na mesma aba
                         window.location.href = data.checkout_url;
                     } else {
                         throw new Error('URL de pagamento não recebida.');
@@ -635,6 +632,7 @@
                 } catch (error) {
                     console.error('Erro no processo de pagamento:', error);
                     alert('Houve um erro: ' + error.message + '\n\nCertifique-se de que o CPF preenchido é válido.');
+                    
                     btnPagar.disabled = false;
                     btnPagar.innerHTML = originalText;
                 }

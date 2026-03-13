@@ -1,4 +1,4 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final com Validação Asaas)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Final e Segura - Apenas PIX)
 
 const allowedOrigins = [
     'https://www.resolvefacil.online',
@@ -61,10 +61,8 @@ exports.handler = async function(event) {
         const searchResult = await searchCustomer.json();
 
         if (searchResult.data && searchResult.data.length > 0) {
-            // O cliente já comprou na loja antes
             customerId = searchResult.data[0].id;
         } else {
-            // Cliente novo, vamos criar
             const createCustomer = await fetch('https://www.asaas.com/api/v3/customers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'access_token': asaasKey },
@@ -73,7 +71,6 @@ exports.handler = async function(event) {
             const createResult = await createCustomer.json();
             
             if (!createCustomer.ok) {
-                // Pega a mensagem de erro exata da Asaas (ex: "CPF inválido")
                 const errorMessage = createResult.errors && createResult.errors.length > 0 
                     ? createResult.errors[0].description 
                     : 'Erro ao cadastrar cliente na Asaas.';
@@ -83,7 +80,7 @@ exports.handler = async function(event) {
         }
 
         // ========================================================
-        // 2. GERAR A COBRANÇA PIX
+        // 2. GERAR A COBRANÇA (EXCLUSIVO PIX COMO SOLICITADO)
         // ========================================================
         const response = await fetch('https://www.asaas.com/api/v3/payments', {
             method: 'POST',
@@ -92,11 +89,11 @@ exports.handler = async function(event) {
                 'access_token': asaasKey
             },
             body: JSON.stringify({
-                billingType: "PIX",
+                billingType: "PIX", // RETORNADO PARA APENAS PIX
                 value: produto.valor,
                 dueDate: new Date().toISOString().split('T')[0],
                 description: produto.descricao,
-                customer: customerId // Agora passamos o ID correto aprovado pela Asaas
+                customer: customerId 
             })
         });
 
