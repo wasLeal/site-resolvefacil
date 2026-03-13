@@ -1,12 +1,13 @@
-// Arquivo: /netlify/functions/criar-pagamento.js (Versão Múltiplos Produtos)
+// Arquivo: /netlify/functions/criar-pagamento.js (Versão Múltiplos Produtos + Serviços de Pesquisa)
 
 const allowedOrigins = [
     'https://www.resolvefacil.online',
     'https://resolvefacil.online'
 ];
 
-// --- NOSSO CATÁLOGO DE PRODUTOS ---
+// --- NOSSO CATÁLOGO DE PRODUTOS E SERVIÇOS ---
 const catalogoProdutos = {
+    // Produtos Digitais (Geradores)
     'curriculo_pago': {
         descricao: "Acesso ao Gerador de Currículo Profissional",
         valor: 5.99
@@ -15,10 +16,22 @@ const catalogoProdutos = {
         descricao: "Acesso ao Gerador de Contrato de Terreno",
         valor: 16.99
     },
-    // NOVO PRODUTO ADICIONADO ABAIXO
     'contrato_aluguel': {
         descricao: "Acesso ao Gerador de Contrato de Aluguel",
         valor: 16.99
+    },
+    // NOVOS SERVIÇOS DE PESQUISA ADICIONADOS ABAIXO (Preservando os antigos intactos)
+    'pesquisa_completa': {
+        descricao: "Relatório de Localização Completa (Pessoa Física)",
+        valor: 149.00
+    },
+    'pesquisa_situacao': {
+        descricao: "Relatório de Situação Pública (Processos/Dívidas)",
+        valor: 97.00
+    },
+    'pesquisa_empresarial': {
+        descricao: "Relatório de Consulta Empresarial (CNPJ)",
+        valor: 79.00
     }
 };
 
@@ -29,6 +42,7 @@ exports.handler = async function(event) {
         'Access-Control-Allow-Headers': 'Content-Type'
     };
 
+    // CORS - Permite que apenas o seu site oficial faça requisições aqui
     if (allowedOrigins.includes(origin)) {
         headers['Access-Control-Allow-Origin'] = origin;
     }
@@ -41,14 +55,16 @@ exports.handler = async function(event) {
     }
 
     try {
-        const { productId, name, email, cpf } = JSON.parse(event.body);
+        // ATUALIZAÇÃO CIRÚRGICA: Adicionamos o 'targetData' aqui. 
+        // Se a compra for de currículo/contrato, ele será 'undefined' e não atrapalhará em nada.
+        const { productId, name, email, cpf, targetData } = JSON.parse(event.body);
 
-        // Validação dos dados recebidos
+        // Validação dos dados recebidos (exatamente igual ao original)
         if (!productId || !name || !email || !cpf) {
             return { statusCode: 400, headers: headers, body: 'Dados incompletos (ID do produto, nome, e-mail e CPF são obrigatórios).' };
         }
 
-        // Busca o produto no nosso catálogo
+        // Busca o produto/serviço no nosso catálogo
         const produto = catalogoProdutos[productId];
 
         // Se o produto não for encontrado no catálogo, retorna um erro
@@ -85,6 +101,11 @@ exports.handler = async function(event) {
         }
 
         const cobranca = await response.json();
+
+        // ==========================================================
+        // PASSO CIRÚRGICO FUTURO (ETAPA 2 - FIREBASE)
+        // O código do Firebase entrará exatamente aqui na próxima etapa.
+        // ==========================================================
 
         return {
             statusCode: 200,
