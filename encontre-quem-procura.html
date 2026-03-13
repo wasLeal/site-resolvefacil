@@ -287,11 +287,15 @@
             font-weight: bold;
         }
 
-        .optional-label {
-            font-weight: normal;
-            font-size: 0.85em;
-            color: #777;
-            margin-left: 5px;
+        .form-row-aligned {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+        .form-row-aligned .form-group {
+            margin-bottom: 0;
         }
 
         .submit-btn {
@@ -461,14 +465,14 @@
                         <input type="text" id="alvoFiliacao" name="alvoFiliacao_pesquisa" placeholder="Ajuda muito a evitar homônimos" autocomplete="off">
                     </div>
 
-                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
-                        <div>
+                    <div class="form-row-aligned">
+                        <div class="form-group">
                             <label for="alvoUf">Estado (UF): <span class="optional-label">(Opcional)</span></label>
                             <select id="alvoUf">
                                 <option value="">Selecione...</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="alvoCidade">Cidade: <span class="optional-label">(Opcional)</span></label>
                             <select id="alvoCidade" disabled>
                                 <option value="">Selecione o estado primeiro</option>
@@ -615,9 +619,12 @@
                         body: JSON.stringify(payload),
                     });
 
-                    if (!response.ok) throw new Error('Falha ao criar o link de pagamento.');
-                    
                     const data = await response.json();
+
+                    if (!response.ok) {
+                        // Agora jogamos o erro exato da Asaas pra tela!
+                        throw new Error(data.message || 'Falha ao criar o link de pagamento.');
+                    }
                     
                     if (data.checkout_url) {
                         window.location.href = data.checkout_url;
@@ -627,7 +634,7 @@
 
                 } catch (error) {
                     console.error('Erro no processo de pagamento:', error);
-                    alert('Houve um pequeno erro ao gerar seu pagamento. Por favor, verifique seus dados e tente novamente.');
+                    alert('Houve um erro: ' + error.message + '\n\nCertifique-se de que o CPF preenchido é válido.');
                     btnPagar.disabled = false;
                     btnPagar.innerHTML = originalText;
                 }
