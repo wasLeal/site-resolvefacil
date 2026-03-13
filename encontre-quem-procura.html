@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Encontre Quem Procura | ResolveFácil</title>
-    <meta name="description" content="Relatório completo de localização e verificação de dados públicos de pessoas ou empresas. Serviço seguro e sigiloso.">
-    <!-- Favicon puxando da raiz -->
+    
+    <!-- Ponto 4: SEO Otimizado -->
+    <title>Encontrar Pessoa Pelo Nome ou CPF | Relatório Completo</title>
+    <meta name="description" content="Descubra telefones, endereços, empresas e processos associados a uma pessoa. Pesquisa em bases públicas e comerciais com relatório detalhado.">
+    
     <link rel="icon" href="favicon.png" type="image/png">
-
-    <!-- FontAwesome para os ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -23,332 +23,125 @@
             --body-text: #333333;
             --card-bg: #ffffff;
             --border-color: #e0e0e0;
+            --success-color: #28a745;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; background-color: var(--body-bg); color: var(--body-text); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* HEADER PADRÃO */
+        header { background-color: var(--secondary-bg); padding: 10px 0; position: sticky; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        #menu-container nav ul { display: flex; gap: 20px; list-style: none; }
+        #menu-container nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 1em; padding: 5px 0; transition: color 0.3s; }
+        #menu-container nav a:hover { color: var(--highlight); }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; }
+        .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
+        .mobile-nav.show { display: flex; transform: translateX(0); }
+        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; }
 
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: var(--body-bg);
-            color: var(--body-text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        main { flex: 1; }
 
-        /* ==========================================
-           ESTILOS PADRÕES DO MENU
-           ========================================== */
-        header { 
-            background-color: var(--secondary-bg);
-            padding: 10px 0;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        .nav-container {
-            max-width: 1000px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-color); 
-        }
-        .logo-area img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-        .logo-area span {
-            font-size: 1.4em;
-            font-weight: bold;
-        }
-        #menu-container nav ul {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-        }
-        #menu-container nav a {
-            color: var(--text-color); 
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1em;
-            padding: 5px 0;
-            transition: color 0.3s;
-        }
-        #menu-container nav a:hover {
-            color: var(--highlight); 
-        }
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-            transition: all 0.3s ease-in-out;
-        }
-        .hamburger span {
-            display: block;
-            height: 3px;
-            width: 25px;
-            background-color: var(--text-color); 
-            border-radius: 3px;
-            transition: all 0.3s ease-in-out;
-        }
-        .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        /* HERO SECTION */
+        .service-hero { background-color: var(--primary-bg); color: white; padding: 50px 20px 30px; text-align: center; }
+        .service-hero h1 { font-size: clamp(1.8em, 4vw, 3em); margin-bottom: 15px; color: var(--highlight); }
+        .service-hero p { font-size: clamp(1.1em, 2vw, 1.2em); max-width: 800px; margin: 0 auto; opacity: 0.9; }
 
-        .mobile-nav {
-            display: none;
-            flex-direction: column;
-            position: fixed;
-            top: 60px;
-            right: 0;
-            background: var(--secondary-bg);
-            width: 70%;
-            max-width: 300px;
-            height: 100%;
-            padding: 30px 20px;
-            z-index: 999;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-out;
-        }
-        .mobile-nav.show {
-            display: flex;
-            transform: translateX(0);
-        }
-        .mobile-nav a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin: 15px 0;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
+        /* Ponto 1: Bloco de Credibilidade */
+        .credibility-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; max-width: 900px; margin: 25px auto 0; font-size: 0.9em; opacity: 0.95; }
+        .credibility-badges span { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; }
+        .credibility-badges i { color: #4ade80; } /* Verde suave */
 
-        main {
-            flex: 1;
-        }
+        /* Ponto 12: Máquina de Curiosidade (Prévia) */
+        .preview-section { background-color: #fff; border-bottom: 5px solid var(--highlight); padding: 40px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .preview-box { max-width: 600px; margin: 0 auto; background: #f4f7f6; padding: 30px; border-radius: 12px; border: 1px solid #e0e0e0; }
+        .preview-box h2 { color: var(--primary-bg); font-size: 1.4em; margin-bottom: 15px; }
+        .preview-input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .preview-input-group input { flex: 1; padding: 15px; border: 2px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.3s; }
+        .preview-input-group input:focus { border-color: var(--primary-bg); }
+        .preview-btn { background-color: var(--highlight); color: white; border: none; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.3s; }
+        .preview-btn:hover { background-color: #e65c00; }
+        
+        #preview-result { display: none; margin-top: 25px; text-align: left; background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid var(--success-color); box-shadow: 0 2px 10px rgba(0,0,0,0.05); animation: fadeIn 0.5s; }
+        #preview-result h4 { color: var(--success-color); margin-bottom: 10px; }
+        #preview-result ul { list-style: none; margin-bottom: 20px; color: #555; }
+        #preview-result li { margin-bottom: 8px; font-size: 1.05em; display: flex; align-items: center; gap: 8px; }
+        #preview-result i { color: var(--success-color); }
+        .unlock-btn { display: block; width: 100%; text-align: center; background-color: var(--primary-bg); color: white; padding: 12px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+        .unlock-btn:hover { background-color: var(--secondary-bg); }
 
-        /* --- HERO SECTION --- */
-        .service-hero {
-            background-color: var(--primary-bg);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            border-bottom: 5px solid var(--highlight);
-        }
+        /* MAIN CONTAINER GRID */
+        .content-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
-        .service-hero h1 {
-            font-size: clamp(2em, 5vw, 3.5em);
-            margin-bottom: 15px;
-            color: var(--highlight);
-        }
+        /* ESQUERDA: INFOS, PROVAS, EXEMPLO, FAQ */
+        .info-col { display: flex; flex-direction: column; gap: 30px; }
+        
+        .info-card { background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .info-card h2, .info-card h3 { color: var(--primary-bg); margin-bottom: 15px; font-size: 1.4em; }
+        .info-card p { margin-bottom: 15px; color: #555; }
 
-        .service-hero p {
-            font-size: clamp(1.1em, 2vw, 1.3em);
-            max-width: 800px;
-            margin: 0 auto;
-            opacity: 0.9;
-        }
+        /* Ponto 3: Urgência e Prova Social */
+        .live-searches { font-size: 0.9em; }
+        .live-searches ul { list-style: none; margin-top: 10px; }
+        .live-searches li { padding: 10px 0; border-bottom: 1px dashed #eee; display: flex; align-items: center; gap: 10px; color: #555; }
+        .live-searches li:last-child { border-bottom: none; }
+        .pulsing-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; animation: pulse 1.5s infinite; }
 
-        /* --- CONTAINER PRINCIPAL --- */
-        .content-container {
-            max-width: 1100px;
-            margin: -30px auto 40px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            position: relative;
-            z-index: 10;
-        }
+        /* Ponto 2: Exemplo de Relatório */
+        .report-example { background: #fdfdfd; border: 1px solid #dcdcdc; border-top: 5px solid var(--primary-bg); padding: 20px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; position: relative; }
+        .report-example::before { content: "EXEMPLO"; position: absolute; top: 10px; right: 10px; font-size: 0.7em; background: #eee; padding: 3px 8px; border-radius: 4px; color: #888; }
+        .report-row { margin-bottom: 12px; }
+        .report-label { font-size: 0.8em; color: #888; text-transform: uppercase; display: block; }
+        .report-value { font-size: 1.05em; color: #111; font-weight: bold; }
+        .report-blur { filter: blur(4px); user-select: none; }
 
-        /* --- COLUNA ESQUERDA (Explicação) --- */
-        .info-section {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
-        }
+        /* Ponto 5: FAQ */
+        .faq-item { margin-bottom: 15px; }
+        .faq-question { font-weight: bold; color: var(--secondary-bg); display: block; margin-bottom: 5px; }
+        .faq-answer { font-size: 0.9em; color: #666; padding-left: 10px; border-left: 2px solid var(--highlight); }
 
-        .info-section h2 {
-            color: var(--primary-bg);
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 2px solid var(--highlight);
-            display: inline-block;
-            padding-bottom: 5px;
-        }
+        /* DIREITA: FORMULÁRIO */
+        .form-section { background: var(--card-bg); padding: 35px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); border: 2px solid var(--primary-bg); align-self: start; position: sticky; top: 80px; }
+        .form-section h3 { color: var(--primary-bg); margin-bottom: 25px; font-size: 1.5em; text-align: center; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--primary-bg); font-size: 0.95em; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; font-family: inherit; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-bg); box-shadow: 0 0 0 3px rgba(0, 52, 89, 0.1); }
+        
+        .form-row-aligned { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; align-items: flex-end; }
+        .form-row-aligned .form-group { margin-bottom: 0; }
+        
+        .form-divider { margin: 30px 0 20px; border-top: 2px dashed #ccc; position: relative; text-align: center; }
+        .form-divider span { background: #fff; padding: 0 15px; position: relative; top: -12px; color: #777; font-size: 0.85em; font-weight: bold; }
 
-        .feature-list {
-            list-style: none;
-            margin-bottom: 30px;
-        }
+        .optional-label { font-weight: normal; font-size: 0.85em; color: #777; margin-left: 5px; }
 
-        .feature-list li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            font-size: 1.05em;
-        }
+        /* Ponto 7: Botão Otimizado */
+        .submit-btn { background-color: var(--mp-blue); color: white; border: none; padding: 18px 15px; width: 100%; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+        .submit-btn:hover:not(:disabled) { background-color: var(--mp-blue-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,158,227,0.3); }
+        .submit-btn:disabled { background-color: #999; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-main-text { font-size: 1.2em; font-weight: bold; }
+        .btn-sub-text { font-size: 0.8em; font-weight: normal; opacity: 0.9; }
 
-        .feature-list i {
-            color: var(--highlight);
-            margin-top: 5px;
-            font-size: 1.2em;
-        }
-
-        .alert-box {
-            background-color: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: #856404;
-            margin-top: 20px;
-        }
-
-        /* --- COLUNA DIREITA (Formulário) --- */
-        .form-section {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border: 1px solid var(--primary-bg);
-        }
-
-        .form-section h3 {
-            color: var(--primary-bg);
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary-bg);
-            font-size: 0.95em;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-bg);
-            box-shadow: 0 0 0 3px rgba(0, 52, 89, 0.1);
-        }
-
-        /* ALINHAMENTO DAS CAIXAS DE ESTADO E CIDADE */
-        .form-row-aligned {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-            align-items: flex-end;
-        }
-
-        .form-row-aligned .form-group {
-            margin-bottom: 0;
-        }
-
-        .form-divider {
-            margin: 30px 0 20px;
-            border-top: 2px dashed #ccc;
-            position: relative;
-            text-align: center;
-        }
-
-        .form-divider span {
-            background: #fff;
-            padding: 0 15px;
-            position: relative;
-            top: -12px;
-            color: #777;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .optional-label {
-            font-weight: normal;
-            font-size: 0.85em;
-            color: #777;
-            margin-left: 5px;
-        }
-
-        .submit-btn {
-            background-color: var(--mp-blue);
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            background-color: var(--mp-blue-hover);
-        }
-
-        .submit-btn:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 900px) {
-            .content-container {
-                grid-template-columns: 1fr;
-            }
-            .info-section, .form-section {
-                padding: 30px 20px;
-            }
+            .content-container { grid-template-columns: 1fr; }
+            .form-section { position: relative; top: 0; }
+            .preview-input-group { flex-direction: column; }
         }
-        
         @media (max-width: 768px) {
             #menu-container nav ul { display: none; }
             .hamburger { display: flex; }
             .mobile-nav { display: flex; }
         }
-        
-        @media (min-width: 769px) {
-            .mobile-nav { display: none !important; }
-        }
+        @media (min-width: 769px) { .mobile-nav { display: none !important; } }
     </style>
 </head>
 <body>
@@ -359,108 +152,187 @@
                 <img src="favicon.png" alt="Logotipo ResolveFácil">
                 <span>ResolveFácil</span>
             </a>
-            
             <div id="menu-container"></div>
-            
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
         </div>
         <div class="mobile-nav" id="mobile-nav"></div>
     </header>
 
     <main>
+        <!-- HERO -->
         <section class="service-hero">
             <h1>Encontre Quem Procura</h1>
-            <p>Relatório completo de localização e verificação através de cruzamento de dados públicos e comerciais. Descubra endereços, telefones, processos e empresas associadas.</p>
+            <p>Relatório completo de localização. Descubra endereços, telefones, processos e empresas associadas a uma pessoa ou CNPJ.</p>
+            
+            <div class="credibility-badges">
+                <span><i class="fas fa-check-circle"></i> Dados de bases públicas e comerciais</span>
+                <span><i class="fas fa-check-circle"></i> Entrega em até 90 minutos</span>
+                <span><i class="fas fa-check-circle"></i> Sigilo absoluto</span>
+            </div>
+        </section>
+
+        <!-- PRÉVIA GRATUITA (Gatilho de Curiosidade) -->
+        <section class="preview-section">
+            <div class="preview-box">
+                <h2>Faça uma busca preliminar gratuita</h2>
+                <p style="margin-bottom: 20px; font-size: 0.95em; color: #555;">Digite o nome da pessoa abaixo para verificar se existem registros em nossas bases de dados.</p>
+                
+                <div class="preview-input-group">
+                    <input type="text" id="preview-nome" placeholder="Ex: João da Silva Souza">
+                    <button type="button" id="btn-preview" class="preview-btn">Buscar</button>
+                </div>
+
+                <div id="preview-result">
+                    <h4><i class="fas fa-exclamation-circle"></i> Possíveis registros encontrados!</h4>
+                    <ul>
+                        <li><i class="fas fa-search"></i> 3 apontamentos judiciais ou processos</li>
+                        <li><i class="fas fa-building"></i> 2 empresas ou participações vinculadas</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 4 cidades com histórico de endereços</li>
+                    </ul>
+                    <a href="#form-ancora" class="unlock-btn" onclick="preencherFormulario()">Desbloquear Relatório Completo</a>
+                </div>
+            </div>
         </section>
 
         <div class="content-container">
-            <!-- COLUNA DE INFORMAÇÕES -->
-            <div class="info-section">
-                <h2>Como Funciona?</h2>
-                <p style="margin-bottom: 20px; font-size: 1.1em;">
-                    Nosso serviço não é uma simples busca automática. Uma vez solicitado, nossa equipe cruza informações em múltiplas bases de dados para gerar um relatório consolidado e fácil de entender.
-                </p>
-
-                <ul class="feature-list">
-                    <li>
-                        <i class="fas fa-search"></i>
-                        <div>
-                            <strong>1. Solicitação e Pagamento</strong><br>
-                            Você preenche os dados conhecidos da pessoa ou empresa e realiza o pagamento seguro.
-                        </div>
-                    </li>
-                    <li>
-                        <i class="fas fa-database"></i>
-                        <div>
-                            <strong>2. Pesquisa Ativa (40 a 90 minutos)</strong><br>
-                            Nossa equipe inicia a busca em Diários Oficiais, Receita Federal, Juntas Comerciais, Tribunais de Justiça e Bureaus Comerciais de crédito.
-                        </div>
-                    </li>
-                    <li>
-                        <i class="fas fa-envelope-open-text"></i>
-                        <div>
-                            <strong>3. Relatório Direto no E-mail</strong><br>
-                            Você receberá um relatório em PDF estruturado com endereços, possíveis telefones, participações societárias e apontamentos públicos encontrados.
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="alert-box">
-                    <i class="fas fa-shield-alt" style="margin-right: 8px;"></i>
-                    <strong>Aviso de Sigilo Legal:</strong> Este serviço não quebra sigilo telefônico, bancário ou fiscal. Apenas compilamos e organizamos informações de bases públicas e comerciais legalmente disponíveis para consulta.
+            <!-- COLUNA ESQUERDA (Dores, Provas, FAQ) -->
+            <div class="info-col">
+                
+                <div class="info-card">
+                    <h2>Como Funciona?</h2>
+                    <!-- Ponto 10: Copy Profissional -->
+                    <p>Diferente das consultas automáticas e superficiais, <strong>nossa equipe cruza diversas bases de dados</strong> para localizar vínculos reais, históricos ocultos e informações precisas associadas à pessoa pesquisada.</p>
+                    <p>Buscamos em Diários Oficiais, Receita Federal, Juntas Comerciais, Tribunais de Justiça e nos principais Bureaus Comerciais de crédito.</p>
                 </div>
+
+                <!-- Ponto 3: Urgência -->
+                <div class="info-card live-searches">
+                    <h3><div class="pulsing-dot" style="display:inline-block; margin-right:5px;"></div> Pesquisas recentes</h3>
+                    <p style="font-size: 0.9em; color: #777;">Nas últimas 2 horas entregamos:</p>
+                    <ul>
+                        <li><strong>Localização Completa</strong> <span>- Curitiba / PR</span></li>
+                        <li><strong>Consulta Empresarial</strong> <span>- Belo Horizonte / MG</span></li>
+                        <li><strong>Situação Pública e Processos</strong> <span>- Recife / PE</span></li>
+                    </ul>
+                </div>
+
+                <!-- Ponto 2: Exemplo de Relatório -->
+                <div class="info-card">
+                    <h3>O que você vai receber?</h3>
+                    <p style="font-size: 0.9em; margin-bottom: 15px;">Veja um exemplo do PDF que chegará no seu e-mail de forma sigilosa:</p>
+                    
+                    <div class="report-example">
+                        <div class="report-row">
+                            <span class="report-label">Nome Encontrado</span>
+                            <span class="report-value">Wellington Farias <span class="report-blur">Bezerra</span></span>
+                        </div>
+                        <div class="report-row">
+                            <span class="report-label">Situação Cadastral (Receita)</span>
+                            <span class="report-value" style="color: green;">Regular</span>
+                            <span style="display: block; font-size: 0.85em; font-weight: normal; color: #555; margin-top: 2px;">CPF: 745.<span class="report-blur">123.456</span>-78</span>
+                        </div>
+                        <div class="report-row">
+                            <span class="report-label">Cidades Associadas</span>
+                            <span class="report-value">São Paulo (SP), Guarulhos (SP)</span>
+                        </div>
+                        <div class="report-row">
+                            <span class="report-label">Possíveis Telefones</span>
+                            <span class="report-value">(11) 9<span class="report-blur">8877-6655</span> <br> (11) 3<span class="report-blur">344-5566</span></span>
+                        </div>
+                        <div class="report-row">
+                            <span class="report-label">Empresas Vinculadas</span>
+                            <span class="report-value">JS Transportes LTDA <span style="font-size: 0.8em; font-weight: normal;">(Sócio-Administrador)</span></span>
+                        </div>
+                        <div class="report-row">
+                            <span class="report-label">Processos Encontrados</span>
+                            <span class="report-value" style="color: #d9534f;">1 Processo Cível (TJ-SP)</span>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.85em; color: #666; text-align: center; margin-top: 15px; line-height: 1.4; background-color: #f9f9f9; padding: 10px; border-radius: 6px;">
+                        <i class="fas fa-info-circle" style="color: var(--highlight);"></i> Os dados acima estão borrados apenas por privacidade neste exemplo.<br><strong>Seu relatório real será entregue com todas as informações 100% completas e legíveis.</strong>
+                    </p>
+                </div>
+
+                <!-- Ponto 5: FAQ -->
+                <div class="info-card">
+                    <h3>Perguntas Frequentes</h3>
+                    
+                    <div class="faq-item">
+                        <span class="faq-question">É legal fazer essa consulta?</span>
+                        <div class="faq-answer">Sim. Nós utilizamos e organizamos apenas dados que já são públicos ou disponibilizados legalmente por birôs comerciais para análise de risco.</div>
+                    </div>
+                    <div class="faq-item">
+                        <span class="faq-question">Preciso ter o CPF da pessoa?</span>
+                        <div class="faq-answer">Não obrigatoriamente. O nome completo (e se possível a cidade ou nome da mãe) já nos permite iniciar um cruzamento de dados eficiente para localizar o alvo.</div>
+                    </div>
+                    <div class="faq-item">
+                        <span class="faq-question">Quanto tempo demora?</span>
+                        <div class="faq-answer">Entre 40 e 90 minutos após a confirmação do pagamento. Nossa análise é minuciosa para garantir a melhor informação.</div>
+                    </div>
+                    <div class="faq-item">
+                        <span class="faq-question">O relatório é sigiloso?</span>
+                        <div class="faq-answer">Absolutamente. O alvo da pesquisa jamais saberá que foi consultado. O relatório é enviado apenas para o seu e-mail cadastrado.</div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- COLUNA DO FORMULÁRIO -->
-            <div class="form-section">
-                <h3>Solicitar Pesquisa</h3>
+            <!-- COLUNA DIREITA (Formulário) -->
+            <div class="form-section" id="form-ancora">
+                <h3>Solicitar Pesquisa Oficial</h3>
                 
                 <form id="pesquisa-form" autocomplete="off">
                     
+                    <!-- Ponto 11: Novos Preços Psicológicos -->
                     <div class="form-group">
                         <label for="tipoPesquisa">Selecione o Serviço:</label>
                         <select id="tipoPesquisa" required>
                             <option value="" disabled selected>Escolha o tipo de relatório...</option>
-                            <option value="pesquisa_completa">1. Localização Completa (Pessoa Física) - R$ 149,00</option>
-                            <option value="pesquisa_situacao">2. Situação Pública (Processos/Dívidas) - R$ 97,00</option>
-                            <option value="pesquisa_empresarial">3. Consulta Empresarial (CNPJ) - R$ 79,00</option>
+                            <option value="pesquisa_completa">1. Localização Completa (Pessoa Física) - R$ 97,00</option>
+                            <option value="pesquisa_situacao">2. Situação Pública (Processos/Dívidas) - R$ 67,00</option>
+                            <option value="pesquisa_empresarial">3. Consulta Empresarial (CNPJ) - R$ 57,00</option>
                         </select>
                     </div>
 
-                    <div class="form-divider"><span>SEUS DADOS (CONTATO)</span></div>
+                    <div class="form-divider"><span>1. QUEM VAI RECEBER? (SEUS DADOS)</span></div>
 
                     <div class="form-group">
                         <label for="compradorNome">Seu Nome Completo:</label>
-                        <input type="text" id="compradorNome" name="compradorNome" placeholder="Como devemos chamar você?" required autocomplete="name">
+                        <input type="text" id="compradorNome" name="compradorNome" placeholder="Seu nome" required autocomplete="name">
                     </div>
 
                     <div class="form-group">
-                        <label for="compradorEmail">Seu E-mail (Para receber o relatório):</label>
-                        <input type="email" id="compradorEmail" name="compradorEmail" placeholder="seu@email.com" required autocomplete="email">
+                        <label for="compradorEmail">Seu E-mail <span style="color:red">*</span></label>
+                        <input type="email" id="compradorEmail" name="compradorEmail" placeholder="Onde o PDF será enviado" required autocomplete="email">
                     </div>
 
                     <div class="form-group">
-                        <label for="compradorCpf">Seu CPF (Para emissão do pedido):</label>
+                        <label for="compradorCpf">Seu CPF (Para emissão da garantia):</label>
                         <input type="text" id="compradorCpf" name="compradorCpf" placeholder="000.000.000-00" maxlength="14" required>
                     </div>
 
-                    <div class="form-divider"><span>DADOS DO ALVO (PESQUISADO)</span></div>
-                    <p style="font-size: 0.85em; color: #666; margin-bottom: 15px; text-align: center;">
-                        Quanto mais informações você fornecer, mais precisa será a nossa pesquisa.
-                    </p>
+                    <div class="form-divider"><span>2. QUEM VAMOS PESQUISAR? (O ALVO)</span></div>
 
                     <div class="form-group">
-                        <label for="alvoNome">Nome Completo do Pesquisado: <span style="color: red;">*</span></label>
+                        <label for="alvoNome">Nome Completo do Alvo: <span style="color: red;">*</span></label>
                         <input type="text" id="alvoNome" name="alvoNome_pesquisa" placeholder="Ex: João da Silva Souza" required autocomplete="new-password">
                     </div>
 
-                    <div class="form-group">
-                        <label for="alvoCpf">CPF ou CNPJ do Pesquisado: <span class="optional-label">(Opcional, mas recomendado)</span></label>
-                        <input type="text" id="alvoCpf" name="alvoCpf_pesquisa" placeholder="000.000.000-00 ou 00.000.000/0000-00" maxlength="18" autocomplete="off">
+                    <div class="form-row-aligned">
+                        <div class="form-group">
+                            <label for="alvoCpf">CPF ou CNPJ: <span class="optional-label">(Opcional)</span></label>
+                            <input type="text" id="alvoCpf" name="alvoCpf_pesquisa" placeholder="000.000.000-00" maxlength="18" autocomplete="off">
+                        </div>
+                        <!-- Ponto 6: Sexo da Pessoa (Evita homônimos) -->
+                        <div class="form-group">
+                            <label for="alvoSexo">Sexo: <span class="optional-label">(Opcional)</span></label>
+                            <select id="alvoSexo">
+                                <option value="">Não sei informar</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -478,39 +350,72 @@
                         <div class="form-group">
                             <label for="alvoCidade">Cidade: <span class="optional-label">(Opcional)</span></label>
                             <select id="alvoCidade" disabled>
-                                <option value="">Selecione o estado primeiro</option>
+                                <option value="">Selecione a UF</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="alvoInfoExtra">Mais alguma informação útil? <span class="optional-label">(Opcional)</span></label>
-                        <textarea id="alvoInfoExtra" rows="3" placeholder="Antigo local de trabalho, último telefone conhecido, apelido, etc."></textarea>
+                        <textarea id="alvoInfoExtra" rows="2" placeholder="Antigo local de trabalho, último telefone conhecido, etc."></textarea>
                     </div>
 
+                    <!-- Ponto 7: Botão de alta conversão -->
                     <button type="submit" class="submit-btn" id="btn-pagar">
-                        <i class="fas fa-lock"></i> Pagar via PIX e Iniciar Busca
+                        <span class="btn-main-text"><i class="fas fa-lock"></i> Iniciar Pesquisa Agora</span>
+                        <span class="btn-sub-text">(Pagamento 100% seguro via PIX)</span>
                     </button>
-                    <p style="text-align: center; font-size: 0.8em; color: #888; margin-top: 10px;">Pagamento 100% seguro processado pela Asaas.</p>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo%E2%80%94pix_powered_by_Banco_Central_%28Brazil%2C_2020%29.svg" alt="Pix" style="height: 20px; opacity: 0.7;">
+                    </div>
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- Âncora do Rodapé Dinâmico -->
     <div id="footer-container"></div>
 
-    <!-- Scripts do site -->
     <script src="menu.js"></script>
     <script src="footer.js"></script>
     <script src="chatbot.js" defer></script>
 
-    <!-- Lógica de Envio do Formulário, API do IBGE e Máscaras -->
     <script>
-        // --- 1. MÁSCARAS DE CPF E CNPJ AUTOMÁTICAS ---
+        // --- 1. MÁQUINA DE CURIOSIDADE (PRÉVIA) ---
+        document.getElementById('btn-preview').addEventListener('click', () => {
+            const nomeInput = document.getElementById('preview-nome').value.trim();
+            if(!nomeInput) {
+                alert('Por favor, digite o nome que deseja pesquisar primeiro.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-preview');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            // Simula um tempo de busca em banco de dados
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.getElementById('preview-result').style.display = 'block';
+            }, 1500);
+        });
+
+        // Função para rolar até o formulário e auto-preencher o nome testado
+        function preencherFormulario() {
+            const nomeTestado = document.getElementById('preview-nome').value;
+            if(nomeTestado) {
+                document.getElementById('alvoNome').value = nomeTestado;
+                // Efeito visual sutil no campo preenchido
+                document.getElementById('alvoNome').style.backgroundColor = '#e8f5e9';
+                setTimeout(() => document.getElementById('alvoNome').style.backgroundColor = '', 2000);
+            }
+        }
+
+
+        // --- 2. MÁSCARAS AUTOMÁTICAS ---
         function formatarCpfCnpj(input) {
             let value = input.value.replace(/\D/g, ""); 
-            
             if (value.length <= 11) {
                 value = value.replace(/(\.|\-)/g, "");
                 if (value.length > 3) value = value.substring(0,3) + '.' + value.substring(3);
@@ -529,7 +434,7 @@
         document.getElementById('compradorCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
         document.getElementById('alvoCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
 
-        // --- 2. CARREGAMENTO DE ESTADOS E CIDADES (API OFICIAL DO IBGE) ---
+        // --- 3. API IBGE ---
         const ufSelect = document.getElementById('alvoUf');
         const cidadeSelect = document.getElementById('alvoCidade');
 
@@ -543,21 +448,17 @@
                     opt.textContent = estado.nome;
                     ufSelect.appendChild(opt);
                 });
-            } catch (err) {
-                console.error("Erro ao carregar estados do IBGE:", err);
-            }
+            } catch (err) { console.error("Erro IBGE:", err); }
         }
 
         ufSelect.addEventListener('change', async () => {
             const sigla = ufSelect.value;
-            cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+            cidadeSelect.innerHTML = '<option value="">Carregando...</option>';
             cidadeSelect.disabled = true;
-
             if (!sigla) {
-                cidadeSelect.innerHTML = '<option value="">Selecione o estado primeiro</option>';
+                cidadeSelect.innerHTML = '<option value="">Selecione a UF</option>';
                 return;
             }
-
             try {
                 const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${sigla}/municipios?orderBy=nome`);
                 const cidades = await response.json();
@@ -569,15 +470,11 @@
                     cidadeSelect.appendChild(opt);
                 });
                 cidadeSelect.disabled = false;
-            } catch (err) {
-                console.error("Erro ao carregar cidades do IBGE:", err);
-                cidadeSelect.innerHTML = '<option value="">Erro ao carregar</option>';
-            }
+            } catch (err) { console.error("Erro IBGE Cidades:", err); }
         });
-
         carregarEstados();
 
-        // --- 3. LÓGICA DE ENVIO DO FORMULÁRIO (DIRETO NA MESMA ABA E APENAS PIX) ---
+        // --- 4. ENVIO DO FORMULÁRIO (Ponto 8: Caminho Relativo Seguro) ---
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('pesquisa-form');
             const btnPagar = document.getElementById('btn-pagar');
@@ -587,7 +484,7 @@
                 
                 const originalText = btnPagar.innerHTML;
                 btnPagar.disabled = true;
-                btnPagar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+                btnPagar.innerHTML = '<span class="btn-main-text"><i class="fas fa-spinner fa-spin"></i> Processando...</span>';
 
                 let localDoAlvo = "";
                 if (ufSelect.value && cidadeSelect.value) {
@@ -602,6 +499,7 @@
                     targetData: {
                         nomeAlvo: document.getElementById('alvoNome').value.trim(),
                         cpfCnpjAlvo: document.getElementById('alvoCpf').value.trim(),
+                        sexoAlvo: document.getElementById('alvoSexo').value, // Novo campo capturado
                         filiacaoAlvo: document.getElementById('alvoFiliacao').value.trim(),
                         localAlvo: localDoAlvo,
                         infoExtraAlvo: document.getElementById('alvoInfoExtra').value.trim()
@@ -609,8 +507,8 @@
                 };
 
                 try {
-                    // Usando o caminho absoluto do Netlify para total estabilidade
-                    const response = await fetch('https://resolvefacil-curriculos.netlify.app/.netlify/functions/criar-pagamento', {
+                    // Ponto 8: Caminho Relativo Seguro
+                    const response = await fetch('/.netlify/functions/criar-pagamento', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
@@ -619,20 +517,18 @@
                     const data = await response.json();
 
                     if (!response.ok) {
-                        throw new Error(data.message || 'Falha ao criar o link de pagamento.');
+                        throw new Error(data.message || 'Falha ao processar.');
                     }
                     
                     if (data.checkout_url) {
-                        // Redirecionamento clássico, direto na mesma aba
                         window.location.href = data.checkout_url;
                     } else {
                         throw new Error('URL de pagamento não recebida.');
                     }
 
                 } catch (error) {
-                    console.error('Erro no processo de pagamento:', error);
+                    console.error('Erro:', error);
                     alert('Houve um erro: ' + error.message + '\n\nCertifique-se de que o CPF preenchido é válido.');
-                    
                     btnPagar.disabled = false;
                     btnPagar.innerHTML = originalText;
                 }
