@@ -166,14 +166,8 @@
             
             document.getElementById('display-id').innerText = `Pedido: ${pedidoId.toUpperCase()}`;
             
-            let startTime = localStorage.getItem(`inicio_pesquisa_${pedidoId}`);
-            if (!startTime) {
-                startTime = Date.now();
-                localStorage.setItem(`inicio_pesquisa_${pedidoId}`, startTime);
-            } else {
-                startTime = parseInt(startTime);
-            }
-
+            let startTime = Date.now(); // Valor padrão
+            
             function atualizarRastreio() {
                 const tempoAtual = Date.now();
                 const minutosPassados = Math.floor((tempoAtual - startTime) / (1000 * 60));
@@ -216,9 +210,31 @@
                 document.getElementById('progress-bar').style.height = `${porcentagemBarra}%`;
             }
 
-            // Roda imediatamente e depois a cada 1 minuto (60000 ms)
-            atualizarRastreio();
-            setInterval(atualizarRastreio, 60000);
+            // BUSCA A HORA REAL NO SERVIDOR ANTES DE INICIAR (A MÁGICA ACONTECE AQUI)
+            async function iniciarPainel() {
+                if (pedidoId !== 'Não identificado') {
+                    try {
+                        // Pergunta ao Netlify que horas o pedido foi salvo no Firebase
+                        const res = await fetch(`https://resolvefacil-curriculos.netlify.app/.netlify/functions/status-rastreio?id=${pedidoId}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.dataPedido) {
+                                startTime = new Date(data.dataPedido).getTime(); // Sincroniza com o relógio oficial da compra!
+                            }
+                        }
+                    } catch(e) { console.warn("Usando relógio local como fallback."); }
+                } else {
+                    // Fallback para localStorage apenas se a pessoa abrir a tela sem o ID do pagamento
+                    let local = localStorage.getItem(`inicio_pesquisa_${pedidoId}`);
+                    if (local) startTime = parseInt(local);
+                    else localStorage.setItem(`inicio_pesquisa_${pedidoId}`, startTime);
+                }
+
+                atualizarRastreio(); // Roda a primeira vez
+                setInterval(atualizarRastreio, 60000); // Roda a cada minuto
+            }
+
+            iniciarPainel();
         });
     </script>
 </body>

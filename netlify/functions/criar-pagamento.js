@@ -57,8 +57,10 @@ exports.handler = async function(event) {
         // ========================================================
         // 1. BUSCAR OU CRIAR O CLIENTE NA ASAAS (Obrigatório)
         // ========================================================
+        const cpfLimpo = cpf.replace(/\D/g, ''); // Garante que só vão números limpos para a Asaas
+        
         let customerId = '';
-        const searchCustomer = await fetch(`https://www.asaas.com/api/v3/customers?cpfCnpj=${cpf}`, {
+        const searchCustomer = await fetch(`https://www.asaas.com/api/v3/customers?cpfCnpj=${cpfLimpo}`, {
             headers: { 'access_token': asaasKey }
         });
         const searchResult = await searchCustomer.json();
@@ -69,7 +71,7 @@ exports.handler = async function(event) {
             const createCustomer = await fetch('https://www.asaas.com/api/v3/customers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'access_token': asaasKey },
-                body: JSON.stringify({ name, email, cpfCnpj: cpf })
+                body: JSON.stringify({ name, email, cpfCnpj: cpfLimpo })
             });
             const createResult = await createCustomer.json();
             
