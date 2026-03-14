@@ -1,0 +1,88 @@
+Relatório de Estrutura e Lógica
+
+Página: encontre-quem-procura.html
+Projeto: ResolveFácil
+Objetivo da Página: Landing page de alta conversão para venda de dossiês investigativos (Busca de pessoas por Nome/CPF).
+
+1. Arquitetura Visual (HTML/CSS)
+
+A página é construída em um arquivo único (HTML + CSS incorporado + JS incorporado), dependendo apenas de 3 scripts globais externos (menu.js, footer.js, chatbot.js).
+
+Seções Principais:
+
+Hero Section: Promessa principal e badges de credibilidade.
+
+Máquina de Curiosidade (.preview-section): Um simulador de busca preliminar (Isca/Lead Magnet).
+
+Planos (.pricing-section): 3 cards de preços (Busca Contato, Rastreio Avançado, Dossiê Investigativo).
+
+Conteúdo Central (.content-container): Grid dividido em duas colunas (Desktop) ou empilhado (Mobile):
+
+Esquerda: Como funciona, Prova Social Dinâmica (Relógio), Exemplo de Relatório, FAQ.
+
+Direita: Formulário de Checkout (#form-ancora) fixo na rolagem (Sticky).
+
+2. Motor Lógico (JavaScript - Parte 1: Visual e Retenção)
+
+A. Simulador de Busca ("Verificando...")
+
+Gatilho: Clique no botão #btn-preview.
+
+Ação: Mostra uma animação de 3 pontinhos durante exatos 10 segundos (Fator Drama/Espera).
+
+Geração de Dados: Usa a função gerarHashDaString() baseada no nome digitado para gerar dados pseudo-aleatórios consistentes (se o usuário digitar o mesmo nome, verá a mesma quantidade de "endereços" e "processos").
+
+Integração IBGE: Consome a API do IBGE Nomes (https://servicodados.ibge.gov.br/api/v2/censos/nomes/{nome}) para mostrar a frequência do nome no Brasil na div #ibge-curiosity-box.
+
+B. Prova Social e Relógio Inteligente
+
+Função: renderizarPesquisasRecentes() e configurarHorariosLocais().
+
+Lógica de Fuso: Converte o horário UTC da agência (09h às 16h em Brasília) para o horário local do navegador do usuário.
+
+Lógica de Expediente: Verifica se é fim de semana, feriado nacional ou fora do horário comercial (após as 16h ou antes das 09h).
+
+Se Aberto: Mostra bolinha verde pulsante (.status-aberto) e injeta pesquisas recentes aleatórias baseadas em um array fixo.
+
+Se Fechado: Mostra bolinha vermelha estática (.status-fechado), oculta as pesquisas e exibe uma mensagem (#closed-message-box) calculando dinamicamente o próximo dia útil (ex: "nesta segunda-feira", "amanhã").
+
+C. Navegação e Atalhos (O Botão de Dossiê)
+
+Função: selecionarPlano(idPlano)
+
+Rola a página suavemente até o formulário (#form-ancora), muda o valor do <select id="tipoPesquisa"> e pisca a borda de laranja.
+
+Botão "Desbloquear Dossiê Completo": Localizado após a busca preliminar.
+
+Comportamento Atual (Definido nas últimas atualizações): Rola a tela e seleciona o plano de R$ 97,00 (pesquisa_dossie) automaticamente através do evento onclick="selecionarPlano('pesquisa_dossie'); return false;".
+
+Atenção IA: NÃO deve preencher o campo do nome do alvo automaticamente. Esta foi uma decisão de design estrita.
+
+3. Motor Lógico (JavaScript - Parte 2: Validação e Pagamento)
+
+A. Máscaras e Validações
+
+Máscara CPF/CNPJ: Formatação dinâmica 000.000.000-00 ou 00.000.000/0000-00.
+
+Validação Algorítmica de CPF: A função isCpfValido() checa os dígitos verificadores reais do CPF do comprador (#compradorCpf). Impede o envio do formulário se for inválido, exibindo a div #cpf-error.
+
+APIs de Localidade (IBGE): Dois <select> dependentes (#alvoUf e #alvoCidade). O segundo só carrega após a escolha do estado consumindo https://servicodados.ibge.gov.br/api/v1/localidades/estados.
+
+B. Envio de Payload (Integração Backend)
+
+Gatilho: Submit do <form id="pesquisa-form">.
+
+Segurança: Bloqueia o botão e mostra um loading. Valida se o "Nome do Alvo" tem pelo menos duas palavras (nome + sobrenome).
+
+Payload: Monta um JSON capturando UTMs de marketing, dados do comprador e dados do alvo. Envia apenas números no CPF para o Asaas.
+
+Endpoint: Envia um POST para uma Netlify Function: https://resolvefacil-curriculos.netlify.app/.netlify/functions/criar-pagamento.
+
+Redirecionamento: Aguarda o retorno do backend (checkout_url) e redireciona o cliente para o gateway de pagamento. O Frontend NÃO conversa direto com Banco de Dados, toda a lógica de segurança de banco está no Backend.
+
+Histórico Recente de Alterações Críticas (Março/2026)
+
+Tempo de simulação da pesquisa preliminar: Aumentado de 4000ms (4s) para 10000ms (10s) para melhorar a percepção de valor.
+
+Botão de transição ("Desbloquear Dossiê Completo"): A função preencherFormulario() foi removida propositalmente do onclick deste botão. Ele apenas desce a página e seleciona o Dossiê Investigativo, deixando o preenchimento do nome sob total responsabilidade manual do usuário para evitar confusões.
+        <section class="pricing-section">
