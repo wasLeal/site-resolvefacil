@@ -204,6 +204,17 @@
         .pix-logo-svg { height: 24px; width: auto; fill: #32bcad; }
         .pix-seal-text { font-size: 0.95em; font-weight: bold; color: #555; letter-spacing: 0.5px; }
 
+        /* --- ESTILO DE REVELAÇÃO (FADE-IN) --- */
+        .fade-in { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .fade-in.fade-in-active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -239,7 +250,7 @@
     </header>
 
     <main>
-        <section class="service-hero">
+        <section class="service-hero fade-in">
             <h1>Encontre Quem Procura</h1>
             <p>A ponte segura para localizar quem você perdeu contato. Descubra telefones, endereços e o histórico completo de uma pessoa.</p>
             
@@ -252,7 +263,7 @@
         </section>
 
         <!-- PRÉVIA ATUALIZADA -->
-        <section class="preview-section">
+        <section class="preview-section fade-in">
             <div class="preview-box">
                 <h2>Faça uma busca preliminar gratuita</h2>
                 <p style="margin-bottom: 20px; font-size: 0.95em; color: #555;">Digite o nome da pessoa abaixo para verificar se nossos sistemas encontram pistas e registros associados.</p>
@@ -281,7 +292,7 @@
         </section>
 
 
-        <section class="pricing-section">
+        <section class="pricing-section fade-in">
             <h2>Escolha o Nível da Investigação</h2>
             <p class="subtitle">Selecione a profundidade da busca de acordo com a sua necessidade de localizar a pessoa. Da simples retomada de contato até a análise judicial completa.</p>
             
@@ -329,14 +340,14 @@
 
         <div class="content-container">
             <div class="info-col">
-                <div class="info-card">
+                <div class="info-card fade-in">
                     <h2>Como Funciona?</h2>
                     <p class="text-justify-desktop">Diferente das consultas automáticas e superficiais, <strong>nossa equipe cruza diversas bases de dados</strong> para localizar vínculos reais, pistas de paradeiro e informações precisas associadas à pessoa pesquisada.</p>
                     <p class="text-justify-desktop">Buscamos em Diários Oficiais, Receita Federal, Tribunais de Justiça e em sistemas de localização comercial restritos.</p>
                 </div>
 
                 <!-- CARD DE PROVA SOCIAL COM O NOVO RELÓGIO INTELIGENTE -->
-                <div class="info-card live-searches">
+                <div class="info-card live-searches fade-in">
                     <h3>
                         <div id="status-relogio" class="pulsing-dot status-aberto"></div> 
                         <span id="titulo-prova-social">Buscas recentes</span>
@@ -352,7 +363,7 @@
                     <div id="closed-message-box" class="text-justify-desktop"></div>
                 </div>
 
-                <div class="info-card">
+                <div class="info-card fade-in">
                     <h3>O que você vai receber?</h3>
                     <p style="font-size: 0.9em; margin-bottom: 15px;">Veja um exemplo do PDF que chegará no seu e-mail de forma sigilosa (referente ao Dossiê Investigativo):</p>
                     
@@ -411,7 +422,7 @@
                     </p>
                 </div>
 
-                <div class="info-card">
+                <div class="info-card fade-in">
                     <h3>Perguntas Frequentes</h3>
                     <div class="faq-item">
                         <span class="faq-question">É legal fazer essa consulta?</span>
@@ -432,7 +443,7 @@
                 </div>
             </div>
 
-            <div class="form-section" id="form-ancora">
+            <div class="form-section fade-in" id="form-ancora">
                 <h3>Solicitar Investigação</h3>
 
                 <!-- ALERTA DE HORÁRIO COMERCIAL (CAIXA AMARELA) -->
@@ -541,6 +552,20 @@
     <!-- PARTE 1: SCRIPTS VISUAIS (Máquinas, IBGE, 60 Cidades, Relógio, Fuso) -->
     <!-- ========================================================= -->
     <script>
+        // --- LÓGICA DE OBSERVAÇÃO DE ROLAGEM (FADE-IN) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('fade-in-active');
+                    observer.unobserve(entry.target);
+                });
+            }, appearOptions);
+            faders.forEach(fader => appearOnScroll.observe(fader));
+        });
+
         // --- FUNÇÃO INTELIGENTE DE TRADUÇÃO DE FUSO HORÁRIO ---
         // A empresa atua no fuso do Brasil (UTC-3). 
         // 12:00 Universal (UTC) = 09:00 em Brasília.
@@ -733,7 +758,7 @@
                 const cidades = await response.json();
                 cidadeSelect.innerHTML = '<option value="">Selecione a cidade</option>';
                 cidades.forEach(cidade => {
-                    const opt = document.createElement('option'); opt.value = cidade.nome; opt.textContent = cidade.nome; cidadeSelect.appendChild(opt);
+                    const opt = document.createElement('option'); opt.value = city.nome; opt.textContent = cidade.nome; cidadeSelect.appendChild(opt);
                 });
                 cidadeSelect.disabled = false;
             } catch (err) { console.error("Erro IBGE Cidades:", err); }
