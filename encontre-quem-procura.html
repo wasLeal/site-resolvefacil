@@ -41,7 +41,7 @@
         .hamburger span { display: block; height: 3px; width: 25px; background-color: var(--text-color); border-radius: 3px; }
         .mobile-nav { display: none; flex-direction: column; position: fixed; top: 60px; right: 0; background: var(--secondary-bg); width: 70%; max-width: 300px; height: 100%; padding: 30px 20px; z-index: 999; transform: translateX(100%); transition: transform 0.3s ease-out; }
         .mobile-nav.show { display: flex; transform: translateX(0); }
-        .mobile-nav a { color: var(--text-color); text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 1.2em; }
+        .mobile-nav a { color: var(--text-color); text-decoration: margin: 15px 0; font-weight: bold; font-size: 1.2em; }
 
         main { flex: 1; }
 
@@ -69,6 +69,12 @@
         #preview-result ul { list-style: none; margin-bottom: 20px; color: #555; }
         #preview-result li { margin-bottom: 12px; font-size: 1.05em; display: flex; align-items: flex-start; gap: 10px; }
         #preview-result i { color: var(--success-color); margin-top: 4px; }
+        
+        /* CURIOSIDADE IBGE ESTILO */
+        .ibge-curiosity { background-color: #eaf2f8; border-left: 4px solid var(--mp-blue); padding: 15px; margin: 20px 0; border-radius: 6px; font-size: 0.9em; color: #333; display: none; animation: fadeIn 0.8s; }
+        .ibge-curiosity strong.ibge-title { color: var(--primary-bg); display: block; margin-bottom: 5px; font-size: 1.05em; }
+        .ibge-curiosity i { color: var(--mp-blue); margin-right: 5px; }
+
         .unlock-btn { display: block; width: 100%; text-align: center; background-color: var(--primary-bg); color: white; padding: 12px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: 0.3s; }
         .unlock-btn:hover { background-color: var(--secondary-bg); }
 
@@ -195,7 +201,7 @@
             </div>
         </section>
 
-        <!-- PRÉVIA ATUALIZADA -->
+        <!-- PRÉVIA ATUALIZADA COM INTEGRAÇÃO IBGE -->
         <section class="preview-section">
             <div class="preview-box">
                 <h2>Faça uma busca preliminar gratuita</h2>
@@ -212,6 +218,13 @@
                     <ul id="preview-dynamic-list">
                         <!-- Itens gerados via JavaScript -->
                     </ul>
+                    
+                    <!-- QUADRO DE CURIOSIDADE DO IBGE -->
+                    <div id="ibge-curiosity-box" class="ibge-curiosity">
+                        <strong class="ibge-title"><i class="fas fa-lightbulb"></i> Você sabia?</strong>
+                        <p id="ibge-curiosity-text" style="margin-top: 5px; line-height: 1.5;"></p>
+                    </div>
+
                     <a href="#form-ancora" class="unlock-btn" onclick="preencherFormulario()">Desbloquear Dossiê Completo</a>
                 </div>
             </div>
@@ -251,7 +264,6 @@
                 <div class="pricing-card highlight">
                     <h3>Dossiê Investigativo</h3>
                     <div class="price">R$ 97<span>,00</span></div>
-                    <!-- AQUI ESTÁ A CORREÇÃO DE "CAPIVARA" PARA "HISTÓRICO COMPLETO" -->
                     <p class="desc"><strong>O histórico completo.</strong> O "Raio-X" completo da vida da pessoa. A melhor opção para ações judiciais e cobranças.</p>
                     <ul>
                         <li><i class="fas fa-check"></i> <strong>Tudo do Rastreio Avançado</strong></li>
@@ -291,7 +303,7 @@
                         </div>
                         <div class="report-row">
                             <span class="report-label">Nome Encontrado</span>
-                            <span class="report-value">Wellington Farias <span class="report-blur">Bezerra</span></span>
+                            <span class="report-value">Carlos Alberto <span class="report-blur">Ferreira</span></span>
                         </div>
                         <div class="report-row">
                             <span class="report-label">Situação Cadastral (Receita)</span>
@@ -312,7 +324,7 @@
                         </div>
                         <div class="report-row">
                             <span class="report-label">E-mails Cadastrais</span>
-                            <span class="report-value">wellington.f<span class="report-blur">arias</span>@<span class="report-blur">gmail</span>.com</span>
+                            <span class="report-value">carlos.a<span class="report-blur">lberto</span>@<span class="report-blur">outlook</span>.com</span>
                         </div>
                         <div class="report-row">
                             <span class="report-label">Veículos Associados</span>
@@ -320,11 +332,11 @@
                         </div>
                         <div class="report-row">
                             <span class="report-label">Vínculos Familiares</span>
-                            <span class="report-value">Maria das G<span class="report-blur">raças</span> Farias (Mãe)</span>
+                            <span class="report-value">Maria de L<span class="report-blur">ourdes</span> Ferreira (Mãe)</span>
                         </div>
                         <div class="report-row">
                             <span class="report-label">Empresas Vinculadas</span>
-                            <span class="report-value"><span class="report-blur">JS</span> Transportes LTDA <span style="font-size: 0.8em; font-weight: normal;">(Sócio-Administrador)</span></span>
+                            <span class="report-value"><span class="report-blur">CA</span> Representações LTDA <span style="font-size: 0.8em; font-weight: normal;">(Sócio-Administrador)</span></span>
                         </div>
                         <div class="report-row">
                             <span class="report-label">Apontamentos / Processos</span>
@@ -452,8 +464,9 @@
     <script src="footer.js"></script>
     <script src="chatbot.js" defer></script>
 
+    <!-- O CÓDIGO JAVASCRIPT AGORA ESTÁ 100% SEGURO AQUI DENTRO -->
     <script>
-        // --- 1. MÁQUINA DE CURIOSIDADE (HASH DINÂMICO) ---
+        // --- 1. MÁQUINA DE CURIOSIDADE (HASH DINÂMICO E IBGE) ---
         function gerarHashDaString(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -463,6 +476,7 @@
             }
             return Math.abs(hash);
         }
+        
         function numeroAleatorioSeeded(semente) {
             let x = Math.sin(semente) * 10000;
             return x - Math.floor(x);
@@ -477,9 +491,18 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analisando...';
 
+            // Limpa as áreas de resultado para o efeito de "carregando"
+            document.getElementById('preview-result').style.display = 'none';
+            document.getElementById('ibge-curiosity-box').style.display = 'none';
+
+            // Pega só o primeiro nome e limpa caracteres especiais
+            const primeiroNome = nomeInput.split(' ')[0].replace(/[^a-zA-ZÀ-ÿ]/g, '');
+
             setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
+                
+                // Lógica de "achados" baseada no nome (Semente Fixa)
                 let semente = gerarHashDaString(nomeInput.toLowerCase());
                 const qtdEnderecos = Math.floor(numeroAleatorioSeeded(semente++) * 3) + 1;
                 const qtdTelefones = Math.floor(numeroAleatorioSeeded(semente++) * 4) + 1;
@@ -490,15 +513,42 @@
                 listaHTML += `<li><i class="fas fa-map-marker-alt"></i> ${qtdEnderecos} ${qtdEnderecos === 1 ? 'endereço registrado' : 'endereços registrados'} em histórico</li>`;
                 listaHTML += `<li><i class="fas fa-phone-alt"></i> ${qtdTelefones} possível(eis) ${qtdTelefones === 1 ? 'telefone vinculado' : 'telefones vinculados'}</li>`;
                 listaHTML += `<li><i class="fas fa-users"></i> ${qtdParentes} ${qtdParentes === 1 ? 'vínculo familiar detectado' : 'vínculos familiares detectados'} (Parentesco)</li>`;
+                
                 if (chanceProcesso > 0.70) {
                     let qtdProcessos = chanceProcesso > 0.90 ? 2 : 1;
                     listaHTML += `<li><i class="fas fa-balance-scale"></i> ${qtdProcessos} ${qtdProcessos === 1 ? 'apontamento ou processo' : 'apontamentos ou processos'} localizado(s)</li>`;
                 }
+                
                 document.getElementById('preview-dynamic-list').innerHTML = listaHTML;
                 document.getElementById('preview-result').style.display = 'block';
+
+                // Lógica Extra de Charme: API do IBGE
+                if (primeiroNome.length > 1) {
+                    fetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${primeiroNome}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const boxCuriosidade = document.getElementById('ibge-curiosity-box');
+                            const textoCuriosidade = document.getElementById('ibge-curiosity-text');
+                            
+                            if (data && data.length > 0 && data[0].res) {
+                                const totalPessoas = data[0].res.reduce((acc, curr) => acc + curr.frequencia, 0);
+                                const totalFormatado = totalPessoas.toLocaleString('pt-BR');
+                                
+                                textoCuriosidade.innerHTML = `De acordo com o Censo Oficial do IBGE, existem aproximadamente <strong>${totalFormatado} pessoas</strong> registradas com o nome <strong>${primeiroNome.toUpperCase()}</strong> no Brasil. Nossa busca profunda vai isolar os dados exatos da pessoa que você procura!`;
+                                boxCuriosidade.style.display = 'block';
+                            } else {
+                                textoCuriosidade.innerHTML = `O nome <strong>${primeiroNome.toUpperCase()}</strong> é muito exclusivo e não possui registros em massa no último Censo do IBGE. Isso é excelente, pois facilita muito nossa triagem para localizar os rastros exatos da pessoa!`;
+                                boxCuriosidade.style.display = 'block';
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Erro IBGE Nomes:", err);
+                        });
+                }
             }, 1500);
         });
 
+        // --- 2. CONTROLE DA PÁGINA (ROLAGEM E SELEÇÃO) ---
         function preencherFormulario() {
             const nomeTestado = document.getElementById('preview-nome').value;
             if(nomeTestado) {
@@ -518,6 +568,7 @@
             setTimeout(() => { select.style.borderColor = '#ccc'; select.style.boxShadow = 'none'; }, 2000);
         }
 
+        // --- 3. MÁSCARAS DE CPF/CNPJ ---
         function formatarCpfCnpj(input) {
             let value = input.value.replace(/\D/g, ""); 
             if (value.length <= 11) {
@@ -537,8 +588,10 @@
         document.getElementById('compradorCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
         document.getElementById('alvoCpf').addEventListener('input', (e) => formatarCpfCnpj(e.target));
 
+        // --- 4. API IBGE (ESTADOS E CIDADES NO FORMULÁRIO) ---
         const ufSelect = document.getElementById('alvoUf');
         const cidadeSelect = document.getElementById('alvoCidade');
+        
         async function carregarEstados() {
             try {
                 const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
@@ -547,8 +600,9 @@
                     const opt = document.createElement('option');
                     opt.value = estado.sigla; opt.textContent = estado.nome; ufSelect.appendChild(opt);
                 });
-            } catch (err) { console.error("Erro IBGE:", err); }
+            } catch (err) { console.error("Erro IBGE Estados:", err); }
         }
+        
         ufSelect.addEventListener('change', async () => {
             const sigla = ufSelect.value;
             cidadeSelect.innerHTML = '<option value="">Carregando...</option>';
@@ -566,9 +620,11 @@
         });
         carregarEstados();
 
+        // --- 5. ENVIO DO PAGAMENTO (MOTOR NETLIFY) ---
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('pesquisa-form');
             const btnPagar = document.getElementById('btn-pagar');
+            
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 const originalText = btnPagar.innerHTML;
@@ -611,7 +667,7 @@
             });
         });
 
-        // --- 5. PROVA SOCIAL DINÂMICA (60 CIDADES - FOCO NORTE) ---
+        // --- 6. PROVA SOCIAL DINÂMICA (60 CIDADES) ---
         const basePesquisas = [
             { servico: "Busca de Contato", local: "Manaus / AM" },
             { servico: "Dossiê Investigativo", local: "Belém / PA" },
@@ -679,7 +735,6 @@
             const dataAtual = new Date();
             let semente = dataAtual.getFullYear() * 10000 + (dataAtual.getMonth() + 1) * 100 + dataAtual.getDate();
             
-            // LÓGICA DO TEMPO ALEATÓRIO (2, 3 ou 4 horas baseado na semente)
             const horasOpcoes = [2, 3, 4];
             const horaSorteada = horasOpcoes[semente % 3];
             const hoursTextElement = document.getElementById('recent-hours-text');
