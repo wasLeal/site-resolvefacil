@@ -1,4 +1,4 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO COM BREVO CLONADA DO ORIGINAL)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO COM DIAGNÓSTICO PROFUNDO DA BREVO)
 
 const admin = require('firebase-admin');
 
@@ -14,7 +14,6 @@ if (!admin.apps.length && process.env.FIREBASE_SERVICE_ACCOUNT) {
     }
 }
 
-// --- PRODUTOS QUE ENTREGAM LINK NA HORA ---
 const catalogoEntrega = {
     "Acesso ao Gerador de Currículo Profissional": {
         link: "https://resolvefacil-curriculos.netlify.app/curriculo-pago.html",
@@ -30,7 +29,6 @@ const catalogoEntrega = {
     }
 };
 
-// --- NOVOS SERVIÇOS DE PESQUISA (FLUXO DE INVESTIGAÇÃO) ---
 const catalogoPesquisas = {
     "Dossiê Investigativo Completo": true,
     "Rastreio Avançado": true,
@@ -39,17 +37,22 @@ const catalogoPesquisas = {
 
 exports.handler = async function(event, context) {
     
-    // PORTA SECRETA 1: TESTE DIRETO DA BREVO
+    // PORTA SECRETA 1: TESTE DIRETO DA BREVO COM RELATÓRIO DE ERRO NA TELA
     if (event.queryStringParameters && event.queryStringParameters.teste === 'brevo') {
-        const ok = await enviarEmail("resolvefacil70@gmail.com", "Admin", "🚨 TESTE DE VIDA: Brevo Operante!", "<h2 style='color:green;'>Sucesso!</h2><p>O Netlify e a Brevo estão a comunicar perfeitamente.</p>");
-        return { statusCode: 200, body: ok ? "TESTE BREVO: SUCESSO! Vá olhar o seu e-mail agora." : "TESTE BREVO: FALHA. O erro está na API da Brevo." };
+        const resultado = await enviarEmail("resolvefacil70@gmail.com", "Admin", "🚨 TESTE DE VIDA: Brevo Operante!", "<h2 style='color:green;'>Sucesso!</h2><p>O Netlify e a Brevo estão a comunicar perfeitamente.</p>");
+        
+        if (resultado.sucesso) {
+            return { statusCode: 200, body: "TESTE BREVO: SUCESSO! Vá olhar o seu e-mail agora." };
+        } else {
+            // AQUI ESTÁ A MÁGICA: Ele vai imprimir o erro da Brevo direto na sua tela!
+            return { statusCode: 200, body: `TESTE BREVO: FALHA.\n\nMotivo exato retornado pela Brevo:\n${resultado.erro}` };
+        }
     }
 
     try {
         // PORTA SECRETA 2: TESTE TOTAL SEM PAGAR
-        let statusBusca = "RECEIVED"; // Padrão
+        let statusBusca = "RECEIVED"; 
         
-        // Se colocar ?teste=pendente no link, ele lê os boletos não pagos!
         if (event.queryStringParameters && event.queryStringParameters.teste === 'pendente') {
             statusBusca = "PENDING"; 
         }
@@ -72,7 +75,6 @@ exports.handler = async function(event, context) {
         let processados = 0;
 
         for (const pagamento of pendentes) {
-            // Em modo teste, processa só 1 para não enviar para clientes antigos
             if (statusBusca === "PENDING" && processados >= 1) break;
 
             const customerResp = await fetch(`https://www.asaas.com/api/v3/customers/${pagamento.customer}`, {
@@ -80,23 +82,19 @@ exports.handler = async function(event, context) {
             });
             const cliente = await customerResp.json();
 
-            // -------------------------------------------------------------------------
             // ROTA A: PRODUTOS DIGITAIS
-            // -------------------------------------------------------------------------
             const prodDigital = catalogoEntrega[pagamento.description];
             if (prodDigital) {
                 const html = `
                     <p>Olá ${cliente.name}, seu acesso foi libertado!</p>
                     <p><a href="${prodDigital.link}" style="background:#007bff; color:#fff; padding:10px 20px; text-decoration:none; border-radius:5px;">Acessar Agora</a></p>
                 `;
-                const ok = await enviarEmail(cliente.email, cliente.name, prodDigital.assunto, html);
-                if (ok) await marcarEnviado(pagamento.id);
+                const resultado = await enviarEmail(cliente.email, cliente.name, prodDigital.assunto, html);
+                if (resultado.sucesso) await marcarEnviado(pagamento.id);
                 processados++;
             }
 
-            // -------------------------------------------------------------------------
             // ROTA B: SERVIÇOS DE PESQUISA
-            // -------------------------------------------------------------------------
             else if (catalogoPesquisas[pagamento.description]) {
                 let dadosAlvo = "Dados não encontrados no Firebase.";
                 
@@ -132,8 +130,8 @@ exports.handler = async function(event, context) {
                     <p><a href="${linkRastreio}" style="background:#009EE3; color:#fff; padding:15px 25px; text-decoration:none; border-radius:5px; font-weight:bold;">Ver Status da Pesquisa</a></p>
                 `;
 
-                const ok = await enviarEmail(cliente.email, cliente.name, "Sua pesquisa está em andamento!", htmlCliente);
-                if (ok) await marcarEnviado(pagamento.id);
+                const resultado = await enviarEmail(cliente.email, cliente.name, "Sua pesquisa está em andamento!", htmlCliente);
+                if (resultado.sucesso) await marcarEnviado(pagamento.id);
                 processados++;
             }
         }
@@ -147,7 +145,7 @@ exports.handler = async function(event, context) {
 };
 
 // ============================================================================
-// FUNÇÃO DE E-MAIL (COPIADA EXATAMENTE DO SEU ARQUIVO enviar-curriculo.js)
+// FUNÇÃO DE E-MAIL (AGORA RETORNA O ERRO EXATO DA BREVO)
 // ============================================================================
 async function enviarEmail(para, nome, assunto, html) {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -169,10 +167,11 @@ async function enviarEmail(para, nome, assunto, html) {
     });
     
     if (!response.ok) {
-        console.error(`Erro Brevo para ${para}:`, await response.text());
-        return false;
+        const erroTexto = await response.text();
+        console.error(`Erro Brevo para ${para}:`, erroTexto);
+        return { sucesso: false, erro: erroTexto }; // DEVOLVE O ERRO PARA IMPRIMIR NA TELA
     }
-    return true;
+    return { sucesso: true };
 }
 
 async function marcarEnviado(id) {
