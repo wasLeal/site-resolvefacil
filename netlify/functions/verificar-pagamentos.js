@@ -76,8 +76,8 @@ const catalogoPesquisas = {
 exports.handler = async function(event, context) {
     console.log("--- GUARDIÃO ASAAS INICIADO (PRODUÇÃO) ---");
     try {
-        const dezMinutosAtras = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${dezMinutosAtras}`;
+        const hoje = new Date().toISOString().split('T')[0];
+        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&paymentDate[ge]=${hoje}`;
         
         const searchResponse = await fetch(asaasUrl, {
             headers: { 'access_token': process.env.ASAAS_API_KEY }
@@ -100,7 +100,6 @@ exports.handler = async function(event, context) {
             const customerId = pagamento.customer;
             const productDescription = pagamento.description;
 
-            // Busca os dados do cliente na Asaas
             const customerResponse = await fetch(`https://www.asaas.com/api/v3/customers/${customerId}`, {
                 headers: { 'access_token': process.env.ASAAS_API_KEY }
             });
@@ -131,14 +130,17 @@ exports.handler = async function(event, context) {
                     method: 'POST',
                     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" },
+                        sender: { name: "ResolveFácil", email: "resolvefacil70@gmail.com" }, // O E-MAIL CORRETO E AUTORIZADO
                         to: [{ email: customerEmail }],
                         subject: produtoDigital.assunto,
                         htmlContent: produtoDigital.htmlContent(produtoDigital.link)
                     })
                 });
 
-                if (!brevoResponse.ok) { console.error(`Erro Brevo:`, await brevoResponse.text()); continue; }
+                if (!brevoResponse.ok) { 
+                    console.error(`Erro Brevo (Produto):`, await brevoResponse.text()); 
+                    continue; // Se der erro na Brevo, NÃO marca como concluído!
+                }
             } 
             
             // =========================================================================
@@ -147,9 +149,7 @@ exports.handler = async function(event, context) {
             else if (catalogoPesquisas[productDescription]) {
                 console.log(`PAG-${paymentId}: Processando nova PESQUISA para ${customerEmail}`);
 
-                // 1. Puxar os dados do alvo salvos no Firebase
                 let dadosAlvo = "Dados não encontrados no Firebase.";
-                let uidPesquisa = paymentId;
                 
                 if (admin.apps.length) {
                     try {
@@ -167,8 +167,6 @@ exports.handler = async function(event, context) {
                                 <b>Local:</b> ${data.localAlvo || 'Não informado'}<br>
                                 <b>Infos Extras:</b> ${data.infoExtraAlvo || 'Nenhuma'}
                             `;
-                            
-                            // Atualiza o status no Firebase para a tela de rastreio saber que começou
                             await docRef.update({ status: 'em_andamento', horaInicio: admin.firestore.FieldValue.serverTimestamp() });
                         }
                     } catch (err) {
@@ -176,7 +174,6 @@ exports.handler = async function(event, context) {
                     }
                 }
 
-                // 2. Enviar E-mail para VOCÊ (O Administrador)
                 const emailAdminHtml = `
                     <div style="font-family: Arial; padding: 20px; border: 2px solid #ff6600; border-radius: 10px;">
                         <h2 style="color: #ff6600;">🚨 NOVO SERVIÇO PAGO: ${productDescription}</h2>
@@ -190,18 +187,21 @@ exports.handler = async function(event, context) {
                     </div>
                 `;
 
-                await fetch('https://api.brevo.com/v3/smtp/email', {
+                // Disparo para o Admin (Você)
+                const adminEmailReq = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sender: { name: "Sistema ResolveFácil", email: "contato@resolvefacil.online" },
+                        sender: { name: "Sistema ResolveFácil", email: "resolvefacil70@gmail.com" }, // O E-MAIL CORRETO E AUTORIZADO
                         to: [{ email: "resolvefacil70@gmail.com", name: "Administrador" }],
                         subject: `🚨 URGENTE: Nova Pesquisa Paga (${productDescription})`,
                         htmlContent: emailAdminHtml
                     })
                 });
 
-                // 3. Enviar E-mail de RASTREIO para o CLIENTE (URL CORRIGIDA AQUI)
+                if(!adminEmailReq.ok) console.error("Erro ao notificar Admin:", await adminEmailReq.text());
+
+                // Disparo para o Cliente
                 const linkRastreio = `https://resolvefacil-curriculos.netlify.app/rastreio.html?id=${paymentId}`;
                 const emailClienteHtml = `
                     <div style="font-family: Arial; line-height: 1.6; color: #333;">
@@ -218,23 +218,29 @@ exports.handler = async function(event, context) {
                     </div>
                 `;
 
-                await fetch('https://api.brevo.com/v3/smtp/email', {
+                const clienteEmailReq = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sender: { name: "ResolveFácil", email: "contato@resolvefacil.online" },
+                        sender: { name: "ResolveFácil", email: "resolvefacil70@gmail.com" }, // O E-MAIL CORRETO E AUTORIZADO
                         to: [{ email: customerEmail, name: customerName }],
                         subject: "Pagamento Aprovado! Acompanhe sua pesquisa.",
                         htmlContent: emailClienteHtml
                     })
                 });
+
+                if (!clienteEmailReq.ok) {
+                    console.error("Erro Crítico Brevo (Cliente):", await clienteEmailReq.text());
+                    continue; // PULA SE DER ERRO! Não avisa a Asaas que foi concluído se o e-mail não chegou.
+                }
+
             } else {
                 console.warn(`PAG-${paymentId}: Produto "${productDescription}" desconhecido. Pulando.`);
                 continue;
             }
 
             // =========================================================================
-            // MARCA COMO CONCLUÍDO NA ASAAS (Para não repetir)
+            // MARCA COMO CONCLUÍDO NA ASAAS APENAS SE TUDO DEU CERTO
             // =========================================================================
             const updateResponse = await fetch(`https://www.asaas.com/api/v3/payments/${paymentId}`, {
                 method: 'POST',
