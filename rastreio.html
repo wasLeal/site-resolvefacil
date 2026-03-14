@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acompanhar Pesquisa | ResolveFácil</title>
+    <!-- Ícone absoluto puxando da casa principal -->
+    <link rel="icon" href="https://www.resolvefacil.online/favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-bg: #003459;
+            --secondary-bg: #3e5a6a;
+            --text-color: #f2f2ed;
+            --highlight: #ff6600;
+            --mp-blue: #009EE3;
+            --success: #28a745;
+            --pending: #e0e0e0;
+            --body-bg: #f4f7f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: var(--body-bg); color: #333; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background-color: var(--secondary-bg); padding: 15px 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo-area { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
+        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
+        .logo-area span { font-size: 1.4em; font-weight: bold; }
+
+        main { flex: 1; padding: 40px 20px; display: flex; justify-content: center; }
+
+        .tracker-card { background: #fff; max-width: 700px; width: 100%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); padding: 40px; }
+        
+        .tracker-header { text-align: center; margin-bottom: 40px; border-bottom: 2px dashed #eee; padding-bottom: 20px; }
+        .tracker-header h1 { color: var(--primary-bg); font-size: 1.8em; margin-bottom: 10px; }
+        .tracker-header p { color: #666; font-size: 1em; }
+        .order-badge { display: inline-block; background: #eaf2f8; color: var(--primary-bg); padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; font-family: monospace; border: 1px solid #cce0f0; }
+
+        /* LINHA DO TEMPO VERTICAL */
+        .timeline { position: relative; margin-left: 20px; padding-bottom: 20px; }
+        .timeline::before { content: ''; position: absolute; top: 0; left: 18px; height: 100%; width: 4px; background: var(--pending); border-radius: 2px; }
+
+        .step { position: relative; margin-bottom: 35px; padding-left: 60px; opacity: 0.5; transition: all 0.5s ease; }
+        .step:last-child { margin-bottom: 0; }
+        
+        .step-icon { position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--pending); border: 4px solid #fff; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.2em; z-index: 2; transition: all 0.5s ease; }
+        
+        .step-content h3 { font-size: 1.15em; color: #444; margin-bottom: 5px; transition: color 0.3s; }
+        .step-content p { font-size: 0.9em; color: #777; line-height: 1.5; display: none; }
+        .step-time { font-size: 0.8em; font-weight: bold; color: var(--highlight); margin-top: 5px; display: none; }
+
+        /* ESTADOS DA LINHA DO TEMPO */
+        .step.completed { opacity: 1; }
+        .step.completed .step-icon { background: var(--success); }
+        .step.completed .step-content h3 { color: var(--success); }
+        .step.completed .step-content p { display: block; color: #555; }
+        
+        .step.active { opacity: 1; }
+        .step.active .step-icon { background: var(--mp-blue); animation: pulse-blue 2s infinite; }
+        .step.active .step-content h3 { color: var(--mp-blue); font-weight: bold; }
+        .step.active .step-content p, .step.active .step-time { display: block; }
+        
+        /* Preenche a barra vertical dinamicamente */
+        .timeline-progress { position: absolute; top: 0; left: 18px; width: 4px; background: var(--success); border-radius: 2px; z-index: 1; transition: height 1s ease; }
+
+        .progress-info { text-align: center; margin-top: 30px; padding: 15px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; color: #b27b00; font-weight: bold; font-size: 0.95em; }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(0, 158, 227, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 158, 227, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 158, 227, 0); }
+        }
+
+        @media (max-width: 600px) {
+            .tracker-card { padding: 25px 15px; }
+            .timeline { margin-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Link de volta para a casa oficial -->
+        <a href="https://www.resolvefacil.online/" class="logo-area">
+            <img src="https://www.resolvefacil.online/favicon.png" alt="Logotipo ResolveFácil">
+            <span>ResolveFácil</span>
+        </a>
+    </header>
+
+    <main>
+        <div class="tracker-card">
+            <div class="tracker-header">
+                <h1>Painel de Investigação</h1>
+                <p>Acompanhe o status do seu relatório em tempo real.</p>
+                <div class="order-badge" id="display-id">Pedido: Carregando...</div>
+            </div>
+
+            <div class="timeline" id="timeline">
+                <div class="timeline-progress" id="progress-bar" style="height: 0%;"></div>
+
+                <div class="step" id="fase-1">
+                    <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="step-content">
+                        <h3>1. Análise inicial da solicitação</h3>
+                        <p>Pedido recebido e validado. Estamos iniciando a varredura nas bases públicas disponíveis.</p>
+                        <div class="step-time"><i class="fas fa-spinner fa-spin"></i> Tempo estimado da fase: 25 min</div>
+                    </div>
+                </div>
+
+                <div class="step" id="fase-2">
+                    <div class="step-icon"><i class="fas fa-database"></i></div>
+                    <div class="step-content">
+                        <h3>2. Verificação de registros cadastrais</h3>
+                        <p>Cruzando o nome com bases comerciais restritas (Serasa, Boa Vista) e histórico de endereços.</p>
+                        <div class="step-time"><i class="fas fa-spinner fa-spin"></i> Tempo estimado da fase: 30 min</div>
+                    </div>
+                </div>
+
+                <div class="step" id="fase-3">
+                    <div class="step-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="step-content">
+                        <h3>3. Análise de vínculos e processos</h3>
+                        <p>Consultando participações societárias (CNPJs) e registros em Tribunais de Justiça em todo o Brasil.</p>
+                        <div class="step-time"><i class="fas fa-spinner fa-spin"></i> Tempo estimado da fase: 20 min</div>
+                    </div>
+                </div>
+
+                <div class="step" id="fase-4">
+                    <div class="step-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="step-content">
+                        <h3>4. Consolidando informações</h3>
+                        <p>Nossos agentes estão estruturando e validando todos os dados coletados para eliminar homônimos (pessoas com o mesmo nome).</p>
+                        <div class="step-time"><i class="fas fa-spinner fa-spin"></i> Tempo estimado da fase: 15 min</div>
+                    </div>
+                </div>
+
+                <div class="step" id="fase-5">
+                    <div class="step-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="step-content">
+                        <h3>5. Gerando Dossiê Final</h3>
+                        <p>O seu relatório está sendo gerado de forma sigilosa. Ele será enviado para o seu e-mail a qualquer momento.</p>
+                        <div class="step-time"><i class="fas fa-spinner fa-spin"></i> Finalizando documento...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-info" id="tempo-decorrido">
+                <i class="fas fa-clock"></i> Tempo de investigação: Calculando...
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="footer.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pega o ID do pedido na URL (?id=pag_12345)
+            const urlParams = new URLSearchParams(window.location.search);
+            const pedidoId = urlParams.get('id') || 'Não identificado';
+            
+            document.getElementById('display-id').innerText = `Pedido: ${pedidoId.toUpperCase()}`;
+            
+            let startTime = localStorage.getItem(`inicio_pesquisa_${pedidoId}`);
+            if (!startTime) {
+                startTime = Date.now();
+                localStorage.setItem(`inicio_pesquisa_${pedidoId}`, startTime);
+            } else {
+                startTime = parseInt(startTime);
+            }
+
+            function atualizarRastreio() {
+                const tempoAtual = Date.now();
+                const minutosPassados = Math.floor((tempoAtual - startTime) / (1000 * 60));
+                
+                document.getElementById('tempo-decorrido').innerHTML = `<i class="fas fa-clock"></i> Tempo de investigação decorrido: ${minutosPassados} minuto(s)`;
+
+                // Define as fases baseado nos minutos passados
+                let faseAtual = 1;
+                let porcentagemBarra = 0;
+
+                if (minutosPassados >= 90) { faseAtual = 6; porcentagemBarra = 100; } // Concluído
+                else if (minutosPassados >= 75) { faseAtual = 5; porcentagemBarra = 85; }
+                else if (minutosPassados >= 55) { faseAtual = 4; porcentagemBarra = 65; }
+                else if (minutosPassados >= 25) { faseAtual = 3; porcentagemBarra = 40; }
+                else if (minutosPassados >= 5)  { faseAtual = 2; porcentagemBarra = 15; }
+                else { faseAtual = 1; porcentagemBarra = 0; }
+
+                // Atualiza o visual das fases
+                for (let i = 1; i <= 5; i++) {
+                    const stepEl = document.getElementById(`fase-${i}`);
+                    stepEl.classList.remove('completed', 'active');
+                    
+                    if (i < faseAtual) {
+                        stepEl.classList.add('completed');
+                        stepEl.querySelector('.step-icon').innerHTML = '<i class="fas fa-check"></i>';
+                    } else if (i === faseAtual) {
+                        stepEl.classList.add('active');
+                    }
+                }
+
+                // Se passou de 90 minutos
+                if (faseAtual === 6) {
+                    document.getElementById('tempo-decorrido').innerHTML = `<i class="fas fa-check-circle" style="color:var(--success);"></i> Pesquisa concluída! Verifique sua caixa de entrada e pasta de Spam.`;
+                    document.getElementById('tempo-decorrido').style.backgroundColor = '#e8f5e9';
+                    document.getElementById('tempo-decorrido').style.borderColor = '#c8e6c9';
+                    document.getElementById('tempo-decorrido').style.color = '#2e7d32';
+                }
+
+                // Atualiza a altura da linha verde
+                document.getElementById('progress-bar').style.height = `${porcentagemBarra}%`;
+            }
+
+            // Roda imediatamente e depois a cada 1 minuto (60000 ms)
+            atualizarRastreio();
+            setInterval(atualizarRastreio, 60000);
+        });
+    </script>
+</body>
+</html>
