@@ -20,13 +20,16 @@ if (!admin.apps.length && process.env.FIREBASE_SERVICE_ACCOUNT) {
     }
 }
 
+// CATÁLOGO DE PRODUTOS ATUALIZADO
 const catalogoProdutos = {
     'curriculo_pago': { descricao: "Acesso ao Gerador de Currículo Profissional", valor: 5.99 },
     'contrato_terreno': { descricao: "Acesso ao Gerador de Contrato de Terreno", valor: 16.99 },
     'contrato_aluguel': { descricao: "Acesso ao Gerador de Contrato de Aluguel", valor: 16.99 },
-    'pesquisa_completa': { descricao: "Relatório de Localização Completa (Pessoa Física)", valor: 149.00 },
-    'pesquisa_situacao': { descricao: "Relatório de Situação Pública (Processos/Dívidas)", valor: 97.00 },
-    'pesquisa_empresarial': { descricao: "Relatório de Consulta Empresarial (CNPJ)", valor: 79.00 }
+    
+    // --- NOVOS PLANOS DE PESQUISA (RESOLVEFÁCIL) ---
+    'pesquisa_dossie': { descricao: "Dossiê Investigativo Completo", valor: 97.00 },
+    'pesquisa_avancada': { descricao: "Rastreio Avançado", valor: 67.00 },
+    'pesquisa_contato': { descricao: "Busca de Contato", valor: 57.00 }
 };
 
 exports.handler = async function(event) {
@@ -109,6 +112,7 @@ exports.handler = async function(event) {
         // ========================================================
         // 3. SALVAR A FICHA DE PESQUISA NO FIREBASE
         // ========================================================
+        // Como mantivemos o prefixo "pesquisa_", ele continuará salvando os alvos automaticamente
         if (productId.startsWith('pesquisa_') && targetData && admin.apps.length) {
             try {
                 const db = admin.firestore();
