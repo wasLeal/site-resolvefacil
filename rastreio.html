@@ -28,7 +28,7 @@
         .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
         .logo-area span { font-size: 1.4em; font-weight: bold; }
 
-        main { flex: 1; padding: 40px 20px; display: flex; justify-content: center; }
+        main { flex: 1; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; }
 
         .tracker-card { background: #fff; max-width: 700px; width: 100%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); padding: 40px; }
         
@@ -65,6 +65,9 @@
         .timeline-progress { position: absolute; top: 0; left: 18px; width: 4px; background: var(--success); border-radius: 2px; z-index: 1; transition: height 1s ease; }
 
         .progress-info { text-align: center; margin-top: 30px; padding: 15px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; color: #b27b00; font-weight: bold; font-size: 0.95em; }
+
+        /* MINI RODAPÉ FECHADO (SEM LINKS) */
+        .minimal-footer { text-align: center; padding: 20px; margin-top: auto; font-size: 0.85em; color: #888; background-color: transparent; }
 
         @keyframes pulse-blue {
             0% { box-shadow: 0 0 0 0 rgba(0, 158, 227, 0.4); }
@@ -151,8 +154,10 @@
         </div>
     </main>
 
-    <div id="footer-container"></div>
-    <script src="footer.js"></script>
+    <!-- RODAPÉ MINIMALISTA NATIVO (SEM LINKS EXTERNOS) -->
+    <footer class="minimal-footer">
+        <p>&copy; <script>document.write(new Date().getFullYear())</script> ResolveFácil • Painel de Acompanhamento Privado.</p>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
