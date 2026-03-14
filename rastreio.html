@@ -24,9 +24,9 @@
         body { font-family: Arial, sans-serif; background-color: var(--body-bg); color: #333; min-height: 100vh; display: flex; flex-direction: column; }
         
         header { background-color: var(--secondary-bg); padding: 15px 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo-area { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-color); }
-        .logo-area img { width: 40px; height: 40px; border-radius: 50%; }
-        .logo-area span { font-size: 1.4em; font-weight: bold; }
+        .logo-area { display: inline-flex; align-items: center; gap: 12px; color: var(--text-color); }
+        .logo-area img { width: 55px; height: 55px; border-radius: 50%; }
+        .logo-area span { font-size: 1.5em; font-weight: bold; letter-spacing: 0.5px; }
 
         main { flex: 1; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; }
 
@@ -84,11 +84,10 @@
 <body>
 
     <header>
-        <!-- Link de volta para a casa oficial -->
-        <a href="https://www.resolvefacil.online/" class="logo-area">
+        <div class="logo-area">
             <img src="https://www.resolvefacil.online/favicon.png" alt="Logotipo ResolveFácil">
             <span>ResolveFácil</span>
-        </a>
+        </div>
     </header>
 
     <main>
