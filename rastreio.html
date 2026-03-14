@@ -265,7 +265,7 @@
                     <div class="phase-title">
                         Emissão do Relatório Final <i class="fas fa-check-circle" style="display:none; color:var(--success-color);" id="check-final"></i>
                     </div>
-                    <div class="phase-desc" id="desc-final">Quase pronto! O PDF está sendo gerado e será enviado para o seu e-mail de cadastro.</div>
+                    <div class="phase-desc" id="desc-final">Aguardando a conclusão das etapas anteriores para gerar o PDF.</div>
                     <span class="phase-time" id="time-5">Aguardando...</span>
                 </div>
             </div>
@@ -327,7 +327,11 @@
                     // Fase Final (Mais de 90 minutos)
                     for(let i=1; i<=4; i++) document.getElementById(`phase-${i}`).classList.add('completed');
                     document.getElementById('phase-5').classList.add('active');
-                    document.getElementById('time-5').innerText = 'Concluindo... verifique seu e-mail.';
+                    
+                    // Altera o texto dinamicamente apenas quando atinge os 90 minutos
+                    document.getElementById('desc-final').innerHTML = '<strong>Busca finalizada com sucesso!</strong> O PDF está sendo despachado.';
+                    document.getElementById('time-5').innerText = 'Concluído... Enviaremos seus dados por e-mail, em até 10 minutos.';
+                    
                     porcentagemBarra = 100;
                     document.getElementById('check-final').style.display = 'inline-block';
                 }
