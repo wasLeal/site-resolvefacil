@@ -1,4 +1,4 @@
-// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO COM DIAGNÓSTICO PROFUNDO DA BREVO)
+// Arquivo: netlify/functions/verificar-pagamentos.js (VERSÃO FINAL DE PRODUÇÃO)
 
 const admin = require('firebase-admin');
 
@@ -36,28 +36,10 @@ const catalogoPesquisas = {
 };
 
 exports.handler = async function(event, context) {
-    
-    // PORTA SECRETA 1: TESTE DIRETO DA BREVO COM RELATÓRIO DE ERRO NA TELA
-    if (event.queryStringParameters && event.queryStringParameters.teste === 'brevo') {
-        const resultado = await enviarEmail("resolvefacil70@gmail.com", "Admin", "🚨 TESTE DE VIDA: Brevo Operante!", "<h2 style='color:green;'>Sucesso!</h2><p>O Netlify e a Brevo estão a comunicar perfeitamente.</p>");
-        
-        if (resultado.sucesso) {
-            return { statusCode: 200, body: "TESTE BREVO: SUCESSO! Vá olhar o seu e-mail agora." };
-        } else {
-            // AQUI ESTÁ A MÁGICA: Ele vai imprimir o erro da Brevo direto na sua tela!
-            return { statusCode: 200, body: `TESTE BREVO: FALHA.\n\nMotivo exato retornado pela Brevo:\n${resultado.erro}` };
-        }
-    }
-
     try {
-        // PORTA SECRETA 2: TESTE TOTAL SEM PAGAR
-        let statusBusca = "RECEIVED"; 
-        
-        if (event.queryStringParameters && event.queryStringParameters.teste === 'pendente') {
-            statusBusca = "PENDING"; 
-        }
-
-        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=${statusBusca}&limit=30`;
+        // Busca sempre os últimos 30 pagamentos RECEBIDOS.
+        // Sem filtro de data para evitar falhas de fuso horário. A trava EMAIL_ENVIADO evita repetição.
+        const asaasUrl = `https://www.asaas.com/api/v3/payments?status=RECEIVED&limit=30`;
         
         const searchResponse = await fetch(asaasUrl, {
             headers: { 'access_token': process.env.ASAAS_API_KEY }
@@ -69,32 +51,41 @@ exports.handler = async function(event, context) {
         const pendentes = (pagamentos || []).filter(p => p.externalReference !== "EMAIL_ENVIADO");
 
         if (pendentes.length === 0) {
-            return { statusCode: 200, body: `Nenhum pagamento ${statusBusca} novo para processar.` };
+            return { statusCode: 200, body: `Nenhum pagamento novo e não enviado.` };
         }
 
         let processados = 0;
 
         for (const pagamento of pendentes) {
-            if (statusBusca === "PENDING" && processados >= 1) break;
-
             const customerResp = await fetch(`https://www.asaas.com/api/v3/customers/${pagamento.customer}`, {
                 headers: { 'access_token': process.env.ASAAS_API_KEY }
             });
             const cliente = await customerResp.json();
 
-            // ROTA A: PRODUTOS DIGITAIS
+            // =========================================================================
+            // ROTA A: PRODUTOS DIGITAIS (Currículos e Contratos)
+            // =========================================================================
             const prodDigital = catalogoEntrega[pagamento.description];
             if (prodDigital) {
                 const html = `
-                    <p>Olá ${cliente.name}, seu acesso foi libertado!</p>
-                    <p><a href="${prodDigital.link}" style="background:#007bff; color:#fff; padding:10px 20px; text-decoration:none; border-radius:5px;">Acessar Agora</a></p>
+                    <p>Olá ${cliente.name}, seu pagamento foi aprovado com sucesso!</p>
+                    <p>Clique no botão abaixo para acessar sua ferramenta:</p>
+                    <p style="text-align: center; margin: 20px 0;">
+                        <a href="${prodDigital.link}" style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acessar Agora</a>
+                    </p>
+                    <p style="font-size: 0.9em; color: #555;">Se o botão não funcionar, copie e cole este link no seu navegador:</p>
+                    <p style="font-size: 0.9em; color: #333; word-break: break-all;">${prodDigital.link}</p>
+                    <hr style="margin: 20px 0;">
+                    <p>Obrigado pela sua compra!</p>
                 `;
                 const resultado = await enviarEmail(cliente.email, cliente.name, prodDigital.assunto, html);
                 if (resultado.sucesso) await marcarEnviado(pagamento.id);
                 processados++;
             }
 
-            // ROTA B: SERVIÇOS DE PESQUISA
+            // =========================================================================
+            // ROTA B: SERVIÇOS DE PESQUISA (Dossiê, Rastreio, etc)
+            // =========================================================================
             else if (catalogoPesquisas[pagamento.description]) {
                 let dadosAlvo = "Dados não encontrados no Firebase.";
                 
@@ -116,18 +107,24 @@ exports.handler = async function(event, context) {
 
                 // 1. E-mail para VOCÊ (Admin)
                 await enviarEmail("resolvefacil70@gmail.com", "Administrador", `🚨 NOVA PESQUISA: ${pagamento.description}`, `
-                    <h3>Novo pedido!</h3>
+                    <h3>Novo pedido pago!</h3>
                     <p><b>Cliente:</b> ${cliente.name} (${cliente.email})</p>
                     <hr>${dadosAlvo}
+                    <hr><p>ID: ${pagamento.id}</p>
                 `);
 
                 // 2. E-mail para o CLIENTE (Rastreio)
                 const linkRastreio = `https://resolvefacil-curriculos.netlify.app/rastreio.html?id=${pagamento.id}`;
                 const htmlCliente = `
-                    <h2>Pagamento Confirmado! 🔍</h2>
-                    <p>Olá ${cliente.name}, sua pesquisa <strong>${pagamento.description}</strong> foi iniciada.</p>
-                    <p>Acompanhe o progresso em tempo real:</p>
-                    <p><a href="${linkRastreio}" style="background:#009EE3; color:#fff; padding:15px 25px; text-decoration:none; border-radius:5px; font-weight:bold;">Ver Status da Pesquisa</a></p>
+                    <div style="font-family: Arial; line-height: 1.6; color: #333;">
+                        <h2 style="color: #003459;">Pagamento Confirmado! 🔍</h2>
+                        <p>Olá ${cliente.name}, sua pesquisa <strong>${pagamento.description}</strong> foi iniciada.</p>
+                        <div style="background-color: #f4f7f6; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
+                            <h3 style="margin-top: 0; color: #ff6600;">Acompanhe em Tempo Real</h3>
+                            <a href="${linkRastreio}" style="display: inline-block; background-color: #009EE3; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 1.1em; margin-top: 10px;">Ver Status da Pesquisa</a>
+                        </div>
+                        <p style="font-size: 0.9em; color: #666;">Seu relatório será enviado em resposta a este e-mail assim que concluído.</p>
+                    </div>
                 `;
 
                 const resultado = await enviarEmail(cliente.email, cliente.name, "Sua pesquisa está em andamento!", htmlCliente);
@@ -145,7 +142,7 @@ exports.handler = async function(event, context) {
 };
 
 // ============================================================================
-// FUNÇÃO DE E-MAIL (AGORA RETORNA O ERRO EXATO DA BREVO)
+// FUNÇÃO DE E-MAIL (PADRÃO OURO)
 // ============================================================================
 async function enviarEmail(para, nome, assunto, html) {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -169,7 +166,7 @@ async function enviarEmail(para, nome, assunto, html) {
     if (!response.ok) {
         const erroTexto = await response.text();
         console.error(`Erro Brevo para ${para}:`, erroTexto);
-        return { sucesso: false, erro: erroTexto }; // DEVOLVE O ERRO PARA IMPRIMIR NA TELA
+        return { sucesso: false, erro: erroTexto };
     }
     return { sucesso: true };
 }
