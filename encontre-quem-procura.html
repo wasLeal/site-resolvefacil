@@ -616,7 +616,7 @@
 
             const primeiroNome = partesNome[0]; // Pega só o primeiro nome para a API do IBGE
 
-            // TEMPO AUMENTADO PARA 4 SEGUNDOS (FATOR DRAMA)
+           // TEMPO AUMENTADO PARA 10 SEGUNDOS (FATOR DRAMA)
             setTimeout(() => {
                 clearInterval(intervaloAnimacao);
                 btn.innerHTML = originalText;
@@ -658,7 +658,7 @@
                     })
                     .catch(err => console.error("Erro IBGE Nomes:", err));
 
-            }, 4000); // 4000 ms = 4 segundos de simulação
+            }, 10000); // 10000 ms = 10 segundos de simulação
         });
 
         function preencherFormulario() {
