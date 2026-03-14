@@ -54,7 +54,7 @@
             --card-bg: #ffffff;
             --border-color: #e0e0e0;
             --success-color: #28a745;
-            --error-color: #dc3545; /* Cor de erro para o validador de CPF */
+            --error-color: #dc3545;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -142,12 +142,17 @@
         .info-card h2, .info-card h3 { color: var(--primary-bg); margin-bottom: 15px; font-size: 1.4em; }
         .info-card p { margin-bottom: 15px; color: #555; }
 
-        /* PROVA SOCIAL DINÂMICA */
+        /* PROVA SOCIAL DINÂMICA COM RELÓGIO VISUAL */
         .live-searches { font-size: 0.9em; }
         .live-searches ul { list-style: none; margin-top: 10px; }
         .live-searches li { padding: 10px 0; border-bottom: 1px dashed #eee; display: flex; align-items: center; gap: 10px; color: #555; }
         .live-searches li:last-child { border-bottom: none; }
-        .pulsing-dot { width: 8px; height: 8px; background-color: var(--success-color); border-radius: 50%; animation: pulse 1.5s infinite; }
+        .pulsing-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .status-aberto { background-color: var(--success-color); animation: pulse 1.5s infinite; }
+        .status-fechado { background-color: var(--error-color); box-shadow: none; animation: none; }
+        
+        /* CARD DE MENSAGEM QUANDO FORA DO HORÁRIO */
+        #closed-message-box { display: none; margin-top: 15px; padding: 18px; background-color: #fff8f8; border-left: 4px solid var(--error-color); border-radius: 6px; color: #444; font-size: 0.95em; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         /* EXEMPLO DE RELATÓRIO */
         .report-example { background: #fdfdfd; border: 1px solid #dcdcdc; border-top: 5px solid var(--primary-bg); padding: 20px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; position: relative; }
@@ -181,7 +186,7 @@
         .form-divider { margin: 30px 0 20px; border-top: 2px dashed #ccc; position: relative; text-align: center; }
         .form-divider span { background: #fff; padding: 0 15px; position: relative; top: -12px; color: #777; font-size: 0.85em; font-weight: bold; }
 
-        /* ALERTA DE HORÁRIO COMERCIAL */
+        /* ALERTA DE HORÁRIO COMERCIAL (CAIXA AMARELA) */
         .business-hours-alert { background-color: #fff3cd; border-left: 5px solid #ffc107; color: #856404; padding: 15px 20px; margin-bottom: 25px; border-radius: 6px; font-size: 0.92em; line-height: 1.5; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .business-hours-alert i { font-size: 1.5em; color: #ffc107; }
 
@@ -240,7 +245,8 @@
             
             <div class="credibility-badges">
                 <span><i class="fas fa-check-circle"></i> Pesquisa humana e sigilosa</span>
-                <span><i class="fas fa-clock"></i> Entrega em até 90 min (Horário Comercial)</span>
+                <!-- SPANS DINÂMICOS DE HORA AQUI -->
+                <span><i class="fas fa-clock"></i> Entrega em até 90 min (<span class="dyn-hours-short">...</span>)</span>
                 <span><i class="fas fa-check-circle"></i> Fontes legais de informação</span>
             </div>
         </section>
@@ -328,13 +334,21 @@
                     <p class="text-justify-desktop">Buscamos em Diários Oficiais, Receita Federal, Tribunais de Justiça e em sistemas de localização comercial restritos.</p>
                 </div>
 
+                <!-- CARD DE PROVA SOCIAL COM O NOVO RELÓGIO INTELIGENTE -->
                 <div class="info-card live-searches">
-                    <h3><div class="pulsing-dot" style="display:inline-block; margin-right:5px;"></div> Buscas recentes</h3>
-                    <!-- AVISO DE HORAS DINÂMICO -->
-                    <p style="font-size: 0.9em; color: #777;" id="recent-hours-text">Nas últimas 4 horas entregamos:</p>
+                    <h3>
+                        <div id="status-relogio" class="pulsing-dot status-aberto"></div> 
+                        <span id="titulo-prova-social">Buscas recentes</span>
+                    </h3>
+                    
+                    <p style="font-size: 0.9em; color: #777;" id="recent-hours-text">Processando dados...</p>
+                    
                     <ul id="lista-pesquisas-recentes">
-                        <li><strong>Processando dados seguros...</strong></li>
+                        <!-- Cidades geradas via JavaScript -->
                     </ul>
+
+                    <!-- MENSAGEM QUANDO FORA DO EXPEDIENTE -->
+                    <div id="closed-message-box" class="text-justify-desktop"></div>
                 </div>
 
                 <div class="info-card">
@@ -408,7 +422,7 @@
                     </div>
                     <div class="faq-item">
                         <span class="faq-question">Quanto tempo demora?</span>
-                        <div class="faq-answer text-justify-desktop">Entre 40 e 90 minutos após a confirmação do pagamento, <strong>durante o horário comercial (Segunda a Sexta, das 09:00 às 16:00)</strong>. Pedidos fora do horário são processados no próximo dia útil. Nossa busca é minuciosa para garantir a melhor pista possível.</div>
+                        <div class="faq-answer text-justify-desktop">Entre 40 e 90 minutos após a confirmação do pagamento, <strong>durante o horário comercial (Segunda a Sexta, das <span class="dyn-hours">...</span>)</strong>. Pedidos fora do horário são processados no próximo dia útil. Nossa busca é minuciosa para garantir a melhor pista possível.</div>
                     </div>
                     <div class="faq-item">
                         <span class="faq-question">O alvo vai saber que foi pesquisado?</span>
@@ -420,12 +434,12 @@
             <div class="form-section" id="form-ancora">
                 <h3>Solicitar Investigação</h3>
 
-                <!-- ALERTA DE HORÁRIO COMERCIAL -->
+                <!-- ALERTA DE HORÁRIO COMERCIAL (CAIXA AMARELA) -->
                 <div class="business-hours-alert">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="text-justify-desktop">
                         <strong>Horário de Atendimento:</strong><br>
-                        Nossas buscas são realizadas por especialistas de <strong>Segunda a Sexta, das 09:00 às 16:00</strong>. Pedidos feitos fora deste horário ou em feriados serão entregues com prioridade no próximo dia útil.
+                        Nossas buscas são realizadas por especialistas de <strong>Segunda a Sexta, das <span class="dyn-hours">...</span></strong>. Pedidos feitos fora deste horário ou em feriados serão entregues com prioridade no próximo dia útil.
                     </div>
                 </div>
 
@@ -523,9 +537,38 @@
     <script src="chatbot.js" defer></script>
 
     <!-- ========================================================= -->
-    <!-- PARTE 1: SCRIPTS VISUAIS (Máquinas de Curiosidade, IBGE e 60 Cidades) -->
+    <!-- PARTE 1: SCRIPTS VISUAIS (Máquinas, IBGE, 60 Cidades, Relógio, Fuso) -->
     <!-- ========================================================= -->
     <script>
+        // --- FUNÇÃO INTELIGENTE DE TRADUÇÃO DE FUSO HORÁRIO ---
+        // A empresa atua no fuso do Brasil (UTC-3). 
+        // 12:00 Universal (UTC) = 09:00 em Brasília.
+        // 19:00 Universal (UTC) = 16:00 em Brasília.
+        function configurarHorariosLocais() {
+            // Usamos uma data fixa no passado apenas para fazer a matemática do fuso com segurança
+            const openDateUTC = new Date('2024-01-01T12:00:00Z');
+            const closeDateUTC = new Date('2024-01-01T19:00:00Z');
+
+            // O navegador do cliente converte sozinho para a hora da cidade dele
+            const optHM = { hour: '2-digit', minute:'2-digit', hour12: false };
+            const optH  = { hour: '2-digit', hour12: false };
+            
+            const localOpenStr = openDateUTC.toLocaleTimeString([], optHM);
+            const localCloseStr = closeDateUTC.toLocaleTimeString([], optHM);
+            const localOpenH = openDateUTC.toLocaleTimeString([], optH) + 'h';
+            const localCloseH = closeDateUTC.toLocaleTimeString([], optH) + 'h';
+
+            // Injeta o horário traduzido nas áreas marcadas do HTML
+            document.querySelectorAll('.dyn-hours').forEach(el => el.textContent = `${localOpenStr} às ${localCloseStr}`);
+            document.querySelectorAll('.dyn-hours-short').forEach(el => el.textContent = `${localOpenH} às ${localCloseH}`);
+            
+            // Retorna o horário de abertura local para usar na mensagem do Relógio Vermelho
+            return localOpenStr;
+        }
+
+        const horarioAberturaLocal = configurarHorariosLocais();
+
+
         // --- 1. MÁQUINA DE CURIOSIDADE E INTEGRAÇÃO IBGE ---
         function gerarHashDaString(str) {
             let hash = 0;
@@ -640,7 +683,6 @@
         
         cpfInput.addEventListener('input', (e) => {
             formatarCpfCnpj(e.target);
-            // Remove o aviso de erro assim que o usuário volta a digitar
             cpfInput.classList.remove('error');
             errorDiv.style.display = 'none';
         });
@@ -677,7 +719,7 @@
         });
         carregarEstados();
 
-        // --- 4. PROVA SOCIAL DINÂMICA (As 60 CIDADES INTACTAS) ---
+        // --- 4. PROVA SOCIAL DINÂMICA COM RELÓGIO E VOLUME DE VENDAS ---
         const basePesquisas = [
             { servico: "Busca de Contato", local: "Manaus / AM" },
             { servico: "Dossiê Investigativo", local: "Belém / PA" },
@@ -742,29 +784,133 @@
         ];
 
         function renderizarPesquisasRecentes() {
-            const dataAtual = new Date();
-            let semente = dataAtual.getFullYear() * 10000 + (dataAtual.getMonth() + 1) * 100 + dataAtual.getDate();
+            // A LÓGICA MESTRA PARA DECIDIR SE ESTÁ ABERTO OU FECHADO
+            const fusoHorarioOficial = 'America/Sao_Paulo';
             
-            const horasOpcoes = [2, 3, 4];
-            const horaSorteada = horasOpcoes[semente % 3];
-            const hoursTextElement = document.getElementById('recent-hours-text');
-            if (hoursTextElement) {
-                hoursTextElement.textContent = `Nas últimas ${horaSorteada} horas entregamos:`;
+            const dataLocalCliente = new Date();
+            const dataConvertidaStr = dataLocalCliente.toLocaleString("en-US", { timeZone: fusoHorarioOficial });
+            const dataBaseAgencia = new Date(dataConvertidaStr);
+
+            const ano = dataBaseAgencia.getFullYear();
+            const mes = dataBaseAgencia.getMonth() + 1;
+            const dia = dataBaseAgencia.getDate();
+            const hora = dataBaseAgencia.getHours();
+            const diaSemana = dataBaseAgencia.getDay(); // 0 = Domingo, 6 = Sábado
+            
+            let semente = ano * 10000 + mes * 100 + dia;
+            
+            // Feriados Nacionais 2026 e 2027 (Formato MM-DD)
+            const feriadosNacionais = [
+                '01-01', // Confraternização Universal
+                '02-16', '02-17', // Carnaval 2026
+                '04-03', // Paixão de Cristo 2026
+                '04-21', // Tiradentes
+                '05-01', // Dia do Trabalho
+                '06-04', // Corpus Christi 2026
+                '09-07', // Independência
+                '10-12', // N. S. Aparecida
+                '11-02', // Finados
+                '11-15', // Proclamação da República
+                '12-25', // Natal
+                '02-08', '02-09', // Carnaval 2027
+                '03-26', // Paixão de Cristo 2027
+                '05-27'  // Corpus Christi 2027
+            ];
+            
+            const dataFormatada = String(mes).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+            const isFeriado = feriadosNacionais.includes(dataFormatada);
+
+            const isFimDeSemana = (diaSemana === 0 || diaSemana === 6);
+            const isForaDoExpediente = (hora < 9 || hora >= 16);
+
+            // --- NOVA INTELIGÊNCIA DE CALENDÁRIO: QUANDO RETORNAMOS? ---
+            let textoDiaRetorno = "hoje"; // Padrão
+            
+            // Se estiver fora do expediente por já ter passado das 16h, ou for final de semana/feriado,
+            // precisamos calcular exatamente que dia cai o próximo dia útil.
+            if (isFimDeSemana || isFeriado || hora >= 16) {
+                let proximaDataCalculo = new Date(dataBaseAgencia);
+                let diasAdicionados = 0;
+                
+                // Roda os dias pra frente até achar um que não seja feriado e não seja fim de semana
+                while(true) {
+                    proximaDataCalculo.setDate(proximaDataCalculo.getDate() + 1);
+                    diasAdicionados++;
+                    
+                    let dSemanaCheck = proximaDataCalculo.getDay();
+                    let mCheck = proximaDataCalculo.getMonth() + 1;
+                    let dCheck = proximaDataCalculo.getDate();
+                    let dFormatCheck = String(mCheck).padStart(2, '0') + '-' + String(dCheck).padStart(2, '0');
+                    
+                    // Se não for domingo (0), nem sábado (6), nem feriado... achamos!
+                    if (dSemanaCheck !== 0 && dSemanaCheck !== 6 && !feriadosNacionais.includes(dFormatCheck)) {
+                        break; 
+                    }
+                }
+                
+                // Formata o texto dependendo da distância de dias
+                if (diasAdicionados === 1) {
+                    textoDiaRetorno = "amanhã";
+                } else {
+                    const nomesDiasSemana = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
+                    textoDiaRetorno = "nesta " + nomesDiasSemana[proximaDataCalculo.getDay()];
+                }
+            } else if (hora < 9) {
+                // Se a pessoa entrou de manhã bem cedo, num dia que É dia útil, o retorno é "hoje".
+                textoDiaRetorno = "hoje";
             }
 
-            let embaralhado = [...basePesquisas];
-            for (let i = embaralhado.length - 1; i > 0; i--) {
-                semente = (semente * 9301 + 49297) % 233280;
-                let j = Math.floor((semente / 233280) * (i + 1));
-                [embaralhado[i], embaralhado[j]] = [embaralhado[j], embaralhado[i]];
-            }
-            
+            // Elementos DOM
+            const relogioVisual = document.getElementById('status-relogio');
+            const tituloProvaSocial = document.getElementById('titulo-prova-social');
+            const hoursTextElement = document.getElementById('recent-hours-text');
             const listaUl = document.getElementById('lista-pesquisas-recentes');
-            if (listaUl) {
+            const closedMessageBox = document.getElementById('closed-message-box');
+
+            if (isFimDeSemana || isFeriado || isForaDoExpediente) {
+                // 🔴 MODO FECHADO (Fora do Expediente)
+                relogioVisual.className = 'pulsing-dot status-fechado'; // Remove pulso, cor vermelha
+                tituloProvaSocial.textContent = 'Análise Humana Especializada';
+                
+                hoursTextElement.style.display = 'none';
+                listaUl.style.display = 'none';
+                
+                closedMessageBox.style.display = 'block';
+                // O texto usa a nova inteligência para dizer exatamente o dia e a hora local do cliente
+                closedMessageBox.innerHTML = `Nosso expediente de buscas está em pausa no momento. Como nossas análises são feitas por especialistas reais (e não robôs automatizados), retornamos <strong>${textoDiaRetorno} às ${horarioAberturaLocal}</strong>.<br><br><i class="fas fa-lock" style="color:var(--highlight)"></i> <strong>Faça seu pedido agora e seja o primeiro da fila no próximo lote!</strong>`;
+
+            } else {
+                // 🟢 MODO ABERTO (Durante o Expediente)
+                relogioVisual.className = 'pulsing-dot status-aberto'; // Pulso ativado, cor verde
+                tituloProvaSocial.textContent = 'Buscas recentes';
+                
+                hoursTextElement.style.display = 'block';
+                hoursTextElement.innerHTML = `Em nosso último dia útil entregamos:`;
+                
+                closedMessageBox.style.display = 'none';
+                listaUl.style.display = 'block';
+
+                // Embaralha cidades baseado na semente do dia (Não muda com o F5 do cliente)
+                let embaralhado = [...basePesquisas];
+                for (let i = embaralhado.length - 1; i > 0; i--) {
+                    semente = (semente * 9301 + 49297) % 233280;
+                    let j = Math.floor((semente / 233280) * (i + 1));
+                    [embaralhado[i], embaralhado[j]] = [embaralhado[j], embaralhado[i]];
+                }
+                
+                // Renderiza as 3 primeiras cidades
                 listaUl.innerHTML = ''; 
                 embaralhado.slice(0, 3).forEach(item => {
-                    listaUl.innerHTML += `<li><strong>${item.servico}</strong> <span>- ${item.local}</span></li>`;
+                    listaUl.innerHTML += `<li><i class="fas fa-check-circle" style="color:var(--success-color); margin-right:5px;"></i> <strong>${item.servico}</strong> <span>- ${item.local}</span></li>`;
                 });
+
+                // Calcula e adiciona a "Amostragem de Volume" (+ outras X pesquisas)
+                const volumeDiario = 35 + (semente % 35);
+                listaUl.innerHTML += `
+                    <li style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; color: #666; font-size: 0.9em; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-plus" style="color:#aaa;"></i> 
+                        <em>...e outras <strong>${volumeDiario}</strong> pesquisas concluídas em absoluto sigilo.</em>
+                    </li>`;
             }
         }
         renderizarPesquisasRecentes();
