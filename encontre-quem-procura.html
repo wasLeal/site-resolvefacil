@@ -204,15 +204,17 @@
         .pix-logo-svg { height: 24px; width: auto; fill: #32bcad; }
         .pix-seal-text { font-size: 0.95em; font-weight: bold; color: #555; letter-spacing: 0.5px; }
 
-        /* --- ESTILO DE REVELAÇÃO (FADE-IN) --- */
-        .fade-in { 
-            opacity: 0; 
-            transform: translateY(20px); 
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        /* --- ESTILO DE REVELAÇÃO (FADE-IN E SLIDE-UP) --- */
+        .fade-in-text, .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
         }
-        .fade-in.fade-in-active { 
-            opacity: 1; 
-            transform: translateY(0); 
+        .fade-in-text { transition: opacity 1s ease-out, transform 1s ease-out; }
+        .fade-in { transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+
+        .fade-in-text.show, .fade-in.fade-in-active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
@@ -250,11 +252,12 @@
     </header>
 
     <main>
-        <section class="service-hero fade-in">
-            <h1>Encontre Quem Procura</h1>
-            <p>A ponte segura para localizar quem você perdeu contato. Descubra telefones, endereços e o histórico completo de uma pessoa.</p>
+        <!-- Retirado o fade-in daqui de cima para não conflitar com a animação em cascata dos filhos -->
+        <section class="service-hero">
+            <h1 class="fade-in-text">Encontre Quem Procura</h1>
+            <p class="fade-in-text">A ponte segura para localizar quem você perdeu contato. Descubra telefones, endereços e o histórico completo de uma pessoa.</p>
             
-            <div class="credibility-badges">
+            <div class="credibility-badges fade-in-text">
                 <span><i class="fas fa-check-circle"></i> Pesquisa humana e sigilosa</span>
                 <!-- SPANS DINÂMICOS DE HORA AQUI -->
                 <span><i class="fas fa-clock"></i> Entrega em até 90 min (<span class="dyn-hours-short">...</span>)</span>
@@ -552,10 +555,23 @@
     <!-- PARTE 1: SCRIPTS VISUAIS (Máquinas, IBGE, 60 Cidades, Relógio, Fuso) -->
     <!-- ========================================================= -->
     <script>
-        // --- LÓGICA DE OBSERVAÇÃO DE ROLAGEM (FADE-IN) ---
+        // --- LÓGICA DE OBSERVAÇÃO DE ROLAGEM (FADE-IN E SLIDE-UP) ---
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Animações de Fade-in (Efeito Cascata Inicial para o Hero)
+            const heroTexts = document.querySelectorAll('.service-hero .fade-in-text');
+            let initialDelay = 300; 
+
+            heroTexts.forEach((text, index) => {
+                setTimeout(() => {
+                    text.classList.add('show');
+                }, initialDelay + (index * 200));
+            });
+
+            // 2. Intersection Observer (Para os elementos que aparecem na rolagem)
             const faders = document.querySelectorAll('.fade-in');
             const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            
             const appearOnScroll = new IntersectionObserver(function(entries, observer) {
                 entries.forEach(entry => {
                     if (!entry.isIntersecting) return;
@@ -563,6 +579,7 @@
                     observer.unobserve(entry.target);
                 });
             }, appearOptions);
+            
             faders.forEach(fader => appearOnScroll.observe(fader));
         });
 
@@ -758,7 +775,7 @@
                 const cidades = await response.json();
                 cidadeSelect.innerHTML = '<option value="">Selecione a cidade</option>';
                 cidades.forEach(cidade => {
-                    const opt = document.createElement('option'); opt.value = city.nome; opt.textContent = cidade.nome; cidadeSelect.appendChild(opt);
+                    const opt = document.createElement('option'); opt.value = cidade.nome; opt.textContent = cidade.nome; cidadeSelect.appendChild(opt);
                 });
                 cidadeSelect.disabled = false;
             } catch (err) { console.error("Erro IBGE Cidades:", err); }
