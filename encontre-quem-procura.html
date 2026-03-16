@@ -195,7 +195,7 @@
         /* BOTÃO DE CHECKOUT */
         .submit-btn { background-color: var(--mp-blue); color: white; border: none; padding: 18px 15px; width: 100%; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
         .submit-btn:hover:not(:disabled) { background-color: var(--mp-blue-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,158,227,0.3); }
-        .submit-btn:disabled { background-color: #999; cursor: not-allowed; transform: none; box-shadow: none; }
+        .submit-btn:disabled { background-color: #999; cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.8; }
         .btn-main-text { font-size: 1.2em; font-weight: bold; }
         .btn-sub-text { font-size: 0.8em; font-weight: normal; opacity: 0.9; }
 
@@ -204,18 +204,15 @@
         .pix-logo-svg { height: 24px; width: auto; fill: #32bcad; }
         .pix-seal-text { font-size: 0.95em; font-weight: bold; color: #555; letter-spacing: 0.5px; }
 
-        /* --- ESTILO DE REVELAÇÃO (FADE-IN E SLIDE-UP) --- */
-        .fade-in-text, .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-        }
+        /* ESTILO DO BOTÃO DE TESTE (QUASE INVISÍVEL) */
+        .debug-test-link { display: block; text-align: center; font-size: 0.75em; color: #ccc; text-decoration: none; margin-top: 20px; transition: color 0.3s; }
+        .debug-test-link:hover { color: var(--highlight); text-decoration: underline; }
+
+        /* --- ESTILOS DE REVELAÇÃO (FADE-IN E SLIDE-UP) --- */
+        .fade-in-text, .fade-in { opacity: 0; transform: translateY(20px); }
         .fade-in-text { transition: opacity 1s ease-out, transform 1s ease-out; }
         .fade-in { transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-
-        .fade-in-text.show, .fade-in.fade-in-active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .fade-in-text.show, .fade-in.fade-in-active { opacity: 1; transform: translateY(0); }
 
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -252,7 +249,6 @@
     </header>
 
     <main>
-        <!-- Retirado o fade-in daqui de cima para não conflitar com a animação em cascata dos filhos -->
         <section class="service-hero">
             <h1 class="fade-in-text">Encontre Quem Procura</h1>
             <p class="fade-in-text">A ponte segura para localizar quem você perdeu contato. Descubra telefones, endereços e o histórico completo de uma pessoa.</p>
@@ -293,7 +289,6 @@
                 </div>
             </div>
         </section>
-
 
         <section class="pricing-section fade-in">
             <h2>Escolha o Nível da Investigação</h2>
@@ -532,6 +527,9 @@
                         <span class="btn-main-text"><i class="fas fa-lock"></i> Iniciar Pesquisa Agora</span>
                         <span class="btn-sub-text" style="color: #ffeba1; margin-top: 3px; font-weight: bold; font-size: 0.85em;">(O link de rastreio será enviado em até 10 minutos após o pagamento)</span>
                     </button>
+
+                    <!-- LINK DE TESTE REATIVADO -->
+                    <a href="#" class="debug-test-link" id="link-teste-emails">Simular Fluxo Completo (Apenas Teste de E-mails)</a>
                     
                     <div class="pix-seal-container">
                         <svg class="pix-logo-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
@@ -606,6 +604,7 @@
             document.querySelectorAll('.dyn-hours-short').forEach(el => el.textContent = `${localOpenH} às ${localCloseH}`);
             
             // Retorna o horário de abertura local para usar na mensagem do Relógio Vermelho
+            // Se o usuário estiver em Manaus, isso retornará "08:00" em vez de "09:00"
             return localOpenStr;
         }
 
@@ -782,7 +781,7 @@
         });
         carregarEstados();
 
-        // --- 4. PROVA SOCIAL DINÂMICA COM RELÓGIO E VOLUME DE VENDAS ---
+        // --- 4. PROVA SOCIAL DINÂMICA COM RELÓGIO E VOLUME DE VENDAS E BLOQUEIO DE BOTÃO ---
         const basePesquisas = [
             { servico: "Busca de Contato", local: "Manaus / AM" },
             { servico: "Dossiê Investigativo", local: "Belém / PA" },
@@ -923,6 +922,10 @@
             const hoursTextElement = document.getElementById('recent-hours-text');
             const listaUl = document.getElementById('lista-pesquisas-recentes');
             const closedMessageBox = document.getElementById('closed-message-box');
+            
+            // Botão de Pagamento
+            const btnPagar = document.getElementById('btn-pagar');
+            const btnSubText = btnPagar.querySelector('.btn-sub-text');
 
             if (isFimDeSemana || isFeriado || isForaDoExpediente) {
                 // 🔴 MODO FECHADO (Fora do Expediente)
@@ -933,7 +936,16 @@
                 listaUl.style.display = 'none';
                 
                 closedMessageBox.style.display = 'block';
-                closedMessageBox.innerHTML = `Nosso expediente de buscas está em pausa no momento. Como nossas análises são feitas por especialistas reais (e não robôs automatizados), retornamos <strong>${textoDiaRetorno} às ${horarioAberturaLocal}</strong>.<br><br><i class="fas fa-lock" style="color:var(--highlight)"></i> <strong>Faça seu pedido agora e seja o primeiro da fila no próximo lote!</strong>`;
+                // Correção vital aqui: Utilizamos horarioAberturaLocal para refletir o fuso do visitante (ex: 08:00 em Manaus) e frase segura.
+                closedMessageBox.innerHTML = `Nosso expediente de buscas está em pausa no momento. Como nossas análises são feitas por especialistas reais (e não robôs automatizados), retornamos ${textoDiaRetorno} às <strong>${horarioAberturaLocal}</strong>.<br><br><i class="fas fa-lock" style="color:var(--highlight)"></i> <strong>Aguardamos você para iniciarmos sua investigação com total segurança!</strong>`;
+
+                // Bloqueia o botão e avisa o cliente
+                if (btnPagar) {
+                    btnPagar.disabled = true;
+                    btnPagar.style.cursor = 'not-allowed';
+                    btnPagar.querySelector('.btn-main-text').innerHTML = '<i class="fas fa-clock"></i> Expediente Encerrado';
+                    if (btnSubText) btnSubText.innerText = "(Sistema de pagamentos pausado no momento)";
+                }
 
             } else {
                 // 🟢 MODO ABERTO (Durante o Expediente)
@@ -945,6 +957,14 @@
                 
                 closedMessageBox.style.display = 'none';
                 listaUl.style.display = 'block';
+
+                // Desbloqueia o botão e restaura textos originais
+                if (btnPagar) {
+                    btnPagar.disabled = false;
+                    btnPagar.style.cursor = 'pointer';
+                    btnPagar.querySelector('.btn-main-text').innerHTML = '<i class="fas fa-lock"></i> Iniciar Pesquisa Agora';
+                    if (btnSubText) btnSubText.innerText = "(O link de rastreio será enviado em até 10 minutos após o pagamento)";
+                }
 
                 let embaralhado = [...basePesquisas];
                 for (let i = embaralhado.length - 1; i > 0; i--) {
@@ -970,7 +990,7 @@
     </script>
 
     <!-- ========================================================= -->
-    <!-- PARTE 2: MECÂNICA DE PAGAMENTO (ENVIO SEGURO PARA NETLIFY)-->
+    <!-- PARTE 2: MECÂNICA DE PAGAMENTO E TESTE BREVO -->
     <!-- ========================================================= -->
     <script>
         // Função para Capturar UTMs de Anúncios (Facebook/Google)
@@ -1079,6 +1099,57 @@
                 btnPagar.innerHTML = originalText;
             }
         });
+
+        // --- GATILHO DO FLUXO DE TESTE DE E-MAIL (BREVO) ---
+        const linkTeste = document.getElementById('link-teste-emails');
+        if (linkTeste) {
+            linkTeste.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                let localDoAlvo = (ufSelect.value && cidadeSelect.value) ? `${cidadeSelect.value} - ${ufSelect.value}` : "";
+
+                const payloadTeste = {
+                    testMode: true, // FLAG PARA A NETLIFY IGNORAR O ASAAS
+                    productId: document.getElementById('tipoPesquisa').value || 'pesquisa_dossie',
+                    name: document.getElementById('compradorNome').value.trim(),
+                    email: document.getElementById('compradorEmail').value.trim(),
+                    targetData: {
+                        nomeAlvo: document.getElementById('alvoNome').value.trim(),
+                        cpfCnpjAlvo: document.getElementById('alvoCpf').value.trim(),
+                        sexoAlvo: document.getElementById('alvoSexo').value,
+                        filiacaoAlvo: document.getElementById('alvoFiliacao').value.trim(),
+                        localAlvo: localDoAlvo,
+                        infoExtraAlvo: document.getElementById('alvoInfoExtra').value.trim()
+                    }
+                };
+
+                if (!payloadTeste.name || !payloadTeste.email || !payloadTeste.targetData.nomeAlvo) {
+                    alert("Para testar o fluxo de e-mail, preencha pelo menos o seu Nome, seu E-mail e o Nome do Alvo.");
+                    return;
+                }
+
+                const originalLinkText = linkTeste.innerText;
+                linkTeste.innerText = "⏳ Processando Teste...";
+                
+                try {
+                    const response = await fetch('https://resolvefacil-curriculos.netlify.app/.netlify/functions/criar-pagamento', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payloadTeste),
+                    });
+                    
+                    if (response.ok) {
+                        alert("🚀 SUCESSO! O fluxo de teste foi disparado.\n\nO Guardião já recebeu os dados e a Brevo está enviando os e-mails agora. Verifique sua caixa de entrada e os logs do sistema.");
+                    } else {
+                        throw new Error("Erro na comunicação com o servidor.");
+                    }
+                } catch (error) {
+                    alert("Erro ao disparar teste: " + error.message);
+                } finally {
+                    linkTeste.innerText = originalLinkText;
+                }
+            });
+        }
     </script>
 </body>
 </html>
