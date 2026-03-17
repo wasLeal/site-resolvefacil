@@ -27,9 +27,9 @@ const catalogoProdutos = {
     'contrato_aluguel': { descricao: "Acesso ao Gerador de Contrato de Aluguel", valor: 16.99 },
     
     // --- NOVOS PLANOS DE PESQUISA (RESOLVEFÁCIL) ---
-    'pesquisa_dossie': { descricao: "Dossiê Investigativo Completo", valor: 97.00 },
-    'pesquisa_avancada': { descricao: "Rastreio Avançado", valor: 67.00 },
-    'pesquisa_contato': { descricao: "Busca de Contato", valor: 57.00 }
+    'pesquisa_dossie': { descricao: "Dossiê Investigativo Completo", valor: 67.00 },
+    'pesquisa_avancada': { descricao: "Rastreio Avançado", valor: 47.00 },
+    'pesquisa_contato': { descricao: "Busca de Contato", valor: 37.00 }
 };
 
 exports.handler = async function(event) {
