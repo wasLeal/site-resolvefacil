@@ -114,7 +114,8 @@ exports.handler = async function(event, context) {
                 `);
 
                 // 2. E-mail para o CLIENTE (Rastreio)
-                const linkRastreio = `https://resolvefacil-curriculos.netlify.app/rastreio.html?id=${pagamento.id}`;
+                // A ROTA FOI CORRIGIDA AQUI PARA O DOMÍNIO PRINCIPAL OFICIAL:
+                const linkRastreio = `https://www.resolvefacil.online/rastreio.html?id=${pagamento.id}`;
                 const htmlCliente = `
                     <div style="font-family: Arial; line-height: 1.6; color: #333;">
                         <h2 style="color: #003459;">Pagamento Confirmado! 🔍</h2>
